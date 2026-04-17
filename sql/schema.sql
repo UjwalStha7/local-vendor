@@ -2,17 +2,22 @@
 CREATE DATABASE IF NOT EXISTS farmers_market_hub;
 USE farmers_market_hub;
 
--- 1. Users table
+-- 1. Users table  (Modified BY Darshan)
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    full_name VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    username VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     role ENUM('admin', 'vendor', 'customer') NOT NULL DEFAULT 'customer',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE
+    is_active BOOLEAN DEFAULT TRUE,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+
 );
+
+
 
 -- 2. VendorProfile table
 CREATE TABLE vendor_profiles (

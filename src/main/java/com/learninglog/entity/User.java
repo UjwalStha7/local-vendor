@@ -1,14 +1,22 @@
 package com.learninglog.entity;
 
+import java.security.PrivateKey;
 import java.sql.Timestamp;
 
 public class User {
     private int id;
     private String username;
-    private  String email;
+    private String email;
     private String password;
     private Timestamp createdAt;
-    private  Timestamp updatedat;
+    private Timestamp updatedAt;
+
+
+    private String phone;
+    private String role;
+    private boolean isactive;
+
+
 
 
 //    Constructor for Register
@@ -20,13 +28,16 @@ public class User {
 
 
 //    This is for fetching data to database  constructor Overload
-    public User(int id, String username , String email,String password, Timestamp createdAt ,Timestamp updatedat){
+    public User(int id, String username , String email,String password,String phone, String role ,boolean isactive, Timestamp createdAt ,Timestamp updatedat){
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
-        this.updatedat = updatedat;
+        this.updatedAt = updatedat;
+        this.phone = phone;
+        this.role = role;
+        this.isactive = isactive;
     }
 
     public int getId() {
@@ -50,7 +61,19 @@ public class User {
     }
 
     public Timestamp getUpdatedat() {
-        return updatedat;
+        return updatedAt;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public boolean isIsactive() {
+        return isactive;
     }
 
     public void setId(int id) {
@@ -69,5 +92,16 @@ public class User {
         this.password = password;
     }
 
-//    Note no setter for time cause time is given by System not by user
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setIsactive(boolean isactive) {
+        this.isactive = isactive;
+    }
+    //    Note no setter for time cause time is given by System not by user
 }
