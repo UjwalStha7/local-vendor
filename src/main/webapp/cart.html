@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="cart.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img class="brand-icon" src="image/cart.png" alt="" aria-hidden="true" />
+        <span class="brand-title">Shopping Cart</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="layout">
+      <section class="cart" aria-label="Cart items">
+        <p id="cart-count" class="cart-count">0 Items in Cart</p>
+        <div id="cart-list" class="cart-list"></div>
+      </section>
+
+      <aside class="summary" aria-label="Order summary">
+        <div class="summary-card">
+          <h2 class="summary-title">Order Summary</h2>
+
+          <dl class="summary-lines">
+            <div class="line">
+              <dt>Subtotal</dt>
+              <dd id="summary-subtotal">$0.00</dd>
+            </div>
+            <div class="line">
+              <dt>Tax</dt>
+              <dd id="summary-tax">$0.00</dd>
+            </div>
+            <div class="line">
+              <dt>Delivery Fee</dt>
+              <dd id="summary-delivery">$0.00</dd>
+            </div>
+            <div class="line total">
+              <dt>Total</dt>
+              <dd id="summary-total">$0.00</dd>
+            </div>
+          </dl>
+
+          <button id="checkout-btn" class="checkout-btn" type="button">Proceed to Checkout</button>
+          <p class="free-note">Free delivery on orders over $50</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="cart.js"></script>
+</body>
+</html>
