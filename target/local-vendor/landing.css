@@ -596,10 +596,222 @@ a {
   opacity: 0.95;
 }
 
-/* ——— Blog teaser ——— */
-.blog-teaser {
+/* ——— Seller / vendor lead CTA ——— */
+.section.seller-cta-section {
+  padding-top: 48px;
+  padding-bottom: 88px;
   background: #fff;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.seller-cta {
+  --seller-cta-bg: #0b462d;
+
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 36px 48px;
+  padding: 44px 52px;
+  border-radius: 36px;
+  background: var(--seller-cta-bg);
+  box-shadow: 0 16px 40px rgba(7, 45, 28, 0.28);
+}
+
+.seller-cta__shine {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse 90% 75% at 100% -18%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 55%
+  );
+}
+
+.seller-cta__copy {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.seller-cta__title {
+  margin: 0 0 10px;
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.seller-cta__lead {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #a0b3a9;
+  line-height: 1.45;
+}
+
+.seller-cta__form {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
+  flex: 1 1 540px;
+  min-width: 0;
+}
+
+.seller-cta__fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.seller-cta__input {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 13px 22px;
+  min-height: 50px;
+  border-radius: 999px;
+  border: 1px solid rgba(165, 214, 167, 0.38);
+  background: rgba(255, 255, 255, 0.09);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.25;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.seller-cta__input::placeholder {
+  color: rgba(222, 236, 228, 0.68);
+}
+
+.seller-cta__input:focus-visible {
+  border-color: rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.seller-cta__submit {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  padding: 15px 44px;
+  border: 0 solid transparent;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: var(--seller-cta-bg);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.seller-cta__submit::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.seller-cta__submit:hover {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+}
+
+.seller-cta__submit:active {
+  transform: scale(0.98);
+}
+
+.seller-cta__submit:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 3px;
+}
+
+/* Tablet / small laptop: stack headline above form only — keep inputs + Submit in one row */
+@media (max-width: 920px) {
+  .seller-cta {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 36px 26px;
+    border-radius: 32px;
+    gap: 20px;
+  }
+
+  /* Avoid vertical stretching: space-between + flex-grow were leaving huge gaps */
+  .seller-cta__copy {
+    flex: 0 0 auto;
+  }
+
+  .seller-cta__form {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 20px 24px;
+    width: 100%;
+  }
+
+  .seller-cta__fields {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .seller-cta__submit {
+    flex: 0 0 auto;
+    width: auto;
+    align-self: center;
+    min-height: unset;
+    padding: 15px 36px;
+    font-weight: 700;
+  }
+}
+
+/* Phones: stack fields and full-width Submit */
+@media (max-width: 560px) {
+  .seller-cta__form {
+    flex-direction: column;
+    align-items: stretch;
+    align-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 14px;
+  }
+
+  .seller-cta__fields {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .seller-cta__submit {
+    align-self: stretch;
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 28px;
+    margin-top: 0;
+  }
+}
+
+/* Anchor target: offset for fixed header when jumping to footer About */
+#about {
+  scroll-margin-top: calc(var(--header-h) + 16px);
 }
 
 /* ——— Footer (flex columns) ——— */

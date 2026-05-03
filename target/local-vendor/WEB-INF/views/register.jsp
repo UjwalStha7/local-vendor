@@ -1,1 +1,0 @@
-<%-- customer & farmer register here --%>
