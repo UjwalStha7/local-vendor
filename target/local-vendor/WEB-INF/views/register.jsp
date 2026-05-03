@@ -13,17 +13,17 @@
 <div>
 
 
-<form action="${pageContext.request.contextPath}//register" method="post">
+<form action="${pageContext.request.contextPath}/register" method="post">
     <h1> Register</h1>
 <%--    Displaing error message to user--%>
-    <c:if test="${not empty error}">  #checkign error condition
+    <c:if test="${not empty error}">
         <p class="error"><c:out value="${error}" /></p>
     </c:if>
 
     <input type="text" name="username" placeholder="username"
-    value="<c:out value="${param.username}" default=""/>" required />
+    value="<c:out value="${param.username}" default=''/>" required />
     <input type="email" name="email" placeholder="Email"
-    value="<c:out value="${param.email}" default=""/>/" required />
+    value="<c:out value="${param.email}" default=''/>" required />
     <input type="password" name="password" placeholder="Password" required />
     <input type="password" name="confirmed_password" placeholder="Confirm Password" required />
     <input type="number" name="phone" placeholder="Phone" required />

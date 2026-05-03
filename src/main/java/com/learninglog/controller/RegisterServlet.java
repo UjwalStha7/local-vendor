@@ -80,7 +80,8 @@ public class RegisterServlet extends HttpServlet {
         //        Password encoding
         String encrypted_pass = PasswordUtil.getHashpassword(password);
         User user = new User(username,email,encrypted_pass,phone);
-
+        user.setRole("customer");
+        user.setIsactive(true);
 //        inserting to User Database
         boolean sucess = userDao.insertUser(user);
 
@@ -89,8 +90,9 @@ public class RegisterServlet extends HttpServlet {
 
 //        checking if any user exist already of same given property
         if(!sucess){
-            request.setAttribute("error","User Name or Email already Exist.");
+                request.setAttribute("error","Registration failed. Check console for error.");
             request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request,response);
+            return;
         }
 
 //        if no insert issue diver to login page
