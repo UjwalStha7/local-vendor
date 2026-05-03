@@ -16,7 +16,7 @@
       <nav class="main-nav" aria-label="Primary">
         <a href="index.html#top">Home</a>
         <a href="shop.html">Product</a>
-        <a href="#blog">Blog</a>
+        <a href="#about">About Us</a>
       </nav>
       <a class="cart-link" href="cart.html" aria-label="Shopping cart">
         <img src="image/cart.png" alt="" width="24" height="24" />
@@ -121,17 +121,45 @@
       </div>
     </section>
 
-    <section class="section blog-teaser" id="blog" aria-labelledby="blog-heading">
-      <div class="container narrow">
-        <h2 id="blog-heading" class="section-title">From Our Blog</h2>
-        <p class="section-lead">Recipes, storage tips, and farmer stories—coming soon. Follow Krishak for updates.</p>
+    <section class="section seller-cta-section" id="sell-vendor" aria-labelledby="seller-cta-heading">
+      <div class="container">
+        <div class="seller-cta">
+          <div class="seller-cta__shine" aria-hidden="true"></div>
+          <div class="seller-cta__copy">
+            <h2 id="seller-cta-heading" class="seller-cta__title">Want to sell your product?</h2>
+            <p class="seller-cta__lead">Leave your email and phone number.</p>
+          </div>
+          <form class="seller-cta__form" id="seller-cta-form" novalidate>
+            <div class="seller-cta__fields">
+              <input
+                id="seller-email"
+                name="email"
+                type="email"
+                class="seller-cta__input"
+                placeholder="Your humble email..."
+                autocomplete="email"
+                aria-label="Email"
+              />
+              <input
+                id="seller-phone"
+                name="phone"
+                type="tel"
+                class="seller-cta__input"
+                placeholder="Your Phone no."
+                autocomplete="tel"
+                aria-label="Phone number"
+              />
+            </div>
+            <button type="submit" class="seller-cta__submit">Submit</button>
+          </form>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="footer-grid container">
-      <div class="footer-col">
+      <div class="footer-col" id="about">
         <h3>About Krishak</h3>
         <p>
           Connecting farmers directly with consumers, bringing fresh, organic produce straight from the farm to your table.
@@ -143,7 +171,7 @@
           <li><a href="index.html#top">Home</a></li>
           <li><a href="#why">Services</a></li>
           <li><a href="shop.html">Shop</a></li>
-          <li><a href="#blog">Blog</a></li>
+          <li><a href="#about">About Us</a></li>
         </ul>
       </div>
       <div class="footer-col">

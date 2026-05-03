@@ -45,6 +45,23 @@ body {
   font-size: 13px;
 }
 
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.top-text-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.top-text-link:hover {
+  color: var(--green-dark);
+}
+
 .icon-btn {
   width: 36px;
   height: 36px;
