@@ -1,1 +1,0 @@
-<%-- submit market application --%>

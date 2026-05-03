@@ -47,7 +47,16 @@
             <version>8.3.0</version>
         </dependency>
 
+        <!--    FOR HASSING PASSWOR PASSWORD UTIL-->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
     </dependencies>
+
+
 
     <build>
         <finalName>local-vendor</finalName>

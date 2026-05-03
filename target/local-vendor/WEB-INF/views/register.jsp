@@ -23,12 +23,12 @@
     <input type="text" name="username" placeholder="username"
     value="<c:out value="${param.username}" default=""/>" required />
     <input type="email" name="email" placeholder="Email"
-    value="<c:out value="${param.email}" default=""/>/" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <input type="">
+    value="<c:out value="${param.email}" default=""/>/" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <input type="password" name="confirmed_password" placeholder="Confirm Password" required />
+    <input type="number" name="phone" placeholder="Phone" required />
 
-
-
+    <button type="submit"> <h3> Register </h3></button>
 </form>
 </div>
 </body>
