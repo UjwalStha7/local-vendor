@@ -32,5 +32,6 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         String phone = request.getParameter("phone");
 
+        ArrayList<String> error = new ArrayList<>();
     }
 }
