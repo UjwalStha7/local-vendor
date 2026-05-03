@@ -3,6 +3,7 @@ package com.learninglog.controller;
 import com.learninglog.dao.UserDao;
 import com.learninglog.dao.UserDaoImp;
 import com.learninglog.entity.User;
+import com.learninglog.util.PasswordUtil;
 import com.learninglog.util.ValidationUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -76,10 +77,15 @@ public class RegisterServlet extends HttpServlet {
 
 //        If no error Forward back to main home(index) page
 
-        User user = new User(username,email,password,phone);
+        //        Password encoding
+        String encrypted_pass = PasswordUtil.getHashpassword(password);
+        User user = new User(username,email,encrypted_pass,phone);
 
 //        inserting to User Database
         boolean sucess = userDao.insertUser(user);
+
+
+
 
 //        checking if any user exist already of same given property
         if(!sucess){
