@@ -1,5 +1,6 @@
 com\learninglog\entity\User.class
 com\learninglog\dao\UserDao.class
 com\learninglog\dao\UserDaoImp.class
+com\learninglog\controller\AdminServlet.class
 com\learninglog\util\DatabaseConnection.class
 com\learninglog\controller\RegisterServlet.class
