@@ -113,6 +113,23 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
 }
 
+.auth-footer {
+  margin: 22px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.auth-footer a {
+  color: var(--green-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
 .auth-form {
   display: flex;
   flex-direction: column;

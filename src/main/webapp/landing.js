@@ -266,3 +266,13 @@ function syncCartImagesFromFeatured() {
 renderFeatured();
 syncCartImagesFromFeatured();
 updateBadge();
+
+(function initSellerCtaForm() {
+  const form = document.getElementById("seller-cta-form");
+  if (!form) return;
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    showToast("Thanks — we'll reach out soon.");
+    form.reset();
+  });
+})();
