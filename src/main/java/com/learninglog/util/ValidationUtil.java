@@ -5,8 +5,12 @@ public class ValidationUtil {
 //    user name validation
 
     public static boolean isValidUsername(String name) {
+
         if (name == null || name.isEmpty()) {
             return false;
+        }
+        if(name.length() <=5){
+            return  false;
         }
 
 // first character name must be a characters
@@ -31,7 +35,7 @@ public class ValidationUtil {
         return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
 //    validating password
-    public static String isValidatePassword(String password) {
+    public static String ValidatePassword(String password) {
         if (password == null || password.isBlank()) {
             return "Password cannot be empty.";
         }
