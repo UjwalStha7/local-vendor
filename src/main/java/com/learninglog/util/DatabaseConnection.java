@@ -7,8 +7,7 @@ import java.sql.SQLException;
 
 //Making connection Between Java and Database
 public class DatabaseConnection {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/localshop";
-    ;
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/farmers_market_hub";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = ""; // we have not set password in Database
 

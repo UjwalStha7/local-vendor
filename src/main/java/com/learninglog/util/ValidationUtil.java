@@ -9,7 +9,7 @@ public class ValidationUtil {
         if (name == null || name.isEmpty()) {
             return false;
         }
-        if(name.length() <=5){
+        if(name.length() <5){
             return  false;
         }
 
@@ -22,7 +22,7 @@ public class ValidationUtil {
         for (int i = 1; i < name.length(); i++) {
             char ch = name.charAt(i);
 
-            if (!Character.isLetterOrDigit(ch) && ch != '_') {
+                if (!Character.isLetterOrDigit(ch) && ch != '_' && ch != ' ') {
                 return false;
             }
         }

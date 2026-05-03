@@ -28,8 +28,7 @@ public class UserDaoImp implements UserDao {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            String sql_query = "INSERT INTO users (Username,email,password,phone,role,is_active) Values (?,?,?,?,?,?)";
-            PreparedStatement statement = conn.prepareStatement(sql_query);
+            String sql_query = "INSERT INTO users (username, email, password, phone, role, is_active) VALUES (?, ?, ?, ?, ?, ?)";            PreparedStatement statement = conn.prepareStatement(sql_query);
 //            1,2,3 mean  the (?,..) positiona and setting value in that positon
             statement.setString(1,user.getUsername());
             statement.setString(2,user.getEmail());
@@ -39,12 +38,12 @@ public class UserDaoImp implements UserDao {
             statement.setBoolean(6,user.isIsactive());
 
 //            Now exicuting query insert
-            statement.execute();
+            statement.executeUpdate();
             return true;
 
         }
         catch (SQLException ex){
-            System.out.printf("Error Inserting Data into Database : "+ex.getMessage());
+            ex.printStackTrace();
             return false;
         }
         finally {
@@ -52,6 +51,7 @@ public class UserDaoImp implements UserDao {
             DatabaseConnection.closeConnection(conn);
         }
     }
+
 
 //    This 2 method retrive the databased on the given parameter and convert into java object
     @Override
@@ -97,7 +97,7 @@ public class UserDaoImp implements UserDao {
             conn = DatabaseConnection.getConnection();
             String sql_query = "Select  * from users where lower(username) = lower(?)";
             PreparedStatement statement = conn.prepareStatement(sql_query);
-
+            statement.setString(1, username);
             ResultSet res = statement.executeQuery();
 
             if (res.next()) {
@@ -122,4 +122,6 @@ public class UserDaoImp implements UserDao {
         }
         return null;  //null if data doesnt found
     }
+
+
 }
