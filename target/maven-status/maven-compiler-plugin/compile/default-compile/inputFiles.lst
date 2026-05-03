@@ -1,5 +1,14 @@
+<<<<<<< HEAD
 C:\JAVA Project LV\JAVA Y2\local-vendor\src\main\java\com\learninglog\controller\RegisterServlet.java
 C:\JAVA Project LV\JAVA Y2\local-vendor\src\main\java\com\learninglog\dao\UserDaoImp.java
 C:\JAVA Project LV\JAVA Y2\local-vendor\src\main\java\com\learninglog\dao\UserDao.java
 C:\JAVA Project LV\JAVA Y2\local-vendor\src\main\java\com\learninglog\util\DatabaseConnection.java
 C:\JAVA Project LV\JAVA Y2\local-vendor\src\main\java\com\learninglog\entity\User.java
+=======
+D:\local-vendor\src\main\java\com\learninglog\controller\AdminServlet.java
+D:\local-vendor\src\main\java\com\learninglog\controller\RegisterServlet.java
+D:\local-vendor\src\main\java\com\learninglog\dao\UserDao.java
+D:\local-vendor\src\main\java\com\learninglog\dao\UserDaoImp.java
+D:\local-vendor\src\main\java\com\learninglog\entity\User.java
+D:\local-vendor\src\main\java\com\learninglog\util\DatabaseConnection.java
+>>>>>>> 0b3e389 (Ujwal  local changes before sync)

@@ -1,5 +1,9 @@
 com\learninglog\entity\User.class
 com\learninglog\dao\UserDao.class
 com\learninglog\dao\UserDaoImp.class
+<<<<<<< HEAD
+=======
+com\learninglog\controller\AdminServlet.class
+>>>>>>> 0b3e389 (Ujwal  local changes before sync)
 com\learninglog\util\DatabaseConnection.class
 com\learninglog\controller\RegisterServlet.class
