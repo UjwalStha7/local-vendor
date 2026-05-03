@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-//implementing userdau which is interference(inherit) from userDao class
+//implementing userdao which is interference(inherit) from userDao class
 public class UserDaoImp implements UserDao {
 
     @Override
