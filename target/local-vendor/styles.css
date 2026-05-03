@@ -1,0 +1,253 @@
+:root {
+  --green-start: #13d95a;
+  --green-end: #09a96f;
+  --green-text: #18a656;
+  --title: #222222;
+  --muted: #8d8d97;
+  --label: #3f3f46;
+  --input-bg: #f7f7fa;
+  --input-border: #ededf2;
+  --toggle-bg: #f0f0f4;
+  --card-bg: #ffffff;
+  --shadow: 0 14px 30px rgba(46, 60, 73, 0.14);
+  --error: #d73333;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--title);
+  background:
+    radial-gradient(circle at left center, rgba(204, 244, 230, 0.55), transparent 28%),
+    radial-gradient(circle at right center, rgba(211, 247, 231, 0.55), transparent 28%),
+    linear-gradient(180deg, #fdfefe 0%, #fbfffd 100%);
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 425px;
+  background: var(--card-bg);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 28px 30px 28px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.logo-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--green-start), var(--green-end));
+  box-shadow: 0 8px 18px rgba(19, 217, 90, 0.25);
+}
+
+.logo-circle img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.welcome {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.welcome h1 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.welcome p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.switcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--toggle-bg);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+
+.switch-link {
+  text-decoration: none;
+  text-align: center;
+  padding: 11px 12px;
+  border-radius: 11px;
+  color: #71717a;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.switch-link.active {
+  background: #ffffff;
+  color: #2d2d33;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--label);
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-img {
+  width: 16px;
+  height: 16px;
+  display: block;
+  opacity: 0.75; /* keeps the soft, light icon look */
+}
+
+.input-wrap input {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  border-radius: 14px;
+  padding: 0 42px 0 40px;
+  font-size: 14px;
+  color: #2d2d33;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-wrap input::placeholder {
+  color: #b0b0bb;
+}
+
+.input-wrap input:focus {
+  border-color: rgba(19, 217, 90, 0.55);
+  box-shadow: 0 0 0 4px rgba(19, 217, 90, 0.09);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle img {
+  width: 16px;
+  height: 16px;
+  display: block;
+  opacity: 0.75;
+}
+
+.password-toggle:hover {
+  filter: brightness(0.9);
+}
+
+.forgot-link {
+  margin-top: -2px;
+  text-decoration: none;
+  color: var(--green-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.submit-btn {
+  margin-top: 4px;
+  width: 100%;
+  height: 42px;
+  border: 0;
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(90deg, var(--green-start), var(--green-end));
+  box-shadow: 0 10px 20px rgba(19, 217, 90, 0.20);
+}
+
+.submit-btn:hover {
+  filter: brightness(1.03);
+}
+
+.error-box {
+  display: none;
+  margin-top: -6px;
+  font-size: 13px;
+  color: var(--error);
+}
+
+.error-box.show {
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 18px;
+    max-width: 100%;
+  }
+
+  .welcome h1 {
+    font-size: 22px;
+  }
+}
+
