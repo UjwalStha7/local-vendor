@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-card">
+      <div class="logo-wrap">
+        <div class="logo-circle" aria-hidden="true">
+          <img src="image/white_lock.png" alt="" />
+        </div>
+      </div>
+
+      <div class="welcome">
+        <h1>Welcome</h1>
+        <p>Login to your account or create a new one</p>
+      </div>
+
+      <nav class="switcher" aria-label="Authentication pages">
+        <a class="switch-link active" href="login.html">Login</a>
+        <a class="switch-link" href="register.html">Register</a>
+      </nav>
+
+      <form id="login-form" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">
+              <img class="icon-img" src="image/email.png" alt="" />
+            </span>
+            <input id="login-email" type="email" placeholder="name@example.com" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">
+              <img class="icon-img" src="image/lock.png" alt="" />
+            </span>
+            <input id="login-password" type="password" placeholder="Enter your password" />
+            <button class="password-toggle" type="button" data-target="login-password" aria-label="Show password">
+              <img src="image/visible.png" alt="" />
+            </button>
+          </div>
+        </div>
+
+        <div id="login-error" class="error-box" aria-live="polite"></div>
+
+        <a class="forgot-link" href="#">Forgot password?</a>
+
+        <button class="submit-btn" type="submit">Sign In</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
