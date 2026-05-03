@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details</title>
+  <link rel="stylesheet" href="product.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="back" href="shop.html" aria-label="Back to shop">
+        <span aria-hidden="true">←</span>
+        <span class="back-text">Back</span>
+      </a>
+
+      <div class="top-actions">
+        <a class="icon-btn" href="cart.html" aria-label="Open cart">
+          <img src="image/cart.png" alt="" aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="wrap">
+      <section class="card media" aria-label="Product images">
+        <div class="hero">
+          <img id="hero-img" class="hero-main-img" src="image/organic_cherry_tomatoes.png" alt="" />
+          <div class="badges" aria-hidden="true">
+            <span class="badge badge-green">
+              <img class="badge-icon" src="image/white_leaf.png" alt="" aria-hidden="true" />
+              Organic
+            </span>
+            <span id="discount-badge" class="badge badge-red">29% OFF</span>
+          </div>
+        </div>
+
+        <div id="thumbs" class="thumbs" aria-label="Image thumbnails"></div>
+      </section>
+
+      <section class="details" aria-label="Product details">
+        <p id="category" class="category">Fresh Vegetables</p>
+        <h1 id="title" class="title">Organic Cherry Tomatoes</h1>
+
+        <div class="rating-row">
+          <div class="stars" aria-label="Rating"></div>
+          <p class="rating-text">
+            <span id="rating-value">4.8</span>
+            <span class="muted">(<span id="review-count">127</span> reviews)</span>
+          </p>
+        </div>
+
+        <div class="price-row">
+          <span id="price" class="price">$4.99</span>
+          <span id="old-price" class="old-price">$6.99</span>
+          <span id="unit" class="unit muted">/ 500g</span>
+        </div>
+
+        <div class="stock-row">
+          <span id="stock-pill" class="pill">In Stock</span>
+        </div>
+
+        <p id="desc" class="desc">
+          Premium organic cherry tomatoes, vine-ripened to perfection. These sweet and juicy tomatoes are packed with flavor and nutrients.
+          Grown without synthetic pesticides or fertilizers, our tomatoes are carefully harvested at peak ripeness to ensure maximum taste and nutritional value.
+        </p>
+
+        <div class="specs">
+          <div class="specs-grid">
+            <div class="spec">
+              <span class="spec-k">Origin:</span>
+              <span id="origin" class="spec-v">Local Farm, California</span>
+            </div>
+            <div class="spec">
+              <span class="spec-k">Weight:</span>
+              <span id="weight" class="spec-v">500g</span>
+            </div>
+            <div class="spec">
+              <span class="spec-k">Type:</span>
+              <span id="type" class="spec-v">Organic</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="buy-row">
+          <div class="qty-wrap">
+            <span class="qty-label">Quantity:</span>
+            <div class="qty" role="group" aria-label="Quantity">
+              <button id="qty-dec" type="button" aria-label="Decrease quantity">-</button>
+              <span id="qty-value" aria-live="polite">1</span>
+              <button id="qty-inc" type="button" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+
+          <button id="add-btn" class="add-btn" type="button">
+            <img src="image/white_cart.png" alt="" aria-hidden="true" />
+            Add to Cart
+          </button>
+
+          <button id="wish-btn" class="wish-btn" type="button" aria-label="Add to wishlist">
+            <img src="image/heart.png" alt="" aria-hidden="true" />
+          </button>
+        </div>
+
+        <div class="features" aria-label="Benefits">
+          <div class="feature">
+            <img src="image/truck.png" alt="" aria-hidden="true" />
+            <span>Free Delivery</span>
+          </div>
+          <div class="feature">
+            <img src="image/shield.png" alt="" aria-hidden="true" />
+            <span>Quality Guaranteed</span>
+          </div>
+          <div class="feature">
+            <img src="image/leaf.png" alt="" aria-hidden="true" />
+            <span>Fresh &amp; Organic</span>
+          </div>
+        </div>
+
+        <p id="toast" class="toast" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+  </main>
+
+  <script src="product.js"></script>
+</body>
+</html>
+
