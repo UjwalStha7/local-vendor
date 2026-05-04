@@ -1,1 +1,0 @@
-<%-- review farmer applications --%>
