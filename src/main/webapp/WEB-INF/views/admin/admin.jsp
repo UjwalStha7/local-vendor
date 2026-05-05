@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,45 +93,9 @@
 
                 <article class="chart-card">
                     <h2 class="chart-card__title">Vendor Requests (This Week)</h2>
-                    <div class="chart-card__plot chart-card__plot--bars" role="img" aria-label="Weekly vendor requests bar chart">
-                        <div class="bar-chart">
-                            <div class="bar-chart__y">
-                                <span>8</span>
-                                <span>6</span>
-                                <span>4</span>
-                                <span>2</span>
-                                <span>0</span>
-                            </div>
-                            <div class="bar-chart__cols">
-                                <div class="bar-chart__col">
-                                    <div class="bar-chart__track"><span class="bar-chart__bar" style="height: calc(${vendorBarMon} / 8 * 100%)"></span></div>
-                                    <span class="bar-chart__lbl">Mon</span>
-                                </div>
-                                <div class="bar-chart__col">
-                                    <div class="bar-chart__track"><span class="bar-chart__bar" style="height: calc(${vendorBarTue} / 8 * 100%)"></span></div>
-                                    <span class="bar-chart__lbl">Tue</span>
-                                </div>
-                                <div class="bar-chart__col">
-                                    <div class="bar-chart__track"><span class="bar-chart__bar" style="height: calc(${vendorBarWed} / 8 * 100%)"></span></div>
-                                    <span class="bar-chart__lbl">Wed</span>
-                                </div>
-                                <div class="bar-chart__col">
-                                    <div class="bar-chart__track"><span class="bar-chart__bar" style="height: calc(${vendorBarThu} / 8 * 100%)"></span></div>
-                                    <span class="bar-chart__lbl">Thu</span>
-                                </div>
-                                <div class="bar-chart__col">
-                                    <div class="bar-chart__track"><span class="bar-chart__bar" style="height: calc(${vendorBarFri} / 8 * 100%)"></span></div>
-                                    <span class="bar-chart__lbl">Fri</span>
-                                </div>
-                                <div class="bar-chart__col">
-                                    <div class="bar-chart__track"><span class="bar-chart__bar" style="height: calc(${vendorBarSat} / 8 * 100%)"></span></div>
-                                    <span class="bar-chart__lbl">Sat</span>
-                                </div>
-                                <div class="bar-chart__col">
-                                    <div class="bar-chart__track"><span class="bar-chart__bar" style="height: calc(${vendorBarSun} / 8 * 100%)"></span></div>
-                                    <span class="bar-chart__lbl">Sun</span>
-                                </div>
-                            </div>
+                    <div class="chart-card__plot" role="img" aria-label="Weekly vendor requests bar chart">
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="vendorRequestChart"></canvas>
                         </div>
                     </div>
                 </article>
@@ -138,5 +103,45 @@
         </main>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const vendorRequestLabels = [
+        <c:forEach var="label" items="${vendorRequestLabels}" varStatus="status">
+            "${label}"<c:if test="${!status.last}">, </c:if>
+        </c:forEach>
+    ];
+
+    const vendorRequestData = [
+        <c:forEach var="value" items="${vendorRequestData}" varStatus="status">
+            ${value}<c:if test="${!status.last}">, </c:if>
+        </c:forEach>
+    ];
+
+    const vendorRequestCtx = document.getElementById("vendorRequestChart");
+    if (vendorRequestCtx) {
+        new Chart(vendorRequestCtx, {
+            type: "bar",
+            data: {
+                labels: vendorRequestLabels,
+                datasets: [{
+                    label: "Vendor Requests",
+                    data: vendorRequestData,
+                    backgroundColor: "rgba(45, 106, 79, 0.55)",
+                    borderColor: "rgba(27, 67, 50, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>
