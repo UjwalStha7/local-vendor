@@ -29,6 +29,10 @@
     <input type="number" name="phone" placeholder="Phone" required />
 
     <button type="submit"> <h3> Register </h3></button>
+
+    <p class="link">Already have an account?
+        <a href="${pageContext.request.contextPath}/login">Log in</a>
+    </p>
 </form>
 </div>
 </body>

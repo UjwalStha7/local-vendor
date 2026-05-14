@@ -17,11 +17,14 @@
         <c:if test="${not empty error}">
         <p class="error"><c:out value="${error}" /></p>
         </c:if>
-        <input type="email" name="email" placeholder="email" 
+        <input type="email" name="email" placeholder="email"
                value="<c:out value="${param.email}" default=''/>" required />
         <input type="password" name="password" placeholder="password" />
         <button type="submit"><h2>Log-in</h2></button>
 
+        <p class="link">Don't have an account?
+            <a href="${pageContext.request.contextPath}/register">Register</a>
+        </p>
         </form>
     </div>
 </body>
