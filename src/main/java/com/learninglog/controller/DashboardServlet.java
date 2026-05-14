@@ -2,8 +2,11 @@ package com.learninglog.controller;
 
 import com.learninglog.dao.DashboardStatsDao;
 import com.learninglog.dao.DashboardStatsDaoImpl;
+import com.learninglog.dao.VendorAccountDao;
+import com.learninglog.dao.VendorAccountDaoImpl;
 import com.learninglog.dao.VendorRequestDao;
 import com.learninglog.dao.VendorRequestDaoImpl;
+import com.learninglog.model.VendorAccountCard;
 import com.learninglog.model.VendorRequestRow;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -31,6 +34,7 @@ public class DashboardServlet extends HttpServlet {
 
     private final DashboardStatsDao dashboardStatsDao = new DashboardStatsDaoImpl();
     private final VendorRequestDao vendorRequestDao = new VendorRequestDaoImpl();
+    private final VendorAccountDao vendorAccountDao = new VendorAccountDaoImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -42,7 +46,7 @@ public class DashboardServlet extends HttpServlet {
         switch (section) {
             case "requests" -> forwardVendorRequests(req, resp);
             case "add-vendor" -> forwardAddVendor(req, resp);
-            case "accounts" -> forwardPlaceholder(req, resp, "accounts", "Vendor Accounts");
+            case "accounts" -> forwardVendorAccounts(req, resp);
             case "moderation" -> forwardPlaceholder(req, resp, "moderation", "Product Moderation");
             case "signout" -> {
                 resp.sendRedirect(req.getContextPath() + "/");
@@ -152,6 +156,19 @@ public class DashboardServlet extends HttpServlet {
     private void forwardAddVendor(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("activeNav", "add-vendor");
         req.getRequestDispatcher("/WEB-INF/views/admin/add-vendor.jsp").forward(req, resp);
+    }
+
+    private void forwardVendorAccounts(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String q = req.getParameter("q");
+        if (q == null) {
+            q = "";
+        }
+        String trimmed = q.trim();
+        List<VendorAccountCard> cards = vendorAccountDao.search(trimmed);
+        req.setAttribute("activeNav", "accounts");
+        req.setAttribute("vendorAccountsSearch", q);
+        req.setAttribute("vendorAccountCards", cards);
+        req.getRequestDispatcher("/WEB-INF/views/admin/vendor-accounts.jsp").forward(req, resp);
     }
 
     private void discardUploadedFile(HttpServletRequest req) {

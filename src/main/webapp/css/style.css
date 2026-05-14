@@ -564,6 +564,212 @@ a {
   }
 }
 
+/* ——— Vendor accounts ——— */
+.vendor-accounts-page {
+  flex: 1 1 auto;
+  padding: 28px 36px 40px;
+  background: #f3f4f6;
+}
+
+.vendor-accounts-page__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-bottom: 24px;
+}
+
+.vendor-accounts-page__title {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #101828;
+}
+
+.vendor-accounts-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: min(100%, 280px);
+  padding: 0 14px;
+  border: 1px solid #d1d9d6;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.vendor-accounts-search__icon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.vendor-accounts-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 11px 0;
+  border: none;
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: #101828;
+  background: transparent;
+}
+
+.vendor-accounts-search__input::placeholder {
+  color: #6a7282;
+}
+
+.vendor-accounts-search__input:focus {
+  outline: none;
+}
+
+.vendor-accounts-empty {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: #6a7282;
+  font-size: 0.95rem;
+}
+
+.vendor-accounts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.vendor-acct-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #d1d9d6;
+  border-radius: 12px;
+  box-shadow: 0 4px 22px rgba(15, 23, 42, 0.05);
+  padding: 20px 20px 16px;
+  min-height: 100%;
+}
+
+.vendor-acct-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8ece9;
+}
+
+.vendor-acct-card__identity {
+  min-width: 0;
+}
+
+.vendor-acct-card__name {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #101828;
+  letter-spacing: -0.02em;
+}
+
+.vendor-acct-card__company {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #6a7282;
+}
+
+.vendor-acct-card__contact {
+  margin: 0 0 4px;
+  font-size: 0.82rem;
+  color: #6a7282;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.vendor-acct-card__contact:last-child {
+  margin-bottom: 0;
+}
+
+.vendor-acct-card__verified {
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.vendor-acct-card__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 18px 0 16px;
+}
+
+.vendor-acct-card__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vendor-acct-card__stat-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6a7282;
+  text-transform: capitalize;
+}
+
+.vendor-acct-card__stat-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #101828;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.vendor-acct-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #e8ece9;
+}
+
+.vendor-acct-card__badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: lowercase;
+  background: #dcfce7;
+  color: #00a63e;
+}
+
+.vendor-acct-card__suspend {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: #00a63e;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.vendor-acct-card__suspend:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+  .vendor-accounts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .vendor-accounts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .admin-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -839,7 +1045,8 @@ a {
   .admin-topbar,
   .admin-content,
   .requests-page,
-  .vendor-form-page {
+  .vendor-form-page,
+  .vendor-accounts-page {
     padding-left: 22px;
     padding-right: 22px;
   }
