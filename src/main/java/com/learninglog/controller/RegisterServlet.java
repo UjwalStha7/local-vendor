@@ -81,7 +81,7 @@ public class RegisterServlet extends HttpServlet {
         String encrypted_pass = PasswordUtil.getHashpassword(password);
         User user = new User(username,email,encrypted_pass,phone);
         user.setRole("customer");
-        user.setIsactive(true);
+        user.setactive(true);
 //        inserting to User Database
         boolean sucess = userDao.insertUser(user);
 
