@@ -10,7 +10,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -36,29 +35,20 @@ public class LoginServlet extends HttpServlet {
 
 //   using email to find user
         User user = userDao.findByEmail(email);
-
-
         if (user == null) {
-
             request.setAttribute("error", "Invalid Email or Password");
-
             request.getRequestDispatcher("/WEB-INF/views/login.jsp")
                     .forward(request, response);
-
             return;
         }
 
-        // Verify password
-        boolean isPasswordCorrect =
-                PasswordUtil.checkpassword(password, user.getPassword());
+        // Verify password by comparing with db pass
+        boolean isPasswordCorrect = PasswordUtil.checkpassword(password, user.getPassword());
 
         if (!isPasswordCorrect) {
-
             request.setAttribute("error", "Invalid Email or Password");
-
             request.getRequestDispatcher("/WEB-INF/views/login.jsp")
                     .forward(request, response);
-
             return;
         }
 
