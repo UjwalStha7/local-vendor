@@ -302,6 +302,18 @@ a {
   gap: 4px;
 }
 
+.requests-contact__name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #101828;
+}
+
+.requests-contact__farm {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #2d6a4f;
+}
+
 .requests-contact__email {
   font-weight: 600;
   color: #101828;
@@ -1293,4 +1305,91 @@ a {
   .admin-nav-item {
     min-width: 100%;
   }
+}
+
+/* ——— Farmer apply (public) ——— */
+.farmer-apply-body {
+  background: #f3f4f6;
+}
+
+.farmer-apply-header {
+  background: #1a2e1a;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.12);
+}
+
+.farmer-apply-header__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.farmer-apply-brand {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-decoration: none;
+}
+
+.farmer-apply-brand:hover {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.farmer-apply-nav {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.farmer-apply-nav a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+}
+
+.farmer-apply-nav a:hover {
+  color: #fff;
+}
+
+.farmer-apply-main {
+  padding: 28px 22px 48px;
+}
+
+.farmer-apply-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.farmer-apply-errors {
+  margin: 0 0 18px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.farmer-apply-errors__title {
+  margin: 0 0 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.farmer-apply-errors__list {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.farmer-apply-footnote {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  color: #6a7282;
+  line-height: 1.45;
 }

@@ -43,8 +43,14 @@
                         <tr>
                             <td>
                                 <div class="requests-contact">
-                                    <span class="requests-contact__email">${row.email}</span>
-                                    <span class="requests-contact__phone">${row.phone}</span>
+                                    <c:if test="${not empty row.applicantName}">
+                                        <span class="requests-contact__name"><c:out value="${row.applicantName}" /></span>
+                                    </c:if>
+                                    <c:if test="${not empty row.farmName}">
+                                        <span class="requests-contact__farm"><c:out value="${row.farmName}" /></span>
+                                    </c:if>
+                                    <span class="requests-contact__email"><c:out value="${row.email}" /></span>
+                                    <span class="requests-contact__phone"><c:out value="${row.phone}" /></span>
                                 </div>
                             </td>
                             <td class="requests-table__date">${row.submittedAt}</td>
