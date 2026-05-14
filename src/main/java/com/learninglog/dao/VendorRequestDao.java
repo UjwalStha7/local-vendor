@@ -12,4 +12,6 @@ public interface VendorRequestDao {
     List<VendorRequestRow> listVendorRequests();
 
     void markVendorRequestContacted(int id);
+
+    void submitFarmerApplication(String applicantName, String farmName, String email, String phone);
 }
