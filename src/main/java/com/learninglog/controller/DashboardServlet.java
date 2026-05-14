@@ -6,17 +6,27 @@ import com.learninglog.dao.VendorRequestDao;
 import com.learninglog.dao.VendorRequestDaoImpl;
 import com.learninglog.model.VendorRequestRow;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.Part;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @WebServlet(name = "DashboardServlet", urlPatterns = {"/admin", "/admin/", "/dashboard"})
+@MultipartConfig(
+        fileSizeThreshold = 1024,
+        maxFileSize = 10 * 1024 * 1024,
+        maxRequestSize = 12 * 1024 * 1024
+)
 public class DashboardServlet extends HttpServlet {
 
     private final DashboardStatsDao dashboardStatsDao = new DashboardStatsDaoImpl();
@@ -31,7 +41,7 @@ public class DashboardServlet extends HttpServlet {
 
         switch (section) {
             case "requests" -> forwardVendorRequests(req, resp);
-            case "add-vendor" -> forwardPlaceholder(req, resp, "add-vendor", "Add new Vendor");
+            case "add-vendor" -> forwardAddVendor(req, resp);
             case "accounts" -> forwardPlaceholder(req, resp, "accounts", "Vendor Accounts");
             case "moderation" -> forwardPlaceholder(req, resp, "moderation", "Product Moderation");
             case "signout" -> {
@@ -45,7 +55,12 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        String action = req.getParameter("action");
+        String action = resolvePostAction(req);
+        if ("saveVendor".equals(action)) {
+            discardUploadedFile(req);
+            resp.sendRedirect(req.getContextPath() + "/admin?section=add-vendor&ok=1");
+            return;
+        }
         if ("contact".equals(action)) {
             String idParam = req.getParameter("id");
             if (idParam != null && !idParam.isBlank()) {
@@ -66,6 +81,25 @@ public class DashboardServlet extends HttpServlet {
             return;
         }
         resp.sendRedirect(req.getContextPath() + "/admin");
+    }
+
+    private String resolvePostAction(HttpServletRequest req) throws IOException, ServletException {
+        String direct = req.getParameter("action");
+        if (direct != null && !direct.isBlank()) {
+            return direct;
+        }
+        String ct = req.getContentType();
+        if (ct == null || !ct.toLowerCase(Locale.ROOT).contains("multipart/form-data")) {
+            return null;
+        }
+        for (Part part : req.getParts()) {
+            if ("action".equals(part.getName())) {
+                try (InputStream in = part.getInputStream()) {
+                    return new String(in.readAllBytes(), StandardCharsets.UTF_8).trim();
+                }
+            }
+        }
+        return null;
     }
 
     private void forwardDashboard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -113,6 +147,23 @@ public class DashboardServlet extends HttpServlet {
         req.setAttribute("requestFilter", filter);
         req.setAttribute("vendorRequestRows", rows);
         req.getRequestDispatcher("/WEB-INF/views/admin/vendor-requests.jsp").forward(req, resp);
+    }
+
+    private void forwardAddVendor(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setAttribute("activeNav", "add-vendor");
+        req.getRequestDispatcher("/WEB-INF/views/admin/add-vendor.jsp").forward(req, resp);
+    }
+
+    private void discardUploadedFile(HttpServletRequest req) {
+        try {
+            for (Part part : req.getParts()) {
+                if ("documents".equals(part.getName()) && part.getSize() > 0) {
+                    part.delete();
+                }
+            }
+        } catch (Exception ignored) {
+            // demo: no file storage
+        }
     }
 
     private void forwardPlaceholder(HttpServletRequest req, HttpServletResponse resp, String nav, String title)
