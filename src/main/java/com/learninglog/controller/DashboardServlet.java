@@ -2,10 +2,13 @@ package com.learninglog.controller;
 
 import com.learninglog.dao.DashboardStatsDao;
 import com.learninglog.dao.DashboardStatsDaoImpl;
+import com.learninglog.dao.ModerationProductDao;
+import com.learninglog.dao.ModerationProductDaoImpl;
 import com.learninglog.dao.VendorAccountDao;
 import com.learninglog.dao.VendorAccountDaoImpl;
 import com.learninglog.dao.VendorRequestDao;
 import com.learninglog.dao.VendorRequestDaoImpl;
+import com.learninglog.model.ModerationProduct;
 import com.learninglog.model.VendorAccountCard;
 import com.learninglog.model.VendorRequestRow;
 import jakarta.servlet.ServletException;
@@ -35,6 +38,7 @@ public class DashboardServlet extends HttpServlet {
     private final DashboardStatsDao dashboardStatsDao = new DashboardStatsDaoImpl();
     private final VendorRequestDao vendorRequestDao = new VendorRequestDaoImpl();
     private final VendorAccountDao vendorAccountDao = new VendorAccountDaoImpl();
+    private final ModerationProductDao moderationProductDao = new ModerationProductDaoImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,7 +51,7 @@ public class DashboardServlet extends HttpServlet {
             case "requests" -> forwardVendorRequests(req, resp);
             case "add-vendor" -> forwardAddVendor(req, resp);
             case "accounts" -> forwardVendorAccounts(req, resp);
-            case "moderation" -> forwardPlaceholder(req, resp, "moderation", "Product Moderation");
+            case "moderation" -> forwardModeration(req, resp);
             case "signout" -> {
                 resp.sendRedirect(req.getContextPath() + "/");
                 return;
@@ -63,6 +67,16 @@ public class DashboardServlet extends HttpServlet {
         if ("saveVendor".equals(action)) {
             discardUploadedFile(req);
             resp.sendRedirect(req.getContextPath() + "/admin?section=add-vendor&ok=1");
+            return;
+        }
+        if ("moderateApprove".equals(action)) {
+            applyModerationAction(req, true);
+            redirectModeration(req, resp);
+            return;
+        }
+        if ("moderateReject".equals(action)) {
+            applyModerationAction(req, false);
+            redirectModeration(req, resp);
             return;
         }
         if ("contact".equals(action)) {
@@ -169,6 +183,47 @@ public class DashboardServlet extends HttpServlet {
         req.setAttribute("vendorAccountsSearch", q);
         req.setAttribute("vendorAccountCards", cards);
         req.getRequestDispatcher("/WEB-INF/views/admin/vendor-accounts.jsp").forward(req, resp);
+    }
+
+    private void forwardModeration(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String filter = moderationFilterOrDefault(req.getParameter("filter"));
+        req.setAttribute("activeNav", "moderation");
+        req.setAttribute("moderationFilter", filter);
+        req.setAttribute("moderationProducts", moderationProductDao.listByFilter(filter));
+        req.getRequestDispatcher("/WEB-INF/views/admin/product-moderation.jsp").forward(req, resp);
+    }
+
+    private void redirectModeration(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String filter = moderationFilterOrDefault(req.getParameter("filter"));
+        resp.sendRedirect(req.getContextPath() + "/admin?section=moderation&filter=" + filter);
+    }
+
+    private void applyModerationAction(HttpServletRequest req, boolean approve) {
+        String idParam = req.getParameter("id");
+        if (idParam == null || idParam.isBlank()) {
+            return;
+        }
+        try {
+            int id = Integer.parseInt(idParam);
+            if (approve) {
+                moderationProductDao.approve(id);
+            } else {
+                moderationProductDao.reject(id);
+            }
+        } catch (NumberFormatException ignored) {
+            // ignore
+        }
+    }
+
+    private static String moderationFilterOrDefault(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return "all";
+        }
+        String f = raw.trim().toLowerCase(Locale.ROOT);
+        if ("all".equals(f) || "pending".equals(f) || "approved".equals(f) || "rejected".equals(f)) {
+            return f;
+        }
+        return "all";
     }
 
     private void discardUploadedFile(HttpServletRequest req) {

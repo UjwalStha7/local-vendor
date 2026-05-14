@@ -51,10 +51,7 @@
                                     </div>
                                     <c:if test="${v.verified}">
                                         <span class="vendor-acct-card__verified" title="Verified">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="12" cy="12" r="11" fill="#00A63E"/>
-                                                <path d="M7.5 12.5l2.5 2.5 6-6" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
+                                            <img src="${pageContext.request.contextPath}/image/approved.png" alt="Verified" width="28" height="28" />
                                         </span>
                                     </c:if>
                                 </div>

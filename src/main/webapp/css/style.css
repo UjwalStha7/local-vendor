@@ -694,6 +694,13 @@ a {
   line-height: 0;
 }
 
+.vendor-acct-card__verified img {
+  display: block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
 .vendor-acct-card__stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -758,13 +765,238 @@ a {
   text-decoration: underline;
 }
 
+/* ——— Product moderation ——— */
+.moderation-page {
+  flex: 1 1 auto;
+  padding: 28px 36px 40px;
+  background: #f3f4f6;
+}
+
+.moderation-page__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-bottom: 24px;
+}
+
+.moderation-page__title {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #101828;
+}
+
+.moderation-page__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mod-filter {
+  display: inline-block;
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: 1px solid #d1d9d6;
+  background: #ffffff;
+  color: #101828;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.mod-filter:hover {
+  border-color: #364153;
+}
+
+.mod-filter--active {
+  background: #2d6a4f;
+  border-color: #2d6a4f;
+  color: #ffffff;
+}
+
+.moderation-empty {
+  margin: 0;
+  padding: 28px;
+  text-align: center;
+  color: #6a7282;
+  font-size: 0.95rem;
+}
+
+.moderation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.mod-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #d1d9d6;
+  border-radius: 12px;
+  box-shadow: 0 4px 22px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+  min-height: 100%;
+}
+
+.mod-card__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #f3f4f6;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.mod-card__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.mod-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: 16px 18px 18px;
+}
+
+.mod-card__title {
+  margin: 0 0 12px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #101828;
+  letter-spacing: -0.02em;
+}
+
+.mod-card__meta {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mod-card__meta-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 8px 12px;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.mod-card__meta-row dt {
+  margin: 0;
+  font-weight: 600;
+  color: #6a7282;
+}
+
+.mod-card__meta-row dd {
+  margin: 0;
+  color: #6a7282;
+}
+
+.mod-card__footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e8ece9;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mod-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.mod-badge img {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.mod-badge--pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.mod-badge--approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.mod-badge--rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.mod-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mod-card__form {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mod-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  color: #ffffff;
+  transition: opacity 0.15s ease, filter 0.15s ease;
+}
+
+.mod-btn:hover {
+  opacity: 0.92;
+}
+
+.mod-btn--approve {
+  background: #00c950;
+}
+
+.mod-btn--reject {
+  background: #ff3b30;
+}
+
 @media (max-width: 1024px) {
+  .moderation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .vendor-accounts-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
+  .moderation-grid {
+    grid-template-columns: 1fr;
+  }
+
   .vendor-accounts-grid {
     grid-template-columns: 1fr;
   }
@@ -1046,7 +1278,8 @@ a {
   .admin-content,
   .requests-page,
   .vendor-form-page,
-  .vendor-accounts-page {
+  .vendor-accounts-page,
+  .moderation-page {
     padding-left: 22px;
     padding-right: 22px;
   }
