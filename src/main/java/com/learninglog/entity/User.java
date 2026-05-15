@@ -73,7 +73,7 @@ public class User {
         return role;
     }
 
-    public boolean isIsactive() {
+    public boolean Isactive() {
         return isactive;
     }
 
@@ -101,7 +101,7 @@ public class User {
         this.role = role;
     }
 
-    public void setIsactive(boolean isactive) {
+    public void setactive(boolean isactive) {
         this.isactive = isactive;
     }
     //    Note no setter for time cause time is given by System not by user

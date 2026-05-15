@@ -35,7 +35,7 @@ public class UserDaoImp implements UserDao {
             statement.setString(3,user.getPassword());
             statement.setString(4,user.getPhone());
             statement.setString(5,user.getRole());
-            statement.setBoolean(6,user.isIsactive());
+            statement.setBoolean(6, user.Isactive());
 
 //            Now exicuting query insert
             statement.executeUpdate();
