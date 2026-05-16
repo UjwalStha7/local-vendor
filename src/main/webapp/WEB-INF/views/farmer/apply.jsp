@@ -13,9 +13,9 @@
 
 <header class="farmer-apply-header">
     <div class="farmer-apply-header__inner">
-        <a class="farmer-apply-brand" href="${ctx}/index.html">Krishak</a>
+        <a class="farmer-apply-brand" href="${ctx}/landing">Krishak</a>
         <nav class="farmer-apply-nav" aria-label="Farmer apply">
-            <a href="${ctx}/index.html">Home</a>
+            <a href="${ctx}/landing">Home</a>
             <a href="${ctx}/shop.html">Shop</a>
         </nav>
     </div>
@@ -107,7 +107,7 @@
                 </p>
 
                 <div class="vendor-form__actions">
-                    <a class="vendor-form__btn vendor-form__btn--cancel" href="${ctx}/index.html">Cancel</a>
+                    <a class="vendor-form__btn vendor-form__btn--cancel" href="${ctx}/landing">Cancel</a>
                     <button class="vendor-form__btn vendor-form__btn--submit" type="submit">Submit application</button>
                 </div>
             </form>
