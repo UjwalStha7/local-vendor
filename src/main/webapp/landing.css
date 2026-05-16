@@ -72,28 +72,11 @@ a {
 }
 
 .logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
   font-weight: 800;
   font-size: 1.45rem;
   letter-spacing: -0.02em;
   color: var(--logo-green);
   text-decoration: none;
-}
-
-.logo-mark {
-  flex-shrink: 0;
-  display: block;
-}
-
-.cart-badge--empty {
-  display: none;
-}
-
-.nav-inert {
-  cursor: default;
-  pointer-events: none;
 }
 
 .main-nav {
