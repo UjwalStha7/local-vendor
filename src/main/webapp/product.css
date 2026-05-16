@@ -312,7 +312,7 @@ body {
   color: rgba(15, 23, 42, 0.9);
 }
 
-form.buy-row {
+.buy-row {
   margin-top: 14px;
   display: grid;
   grid-template-columns: auto 1fr auto;
