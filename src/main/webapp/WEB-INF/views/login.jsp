@@ -2,31 +2,84 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Local Vendor — Login</title>
+    <title>Krishak — Login</title>
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css" />
 </head>
+<body class="login-body">
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="logo" href="${pageContext.request.contextPath}/index.html">Krishak</a>
+            <nav class="main-nav" aria-label="Primary">
+                <a href="${pageContext.request.contextPath}/index.html">Home</a>
+                <a href="${pageContext.request.contextPath}/shop.html">Product</a>
+                <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
+            </nav>
+        </div>
+    </header>
 
-<body>
-<div>
+    <main class="auth-page">
+        <section class="auth-card" aria-labelledby="login-heading">
+            <div class="logo-wrap">
+                <div class="logo-circle" aria-hidden="true">
+                    <img src="${pageContext.request.contextPath}/image/white_lock.png" alt="" />
+                </div>
+            </div>
 
-    <form action="${pageContext.request.contextPath}/login" method="post">
-        <h1> Log-In </h1>
-        <c:if test="${not empty error}">
-        <p class="error"><c:out value="${error}" /></p>
-        </c:if>
-        <input type="email" name="email" placeholder="email"
-               value="<c:out value="${param.email}" default=''/>" required />
-        <input type="password" name="password" placeholder="password" />
-        <button type="submit"><h2>Log-in</h2></button>
+            <div class="welcome">
+                <h1 id="login-heading">Welcome back</h1>
+                <p>Sign in to shop farm-fresh produce from local farmers.</p>
+            </div>
 
-        <p class="link">Don't have an account?
-            <a href="${pageContext.request.contextPath}/register">Register</a>
-        </p>
-        </form>
-    </div>
+            <nav class="switcher" aria-label="Authentication pages">
+                <a class="switch-link active" href="${pageContext.request.contextPath}/login">Login</a>
+                <a class="switch-link" href="${pageContext.request.contextPath}/register">Register</a>
+            </nav>
+
+            <form class="auth-form" action="${pageContext.request.contextPath}/login" method="post">
+                <c:if test="${not empty error}">
+                    <p class="auth-error"><c:out value="${error}" /></p>
+                </c:if>
+
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <div class="input-wrap">
+                        <span class="input-icon" aria-hidden="true">
+                            <img class="icon-img" src="${pageContext.request.contextPath}/image/email.png" alt="" />
+                        </span>
+                        <input id="login-email" type="email" name="email" placeholder="name@example.com"
+                               value="<c:out value='${param.email}' default=''/>" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="input-wrap">
+                        <span class="input-icon" aria-hidden="true">
+                            <img class="icon-img" src="${pageContext.request.contextPath}/image/lock.png" alt="" />
+                        </span>
+                        <input id="login-password" type="password" name="password"
+                               placeholder="Enter your password" required />
+                    </div>
+                </div>
+
+                <button class="submit-btn" type="submit">Sign In</button>
+            </form>
+
+            <p class="auth-switch-text">
+                Don't have an account?
+                <a href="${pageContext.request.contextPath}/register">Register</a>
+            </p>
+
+            <p class="auth-footer">
+                <a href="${pageContext.request.contextPath}/index.html">Home</a>
+                <span class="auth-footer-sep" aria-hidden="true">·</span>
+                <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
+            </p>
+        </section>
+    </main>
 </body>
-
-
+</html>
