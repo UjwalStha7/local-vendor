@@ -8,20 +8,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/** Browse all products — {@code GET /product} */
 @WebServlet("/product")
 public class ProductServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String id = req.getParameter("id");
-        if (id == null || id.isBlank()) {
-            resp.sendRedirect(req.getContextPath() + "/shop");
-            return;
-        }
-
-        req.getRequestDispatcher("/WEB-INF/views/customer/product.jsp")
-                .forward(req, resp);
+        request.getRequestDispatcher("/WEB-INF/views/customer/product.jsp")
+                .forward(request, response);
     }
 }

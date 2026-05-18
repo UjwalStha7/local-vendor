@@ -25,7 +25,7 @@
         <p>
           Connect directly with local farmers and enjoy the freshest organic produce delivered to your doorstep.
         </p>
-        <a class="btn btn-primary btn-hero" href="${pageContext.request.contextPath}/shop">Start Shopping <img class="btn-arrow" src="image/right_arrow.png" alt="" width="16" height="16" /></a>
+        <a class="btn btn-primary btn-hero" href="${pageContext.request.contextPath}/product">Start Shopping <img class="btn-arrow" src="image/right_arrow.png" alt="" width="16" height="16" /></a>
       </div>
     </section>
 
@@ -45,7 +45,7 @@
           <div class="category-body">
             <h3>Fresh Fruits</h3>
             <p>Seasonal picks, naturally sweet and ready to enjoy—perfect for snacks, desserts, and everyday wellness.</p>
-            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/shop">Shop Now <img class="btn-arrow" src="image/right_arrow.png" alt="" width="14" height="14" /></a>
+            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/product">Shop Now <img class="btn-arrow" src="image/right_arrow.png" alt="" width="14" height="14" /></a>
           </div>
         </article>
         <article class="category-card">
@@ -55,13 +55,13 @@
           <div class="category-body">
             <h3>Organic Vegetables</h3>
             <p>Leafy greens, roots, and more—grown with sustainable practices for flavor you can taste in every bite.</p>
-            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/shop">Shop Vegetables <img class="btn-arrow" src="image/right_arrow.png" alt="" width="14" height="14" /></a>
+            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/product">Shop Vegetables <img class="btn-arrow" src="image/right_arrow.png" alt="" width="14" height="14" /></a>
           </div>
         </article>
       </div>
 
       <div class="container cta-wrap">
-        <a class="btn btn-accent btn-lg" href="${pageContext.request.contextPath}/shop">Explore All Products <img class="btn-arrow" src="image/right_arrow.png" alt="" width="15" height="15" /></a>
+        <a class="btn btn-accent btn-lg" href="${pageContext.request.contextPath}/product">Explore All Products <img class="btn-arrow" src="image/right_arrow.png" alt="" width="15" height="15" /></a>
       </div>
     </section>
 

@@ -13,9 +13,9 @@
 
 <header class="farmer-apply-header">
     <div class="farmer-apply-header__inner farmer-dash-header__inner">
-        <a class="farmer-apply-brand" href="${ctx}/shop">Krishak</a>
+        <a class="farmer-apply-brand" href="${ctx}/product">Krishak</a>
         <nav class="farmer-apply-nav" aria-label="Farmer dashboard">
-            <a href="${ctx}/shop">Shop</a>
+            <a href="${ctx}/product">Shop</a>
             <a href="${ctx}/about">About Us</a>
             <a href="${ctx}/farmer/apply">Application</a>
             <c:choose>
@@ -87,7 +87,7 @@
                     <span class="farmer-dash-card__title">Seller application</span>
                     <span class="farmer-dash-card__desc">Update your farm details or application info.</span>
                 </a>
-                <a class="farmer-dash-card farmer-dash-card--muted" href="${ctx}/shop">
+                <a class="farmer-dash-card farmer-dash-card--muted" href="${ctx}/product">
                     <span class="farmer-dash-card__icon" aria-hidden="true">
                         <img src="${ctx}/image/search.png" alt="" width="28" height="28" />
                     </span>

@@ -6,7 +6,7 @@
     <a class="logo" href="${ctx}/customer/home">Krishak</a>
     <nav class="main-nav" aria-label="Primary">
       <a href="${ctx}/customer/home">Home</a>
-      <a href="${ctx}/shop">Product</a>
+      <a href="${ctx}/product">Product</a>
       <a href="${ctx}/about">About Us</a>
       <a href="${ctx}/contact">Contact</a>
     </nav>
