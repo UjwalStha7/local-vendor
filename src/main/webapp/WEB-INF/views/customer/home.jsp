@@ -19,6 +19,7 @@
         <a href="${pageContext.request.contextPath}/customer/home#top">Home</a>
         <a href="${pageContext.request.contextPath}/shop">Product</a>
         <a href="${pageContext.request.contextPath}/customer/home#about">About Us</a>
+        <a href="${pageContext.request.contextPath}/contact">Contact</a>
       </nav>
       <a class="cart-link" href="${pageContext.request.contextPath}/cart.html" aria-label="Shopping cart">
         <img src="image/cart.png" alt="" width="24" height="24" />
@@ -138,21 +139,21 @@
         <h3>Quick Links</h3>
         <ul class="footer-links">
           <li><a href="${pageContext.request.contextPath}/customer/home#top">Home</a></li>
-          <li><a href="${pageContext.request.contextPath}/customer/home#why">Services</a></li>
-          <li><a href="${pageContext.request.contextPath}/shop">Shop</a></li>
+          <li><a href="${pageContext.request.contextPath}/shop">Products</a></li>
           <li><a href="${pageContext.request.contextPath}/customer/home#about">About Us</a></li>
+          <li><a href="${pageContext.request.contextPath}/contact">Contact</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h3>Contact Us</h3>
+        <h3 class="footer-title-link"><a href="${pageContext.request.contextPath}/contact">Contact Us</a></h3>
         <ul class="footer-contact">
           <li>
             <img src="image/phone.png" alt="" width="18" height="18" />
-            <a href="tel:+911800123456">+977 9876543210</a>
+            <a href="tel:+9779876543210">+977 9876543210</a>
           </li>
           <li>
             <img src="image/green_email.png" alt="" width="18" height="18" />
-            <a href="mailto:hello@krishak.com">hello@krishak.com</a>
+            <a href="mailto:support@krishak.com">support@krishak.com</a>
           </li>
           <li>
             <img src="image/location.png" alt="" width="18" height="18" />

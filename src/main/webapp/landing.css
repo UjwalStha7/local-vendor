@@ -840,6 +840,16 @@ a {
   color: #fff;
 }
 
+.footer-col h3.footer-title-link a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer-col h3.footer-title-link a:hover {
+  text-decoration: underline;
+  color: #86efac;
+}
+
 .footer-col p {
   margin: 0;
   font-size: 0.88rem;
