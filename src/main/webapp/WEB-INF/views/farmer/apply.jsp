@@ -16,7 +16,7 @@
         <a class="farmer-apply-brand" href="${ctx}/index.html">Krishak</a>
         <nav class="farmer-apply-nav" aria-label="Farmer apply">
             <a href="${ctx}/index.html">Home</a>
-            <a href="${ctx}/shop.html">Shop</a>
+            <a href="${ctx}/shop">Shop</a>
         </nav>
     </div>
 </header>

@@ -15,7 +15,7 @@
             <a class="logo" href="${pageContext.request.contextPath}/index.html">Krishak</a>
             <nav class="main-nav" aria-label="Primary">
                 <a href="${pageContext.request.contextPath}/index.html">Home</a>
-                <a href="${pageContext.request.contextPath}/shop.html">Product</a>
+                <a href="${pageContext.request.contextPath}/shop">Product</a>
                 <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
             </nav>
         </div>
