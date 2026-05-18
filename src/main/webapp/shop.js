@@ -245,7 +245,7 @@ function renderStarsInline(rating) {
 }
 
 function productHref(p) {
-  return `product?id=${encodeURIComponent(p.id)}`;
+  return `productId?id=${encodeURIComponent(p.id)}`;
 }
 
 let page = 0;

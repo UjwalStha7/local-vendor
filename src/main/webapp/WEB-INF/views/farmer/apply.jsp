@@ -16,7 +16,7 @@
         <a class="farmer-apply-brand" href="${ctx}/customer/home">Krishak</a>
         <nav class="farmer-apply-nav" aria-label="Farmer apply">
             <a href="${ctx}/customer/home">Home</a>
-            <a href="${ctx}/shop">Product</a>
+            <a href="${ctx}/product">Product</a>
             <a href="${ctx}/about">About Us</a>
             <a href="${ctx}/contact">Contact</a>
         </nav>
@@ -109,7 +109,7 @@
                 </p>
 
                 <div class="vendor-form__actions">
-                    <a class="vendor-form__btn vendor-form__btn--cancel" href="${ctx}/shop">Cancel</a>
+                    <a class="vendor-form__btn vendor-form__btn--cancel" href="${ctx}/product">Cancel</a>
                     <button class="vendor-form__btn vendor-form__btn--submit" type="submit">Submit application</button>
                 </div>
             </form>

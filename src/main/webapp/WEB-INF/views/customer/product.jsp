@@ -4,131 +4,172 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Details — Krishak</title>
+  <title>Products — Krishak</title>
   <base href="${pageContext.request.contextPath}/" />
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/landing.css" />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/shop.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="back" href="${pageContext.request.contextPath}/shop" aria-label="Back to shop">
-        <span aria-hidden="true">←</span>
-        <span class="back-text">Back</span>
-      </a>
+  <jsp:include page="/WEB-INF/views/customer/navbar.jsp">
+    <jsp:param name="current" value="product" />
+  </jsp:include>
 
-      <div class="top-actions">
-        <a class="top-text-link" href="${pageContext.request.contextPath}/customer/home">Home</a>
-        <a class="top-text-link" href="${pageContext.request.contextPath}/about">About Us</a>
-        <a class="top-text-link" href="${pageContext.request.contextPath}/contact">Contact</a>
-        <a class="icon-btn" href="${pageContext.request.contextPath}/cart.html" aria-label="Open cart">
-          <img src="image/cart.png" alt="" aria-hidden="true" />
-        </a>
+  <main class="page" aria-label="Products">
+    <section class="search-area" aria-label="Product search">
+      <div class="shop-container">
+        <div class="search">
+          <img class="search-icon" src="image/search.png" alt="" aria-hidden="true" />
+          <input id="q" type="search" placeholder="Search for fresh fruits, vegetables and more..." autocomplete="off" />
+        </div>
       </div>
-    </div>
-  </header>
+    </section>
+    <div class="shop-container layout">
+      <aside class="filters" aria-label="Filters">
+        <div class="panel">
+          <h2 class="panel-title">Filters</h2>
 
-  <main class="page">
-    <div class="wrap">
-      <section class="card media" aria-label="Product images">
-        <div class="hero">
-          <img id="hero-img" class="hero-main-img" src="image/organic_cherry_tomatoes.png" alt="" />
-          <div class="badges" aria-hidden="true">
-            <span class="badge badge-green">
-              <img class="badge-icon" src="image/white_leaf.png" alt="" aria-hidden="true" />
-              Organic
-            </span>
-            <span id="discount-badge" class="badge badge-red">29% OFF</span>
+          <div class="field">
+            <h3 class="field-title">Category</h3>
+            <label class="check">
+              <input type="checkbox" name="cat" value="all" checked />
+              <span>All Products</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="cat" value="Fruits" />
+              <span>Fruits</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="cat" value="Vegetables" />
+              <span>Vegetables</span>
+            </label>
           </div>
-        </div>
 
-        <div id="thumbs" class="thumbs" aria-label="Image thumbnails"></div>
-      </section>
-
-      <section class="details" aria-label="Product details">
-        <p id="category" class="category">Fresh Vegetables</p>
-        <h1 id="title" class="title">Organic Cherry Tomatoes</h1>
-
-        <div class="rating-row">
-          <div class="stars" aria-label="Rating"></div>
-          <p class="rating-text">
-            <span id="rating-value">4.8</span>
-            <span class="muted">(<span id="review-count">127</span> reviews)</span>
-          </p>
-        </div>
-
-        <div class="price-row">
-          <span id="price" class="price">$4.99</span>
-          <span id="old-price" class="old-price">$6.99</span>
-          <span id="unit" class="unit muted">/ 500g</span>
-        </div>
-
-        <div class="stock-row">
-          <span id="stock-pill" class="pill">In Stock</span>
-        </div>
-
-        <p id="desc" class="desc">
-          Premium organic cherry tomatoes, vine-ripened to perfection. These sweet and juicy tomatoes are packed with flavor and nutrients.
-          Grown without synthetic pesticides or fertilizers, our tomatoes are carefully harvested at peak ripeness to ensure maximum taste and nutritional value.
-        </p>
-
-        <div class="specs">
-          <div class="specs-grid">
-            <div class="spec">
-              <span class="spec-k">Origin:</span>
-              <span id="origin" class="spec-v">Local Farm, California</span>
-            </div>
-            <div class="spec">
-              <span class="spec-k">Weight:</span>
-              <span id="weight" class="spec-v">500g</span>
-            </div>
-            <div class="spec">
-              <span class="spec-k">Type:</span>
-              <span id="type" class="spec-v">Organic</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="buy-row">
-          <div class="qty-wrap">
-            <span class="qty-label">Quantity:</span>
-            <div class="qty" role="group" aria-label="Quantity">
-              <button id="qty-dec" type="button" aria-label="Decrease quantity">-</button>
-              <span id="qty-value" aria-live="polite">1</span>
-              <button id="qty-inc" type="button" aria-label="Increase quantity">+</button>
+          <div class="field">
+            <h3 class="field-title">Price Range</h3>
+            <div class="range-row">
+              <input id="priceMin" type="number" inputmode="numeric" placeholder="Min" />
+              <span class="range-sep">-</span>
+              <input id="priceMax" type="number" inputmode="numeric" placeholder="Max" />
             </div>
           </div>
 
-          <button id="add-btn" class="add-btn" type="button">
-            <img src="image/white_cart.png" alt="" aria-hidden="true" />
-            Add to Cart
-          </button>
+          <div class="field">
+            <h3 class="field-title">Vendor</h3>
+            <label class="check">
+              <input type="checkbox" name="vendor" value="green-valley-farm" />
+              <span>Green Valley Farm</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="vendor" value="organic-harvest" />
+              <span>Organic Harvest</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="vendor" value="fresh-fields" />
+              <span>Fresh Fields</span>
+            </label>
+          </div>
 
-          <button id="wish-btn" class="wish-btn" type="button" aria-label="Add to wishlist">
-            <img src="image/heart.png" alt="" aria-hidden="true" />
-          </button>
+          <div class="field">
+            <h3 class="field-title">Availability</h3>
+            <label class="check">
+              <input type="radio" name="avail" value="all" checked />
+              <span>All</span>
+            </label>
+            <label class="check">
+              <input type="radio" name="avail" value="in" />
+              <span>In Stock</span>
+            </label>
+            <label class="check">
+              <input type="radio" name="avail" value="limited" />
+              <span>Limited Stock</span>
+            </label>
+          </div>
+
+          <div class="filter-actions">
+            <button id="applyBtn" class="btn btn-primary" type="button">Apply Filters</button>
+          </div>
+        </div>
+      </aside>
+
+      <section class="results" aria-label="Product results">
+        <div class="results-head">
+          <p class="found"><span id="foundCount">0</span> Products Found</p>
+          <div class="sort">
+            <label class="sort-label" for="sortBy">Sort By:</label>
+            <select id="sortBy" class="sort-select">
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating-desc">Rating</option>
+              <option value="name-asc">Name</option>
+            </select>
+          </div>
         </div>
 
-        <div class="features" aria-label="Benefits">
-          <div class="feature">
-            <img src="image/truck.png" alt="" aria-hidden="true" />
-            <span>Free Delivery</span>
-          </div>
-          <div class="feature">
-            <img src="image/shield.png" alt="" aria-hidden="true" />
-            <span>Quality Guaranteed</span>
-          </div>
-          <div class="feature">
-            <img src="image/leaf.png" alt="" aria-hidden="true" />
-            <span>Fresh &amp; Organic</span>
-          </div>
-        </div>
+        <div id="grid" class="grid" aria-label="Product grid"></div>
 
-        <p id="toast" class="toast" role="status" aria-live="polite"></p>
+        <div class="pager" aria-label="Pagination">
+          <button id="prevBtn" class="btn btn-ghost" type="button">Previous</button>
+          <button id="pageBtn" class="page-pill" type="button" aria-current="page">1</button>
+          <button id="nextBtn" class="btn btn-ghost" type="button">Next</button>
+        </div>
       </section>
     </div>
   </main>
 
-  <script src="product.js"></script>
+  <footer class="site-footer">
+    <div class="footer-grid container">
+      <div class="footer-col">
+        <h3>About Krishak</h3>
+        <p>
+          Connecting farmers directly with consumers, bringing fresh, organic produce straight from the farm to your table.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <jsp:include page="/WEB-INF/views/customer/footer-quicklinks.jsp" />
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-title-link"><a href="${pageContext.request.contextPath}/contact">Contact Us</a></h3>
+        <ul class="footer-contact">
+          <li>
+            <img src="image/phone.png" alt="" width="18" height="18" />
+            <a href="tel:+9779876543210">+977 9876543210</a>
+          </li>
+          <li>
+            <img src="image/green_email.png" alt="" width="18" height="18" />
+            <a href="mailto:support@krishak.com">support@krishak.com</a>
+          </li>
+          <li>
+            <img src="image/location.png" alt="" width="18" height="18" />
+            <span>12 Matepani, Pokhara, Gandaki 33700</span>
+          </li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Follow Us</h3>
+        <div class="social-row" aria-label="Social media">
+          <a class="social-btn" href="#" aria-label="Facebook"><img src="image/facebook.png" alt="" /></a>
+          <a class="social-btn" href="#" aria-label="Twitter"><img src="image/bird.png" alt="" /></a>
+          <a class="social-btn" href="#" aria-label="Instagram"><img src="image/instagram.png" alt="" /></a>
+          <a class="social-btn" href="#" aria-label="LinkedIn"><img src="image/linkedIn.png" alt="" /></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <div class="container footer-bar-inner">
+        <p>© 2026 Krishak. All rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shop.js"></script>
 </body>
 </html>
 
