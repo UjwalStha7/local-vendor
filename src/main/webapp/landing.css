@@ -99,6 +99,11 @@ a {
   color: var(--logo-green);
 }
 
+.main-nav a.nav-current {
+  color: var(--logo-green);
+  font-weight: 700;
+}
+
 .cart-link {
   position: relative;
   display: flex;

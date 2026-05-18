@@ -10,17 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css" />
 </head>
 <body class="login-body">
-    <header class="site-header">
-        <div class="header-inner">
-            <a class="logo" href="${pageContext.request.contextPath}/shop">Krishak</a>
-            <nav class="main-nav" aria-label="Primary">
-                <a href="${pageContext.request.contextPath}/shop">Home</a>
-                <a href="${pageContext.request.contextPath}/shop">Product</a>
-                <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
-                <a href="${pageContext.request.contextPath}/about#contact">Contact</a>
-            </nav>
-        </div>
-    </header>
+    <jsp:include page="/WEB-INF/views/auth-navbar.jsp" />
 
     <main class="auth-page">
         <section class="auth-card" aria-labelledby="login-heading">
@@ -76,9 +66,11 @@
             </p>
 
             <p class="auth-footer">
-                <a href="${pageContext.request.contextPath}/shop">Home</a>
+                <a href="${pageContext.request.contextPath}/customer/home">Home</a>
                 <span class="auth-footer-sep" aria-hidden="true">·</span>
                 <a href="${pageContext.request.contextPath}/about">About Us</a>
+                <span class="auth-footer-sep" aria-hidden="true">·</span>
+                <a href="${pageContext.request.contextPath}/contact">Contact</a>
             </p>
         </section>
     </main>
