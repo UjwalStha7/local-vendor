@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product Details — Krishak</title>
   <base href="${pageContext.request.contextPath}/" />
-  <link rel="stylesheet" href="product.css" />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product.css" />
 </head>
 <body>
   <header class="topbar">
