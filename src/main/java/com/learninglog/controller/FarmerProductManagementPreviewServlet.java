@@ -9,19 +9,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Temporary preview URL for the farmer dashboard UI without authentication.
- * Remove or protect before production.
+ * Preview Product Management UI without login (for development).
  */
-@WebServlet(name = "FarmerDashboardPreviewServlet", urlPatterns = {"/farmerdshboard"})
-public class FarmerDashboardPreviewServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/farmerproductmanagement", "/farmerproducts"})
+public class FarmerProductManagementPreviewServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         req.setAttribute("vendorName", "FreshHarvest Farms");
         req.setAttribute("storeName", "FreshHarvest Farms");
-        req.setAttribute("activeNav", "dashboard");
+        req.setAttribute("activeNav", "product-management");
         req.setAttribute("previewMode", Boolean.TRUE);
-        req.getRequestDispatcher("/WEB-INF/views/farmer/dashboard.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/farmer/product-management.jsp").forward(req, resp);
     }
 }
