@@ -12,11 +12,12 @@
 <body class="login-body">
     <header class="site-header">
         <div class="header-inner">
-            <a class="logo" href="${pageContext.request.contextPath}/index.html">Krishak</a>
+            <a class="logo" href="${pageContext.request.contextPath}/shop">Krishak</a>
             <nav class="main-nav" aria-label="Primary">
-                <a href="${pageContext.request.contextPath}/index.html">Home</a>
+                <a href="${pageContext.request.contextPath}/shop">Home</a>
                 <a href="${pageContext.request.contextPath}/shop">Product</a>
-                <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
+                <a href="${pageContext.request.contextPath}/about">About Us</a>
+                <a href="${pageContext.request.contextPath}/about#contact">Contact</a>
             </nav>
         </div>
     </header>
@@ -75,9 +76,9 @@
             </p>
 
             <p class="auth-footer">
-                <a href="${pageContext.request.contextPath}/index.html">Home</a>
+                <a href="${pageContext.request.contextPath}/shop">Home</a>
                 <span class="auth-footer-sep" aria-hidden="true">·</span>
-                <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
+                <a href="${pageContext.request.contextPath}/about">About Us</a>
             </p>
         </section>
     </main>

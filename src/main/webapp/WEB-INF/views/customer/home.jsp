@@ -18,7 +18,8 @@
       <nav class="main-nav" aria-label="Primary">
         <a href="${pageContext.request.contextPath}/customer/home#top">Home</a>
         <a href="${pageContext.request.contextPath}/shop">Product</a>
-        <a href="${pageContext.request.contextPath}/customer/home#about">About Us</a>
+        <a href="${pageContext.request.contextPath}/about">About Us</a>
+        <a href="${pageContext.request.contextPath}/about#contact">Contact</a>
       </nav>
       <a class="cart-link" href="${pageContext.request.contextPath}/cart.html" aria-label="Shopping cart">
         <img src="image/cart.png" alt="" width="24" height="24" />
@@ -140,10 +141,11 @@
           <li><a href="${pageContext.request.contextPath}/customer/home#top">Home</a></li>
           <li><a href="${pageContext.request.contextPath}/customer/home#why">Services</a></li>
           <li><a href="${pageContext.request.contextPath}/shop">Shop</a></li>
-          <li><a href="${pageContext.request.contextPath}/customer/home#about">About Us</a></li>
+          <li><a href="${pageContext.request.contextPath}/about">About Us</a></li>
+          <li><a href="${pageContext.request.contextPath}/about#contact">Contact</a></li>
         </ul>
       </div>
-      <div class="footer-col">
+      <div class="footer-col" id="contact">
         <h3>Contact Us</h3>
         <ul class="footer-contact">
           <li>

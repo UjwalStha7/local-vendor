@@ -13,9 +13,10 @@
 
 <header class="farmer-apply-header">
     <div class="farmer-apply-header__inner farmer-dash-header__inner">
-        <a class="farmer-apply-brand" href="${ctx}/index.html">Krishak</a>
+        <a class="farmer-apply-brand" href="${ctx}/shop">Krishak</a>
         <nav class="farmer-apply-nav" aria-label="Farmer dashboard">
-            <a href="${ctx}/shop.html">Shop</a>
+            <a href="${ctx}/shop">Shop</a>
+            <a href="${ctx}/about">About Us</a>
             <a href="${ctx}/farmer/apply">Application</a>
             <c:choose>
                 <c:when test="${previewMode}">

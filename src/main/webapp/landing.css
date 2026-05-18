@@ -809,8 +809,9 @@ a {
   }
 }
 
-/* Anchor target: offset for fixed header when jumping to footer About */
-#about {
+/* Anchor target: offset for fixed header when jumping to footer About / Contact */
+#about,
+#contact {
   scroll-margin-top: calc(var(--header-h) + 16px);
 }
 
