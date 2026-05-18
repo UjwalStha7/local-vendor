@@ -16,10 +16,6 @@ public class FarmerProfilePreviewServlet extends HttpServlet {
             throws ServletException, IOException {
         req.setAttribute("vendorName", "FreshHarvest Farms");
         req.setAttribute("storeName", "FreshHarvest Farms");
-        req.setAttribute("activeNav", "profile");
-        req.setAttribute("previewMode", Boolean.TRUE);
-        req.setAttribute("vendorEmail", "support@krishak.com");
-        req.setAttribute("vendorPhone", "9876543210");
-        req.getRequestDispatcher("/WEB-INF/views/farmer/profile.jsp").forward(req, resp);
+        FarmerProfileServlet.forwardProfile(req, resp, null, true);
     }
 }
