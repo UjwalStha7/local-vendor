@@ -10,18 +10,18 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/vendor/dashboard")
-public class VendorServlet extends HttpServlet {
+@WebServlet("/farmer/orders")
+public class FarmerOrdersServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        User vendor = FarmerAuthUtil.requireVendor(request, response);
+        User vendor = FarmerAuthUtil.requireVendor(req, resp);
         if (vendor == null) {
             return;
         }
-        FarmerAuthUtil.setStoreAttributes(request, vendor);
-        request.setAttribute("activeNav", "dashboard");
-        request.getRequestDispatcher("/WEB-INF/views/farmer/dashboard.jsp").forward(request, response);
+        FarmerAuthUtil.setStoreAttributes(req, vendor);
+        req.setAttribute("activeNav", "orders");
+        req.getRequestDispatcher("/WEB-INF/views/farmer/orders.jsp").forward(req, resp);
     }
 }

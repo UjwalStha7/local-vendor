@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "FarmerDashboardServlet", urlPatterns = {"/farmer/dashboard"})
-public class FarmerDashboardServlet extends HttpServlet {
+@WebServlet("/farmer/profile")
+public class FarmerProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -21,8 +21,9 @@ public class FarmerDashboardServlet extends HttpServlet {
             return;
         }
         FarmerAuthUtil.setStoreAttributes(req, vendor);
-        req.setAttribute("activeNav", "dashboard");
-        req.setAttribute("previewMode", Boolean.FALSE);
-        req.getRequestDispatcher("/WEB-INF/views/farmer/dashboard.jsp").forward(req, resp);
+        req.setAttribute("activeNav", "profile");
+        req.setAttribute("vendorEmail", vendor.getEmail());
+        req.setAttribute("vendorPhone", vendor.getPhone());
+        req.getRequestDispatcher("/WEB-INF/views/farmer/profile.jsp").forward(req, resp);
     }
 }
