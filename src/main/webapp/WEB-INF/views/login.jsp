@@ -17,6 +17,7 @@
                 <a href="${pageContext.request.contextPath}/index.html">Home</a>
                 <a href="${pageContext.request.contextPath}/shop">Product</a>
                 <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
+                <a href="${pageContext.request.contextPath}/contact">Contact</a>
             </nav>
         </div>
     </header>
