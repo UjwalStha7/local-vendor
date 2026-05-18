@@ -43,7 +43,7 @@ if (loginForm) {
       return;
     }
 
-    window.location.href = "shop.html";
+    window.location.href = "shop";
   });
 
   loginForm.addEventListener("input", function () {

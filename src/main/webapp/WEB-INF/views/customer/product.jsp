@@ -1,22 +1,24 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Details</title>
+  <title>Product Details — Krishak</title>
+  <base href="${pageContext.request.contextPath}/" />
   <link rel="stylesheet" href="product.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="back" href="shop.html" aria-label="Back to shop">
+      <a class="back" href="${pageContext.request.contextPath}/shop" aria-label="Back to shop">
         <span aria-hidden="true">←</span>
         <span class="back-text">Back</span>
       </a>
 
       <div class="top-actions">
-        <a class="top-text-link" href="index.html#about">About Us</a>
-        <a class="icon-btn" href="cart.html" aria-label="Open cart">
+        <a class="top-text-link" href="${pageContext.request.contextPath}/customer/home#about">About Us</a>
+        <a class="icon-btn" href="${pageContext.request.contextPath}/cart.html" aria-label="Open cart">
           <img src="image/cart.png" alt="" aria-hidden="true" />
         </a>
       </div>

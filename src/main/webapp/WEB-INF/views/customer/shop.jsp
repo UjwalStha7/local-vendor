@@ -1,9 +1,11 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Products</title>
+  <title>Products — Krishak</title>
+  <base href="${pageContext.request.contextPath}/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -13,13 +15,13 @@
 <body>
   <header class="site-header" id="top">
     <div class="header-inner">
-      <a class="logo" href="index.html">Krishak</a>
+      <a class="logo" href="${pageContext.request.contextPath}/index.html">Krishak</a>
       <nav class="main-nav" aria-label="Primary">
-        <a href="index.html#top">Home</a>
-        <a href="shop.html">Product</a>
-        <a href="index.html#about">About Us</a>
+        <a href="${pageContext.request.contextPath}/index.html#top">Home</a>
+        <a href="${pageContext.request.contextPath}/shop">Product</a>
+        <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
       </nav>
-      <a class="cart-link" href="cart.html" aria-label="Shopping cart">
+      <a class="cart-link" href="${pageContext.request.contextPath}/cart.html" aria-label="Shopping cart">
         <img src="image/cart.png" alt="" width="24" height="24" />
         <span id="cart-badge" class="cart-badge" aria-live="polite">0</span>
       </a>
@@ -140,10 +142,10 @@
       <div class="footer-col">
         <h3>Quick Links</h3>
         <ul class="footer-links">
-          <li><a href="index.html#top">Home</a></li>
-          <li><a href="index.html#why">Services</a></li>
-          <li><a href="shop.html">Shop</a></li>
-          <li><a href="index.html#about">About Us</a></li>
+          <li><a href="${pageContext.request.contextPath}/index.html#top">Home</a></li>
+          <li><a href="${pageContext.request.contextPath}/index.html#why">Services</a></li>
+          <li><a href="${pageContext.request.contextPath}/shop">Shop</a></li>
+          <li><a href="${pageContext.request.contextPath}/index.html#about">About Us</a></li>
         </ul>
       </div>
       <div class="footer-col">

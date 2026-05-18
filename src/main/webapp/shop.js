@@ -245,8 +245,7 @@ function renderStarsInline(rating) {
 }
 
 function productHref(p) {
-  // product.html currently only knows a few ids; keep the link usable anyway.
-  return `product.html?id=${encodeURIComponent(p.id)}`;
+  return `product?id=${encodeURIComponent(p.id)}`;
 }
 
 let page = 0;
