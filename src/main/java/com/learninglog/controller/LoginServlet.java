@@ -1,5 +1,5 @@
 package com.learninglog.controller;
-
+import jakarta.servlet.http.HttpSession;
 import com.learninglog.dao.UserDao;
 import com.learninglog.dao.UserDaoImp;
 import com.learninglog.entity.User;
@@ -62,6 +62,24 @@ public class LoginServlet extends HttpServlet {
 
             return;
         }
+        HttpSession session = request.getSession();
+
+        session.setAttribute("user", user);
+        session.setAttribute("role", user.getRole());
+
+        if ("admin".equalsIgnoreCase(user.getRole())) {
+            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+
+        }
+        else if ("vendor".equalsIgnoreCase(user.getRole())) {
+
+            response.sendRedirect(request.getContextPath() + "/vendor/dashboard");
+
+        }
+        else {
+            response.sendRedirect(request.getContextPath() + "/customer/home");
+        }
+
 
     }
 }
