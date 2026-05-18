@@ -1,9 +1,11 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Krishak — Farm Fresh to Your Table</title>
+  <base href="${pageContext.request.contextPath}/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -12,13 +14,13 @@
 <body>
   <header class="site-header" id="top">
     <div class="header-inner">
-      <a class="logo" href="index.html">Krishak</a>
+      <a class="logo" href="${pageContext.request.contextPath}/customer/home">Krishak</a>
       <nav class="main-nav" aria-label="Primary">
-        <a href="index.html#top">Home</a>
-        <a href="shop.html">Product</a>
-        <a href="#about">About Us</a>
+        <a href="${pageContext.request.contextPath}/customer/home#top">Home</a>
+        <a href="${pageContext.request.contextPath}/shop.html">Product</a>
+        <a href="${pageContext.request.contextPath}/customer/home#about">About Us</a>
       </nav>
-      <a class="cart-link" href="cart.html" aria-label="Shopping cart">
+      <a class="cart-link" href="${pageContext.request.contextPath}/cart.html" aria-label="Shopping cart">
         <img src="image/cart.png" alt="" width="24" height="24" />
         <span id="cart-badge" class="cart-badge" aria-live="polite">0</span>
       </a>
@@ -34,7 +36,7 @@
         <p>
           Connect directly with local farmers and enjoy the freshest organic produce delivered to your doorstep.
         </p>
-        <a class="btn btn-primary btn-hero" href="shop.html">Start Shopping <img class="btn-arrow" src="image/right_arrow.png" alt="" width="16" height="16" /></a>
+        <a class="btn btn-primary btn-hero" href="${pageContext.request.contextPath}/shop.html">Start Shopping <img class="btn-arrow" src="image/right_arrow.png" alt="" width="16" height="16" /></a>
       </div>
     </section>
 
@@ -54,7 +56,7 @@
           <div class="category-body">
             <h3>Fresh Fruits</h3>
             <p>Seasonal picks, naturally sweet and ready to enjoy—perfect for snacks, desserts, and everyday wellness.</p>
-            <a class="btn btn-primary btn-sm" href="shop.html">Shop Now <img class="btn-arrow" src="image/right_arrow.png" alt="" width="14" height="14" /></a>
+            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/shop.html">Shop Now <img class="btn-arrow" src="image/right_arrow.png" alt="" width="14" height="14" /></a>
           </div>
         </article>
         <article class="category-card">
@@ -64,13 +66,13 @@
           <div class="category-body">
             <h3>Organic Vegetables</h3>
             <p>Leafy greens, roots, and more—grown with sustainable practices for flavor you can taste in every bite.</p>
-            <a class="btn btn-primary btn-sm" href="shop.html">Shop Vegetables <img class="btn-arrow" src="image/right_arrow.png" alt="" width="14" height="14" /></a>
+            <a class="btn btn-primary btn-sm" href="${pageContext.request.contextPath}/shop.html">Shop Vegetables <img class="btn-arrow" src="image/right_arrow.png" alt="" width="14" height="14" /></a>
           </div>
         </article>
       </div>
 
       <div class="container cta-wrap">
-        <a class="btn btn-accent btn-lg" href="shop.html">Explore All Products <img class="btn-arrow" src="image/right_arrow.png" alt="" width="15" height="15" /></a>
+        <a class="btn btn-accent btn-lg" href="${pageContext.request.contextPath}/shop.html">Explore All Products <img class="btn-arrow" src="image/right_arrow.png" alt="" width="15" height="15" /></a>
       </div>
     </section>
 
@@ -121,40 +123,7 @@
       </div>
     </section>
 
-    <section class="section seller-cta-section" id="sell-vendor" aria-labelledby="seller-cta-heading">
-      <div class="container">
-        <div class="seller-cta">
-          <div class="seller-cta__shine" aria-hidden="true"></div>
-          <div class="seller-cta__copy">
-            <h2 id="seller-cta-heading" class="seller-cta__title">Want to sell your product?</h2>
-            <p class="seller-cta__lead">Leave your email and phone number.</p>
-          </div>
-          <form class="seller-cta__form" id="seller-cta-form" novalidate>
-            <div class="seller-cta__fields">
-              <input
-                id="seller-email"
-                name="email"
-                type="email"
-                class="seller-cta__input"
-                placeholder="Your humble email..."
-                autocomplete="email"
-                aria-label="Email"
-              />
-              <input
-                id="seller-phone"
-                name="phone"
-                type="tel"
-                class="seller-cta__input"
-                placeholder="Your Phone no."
-                autocomplete="tel"
-                aria-label="Phone number"
-              />
-            </div>
-            <button type="submit" class="seller-cta__submit">Submit</button>
-          </form>
-        </div>
-      </div>
-    </section>
+    
   </main>
 
   <footer class="site-footer">
@@ -168,10 +137,10 @@
       <div class="footer-col">
         <h3>Quick Links</h3>
         <ul class="footer-links">
-          <li><a href="index.html#top">Home</a></li>
-          <li><a href="#why">Services</a></li>
-          <li><a href="shop.html">Shop</a></li>
-          <li><a href="#about">About Us</a></li>
+          <li><a href="${pageContext.request.contextPath}/customer/home#top">Home</a></li>
+          <li><a href="${pageContext.request.contextPath}/customer/home#why">Services</a></li>
+          <li><a href="${pageContext.request.contextPath}/shop.html">Shop</a></li>
+          <li><a href="${pageContext.request.contextPath}/customer/home#about">About Us</a></li>
         </ul>
       </div>
       <div class="footer-col">

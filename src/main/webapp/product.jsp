@@ -1,4 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    // Temporary stub — remove when ProductServlet is ready
+    request.setAttribute("product", new com.learninglog.entity.Product(
+        "Fresh Tomato", "Vegetables", 120, "kg", 50, true,
+        "Farmer Ram", "image/fresh_tomato.png", "Sweet and ripe."
+    ));
+%>
 <!doctype html>
 <html lang="en">
 <head>
