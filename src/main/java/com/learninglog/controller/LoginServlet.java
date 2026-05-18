@@ -73,7 +73,7 @@ public class LoginServlet extends HttpServlet {
         }
         else if ("vendor".equalsIgnoreCase(user.getRole())) {
 
-            response.sendRedirect(request.getContextPath() + "/vendor/dashboard");
+            response.sendRedirect(request.getContextPath() + "/farmer/dashboard");
 
         }
         else {

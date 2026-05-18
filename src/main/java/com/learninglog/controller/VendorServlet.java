@@ -26,6 +26,6 @@ public class VendorServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath()+"/login");
             return;
         }
-        request.getRequestDispatcher("/WEB-INF/views/vendor/dashboard.jsp").forward(request,response);
+        request.getRequestDispatcher("/WEB-INF/views/farmer/dashboard.jsp").forward(request, response);
     }
 }
