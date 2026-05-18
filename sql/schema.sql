@@ -1,6 +1,6 @@
 -- Create database
-CREATE DATABASE IF NOT EXISTS farmers_market_hub;
-USE farmers_market_hub;
+CREATE DATABASE IF NOT EXISTS local_vendor;
+USE local_vendor;
 
 -- 1. Users table  (Modified BY Darshan)
 CREATE TABLE users (
