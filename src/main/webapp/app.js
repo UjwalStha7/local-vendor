@@ -29,6 +29,9 @@ if (loginForm) {
   const loginError = document.getElementById("login-error");
 
   loginForm.addEventListener("submit", function (event) {
+    if (loginForm.method && loginForm.method.toLowerCase() === "post") {
+      return;
+    }
     event.preventDefault();
     clearError(loginError);
 
@@ -53,15 +56,21 @@ if (registerForm) {
   const registerError = document.getElementById("register-error");
 
   registerForm.addEventListener("submit", function (event) {
+    if (registerForm.method && registerForm.method.toLowerCase() === "post") {
+      return;
+    }
     event.preventDefault();
     clearError(registerError);
 
-    const name = document.getElementById("register-name").value.trim();
+    const usernameEl = document.getElementById("register-username") || document.getElementById("register-name");
+    const username = usernameEl ? usernameEl.value.trim() : "";
     const email = document.getElementById("register-email").value.trim();
     const password = document.getElementById("register-password").value.trim();
     const confirmPassword = document.getElementById("register-confirm-password").value.trim();
+    const phoneEl = document.getElementById("register-phone");
+    const phone = phoneEl ? phoneEl.value.trim() : "";
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword || (phoneEl && !phone)) {
       showError(registerError, "Please complete all registration fields.");
       return;
     }
