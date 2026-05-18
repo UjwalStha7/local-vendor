@@ -13,11 +13,12 @@
 
 <header class="farmer-apply-header">
     <div class="farmer-apply-header__inner">
-        <a class="farmer-apply-brand" href="${ctx}/shop">Krishak</a>
+        <a class="farmer-apply-brand" href="${ctx}/customer/home">Krishak</a>
         <nav class="farmer-apply-nav" aria-label="Farmer apply">
-            <a href="${ctx}/shop">Home</a>
-            <a href="${ctx}/shop">Shop</a>
+            <a href="${ctx}/customer/home">Home</a>
+            <a href="${ctx}/shop">Product</a>
             <a href="${ctx}/about">About Us</a>
+            <a href="${ctx}/contact">Contact</a>
         </nav>
     </div>
 </header>

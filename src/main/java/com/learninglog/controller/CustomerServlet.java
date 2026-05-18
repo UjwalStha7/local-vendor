@@ -15,28 +15,6 @@ public class CustomerServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session =
-                request.getSession(false);
-
-        if(session == null){
-            response.sendRedirect(
-                    request.getContextPath()+"/login"
-            );
-            return;
-        }
-
-        String role =
-                (String) session.getAttribute("role");
-
-        if(role == null ||
-                !role.equalsIgnoreCase("customer")){
-
-            response.sendRedirect(
-                    request.getContextPath()+"/login"
-            );
-            return;
-        }
-
         request.getRequestDispatcher(
                 "/WEB-INF/views/customer/home.jsp"
         ).forward(request,response);

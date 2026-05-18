@@ -13,21 +13,9 @@
   <link rel="stylesheet" href="about.css" />
 </head>
 <body class="page-about">
-  <header class="site-header" id="top">
-    <div class="header-inner">
-      <a class="logo" href="${pageContext.request.contextPath}/shop">Krishak</a>
-      <nav class="main-nav" aria-label="Primary">
-        <a href="${pageContext.request.contextPath}/shop">Home</a>
-        <a href="${pageContext.request.contextPath}/shop">Product</a>
-        <a class="nav-current" href="${pageContext.request.contextPath}/about" aria-current="page">About Us</a>
-        <a href="${pageContext.request.contextPath}/about#contact">Contact</a>
-      </nav>
-      <a class="cart-link" href="${pageContext.request.contextPath}/cart.html" aria-label="Shopping cart">
-        <img src="image/cart.png" alt="" width="24" height="24" />
-        <span class="cart-badge" aria-live="polite">0</span>
-      </a>
-    </div>
-  </header>
+  <jsp:include page="/WEB-INF/views/customer/navbar.jsp">
+    <jsp:param name="current" value="about" />
+  </jsp:include>
 
   <main>
     <section class="about-hero" aria-labelledby="about-heading">
@@ -129,10 +117,7 @@
       <div class="footer-col">
         <h3>Quick Links</h3>
         <ul class="footer-links">
-          <li><a href="${pageContext.request.contextPath}/shop">Home</a></li>
-          <li><a href="${pageContext.request.contextPath}/shop">Products</a></li>
-          <li><a href="${pageContext.request.contextPath}/about">About Us</a></li>
-          <li><a href="${pageContext.request.contextPath}/about#contact">Contact</a></li>
+          <jsp:include page="/WEB-INF/views/customer/footer-quicklinks.jsp" />
         </ul>
       </div>
       <div class="footer-col" id="contact">

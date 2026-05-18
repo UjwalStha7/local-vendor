@@ -87,7 +87,7 @@
                     <span class="farmer-dash-card__title">Seller application</span>
                     <span class="farmer-dash-card__desc">Update your farm details or application info.</span>
                 </a>
-                <a class="farmer-dash-card farmer-dash-card--muted" href="${ctx}/shop.html">
+                <a class="farmer-dash-card farmer-dash-card--muted" href="${ctx}/shop">
                     <span class="farmer-dash-card__icon" aria-hidden="true">
                         <img src="${ctx}/image/search.png" alt="" width="28" height="28" />
                     </span>

@@ -1,0 +1,14 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- Login / register header (no cart) --%>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="${ctx}/customer/home">Krishak</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="${ctx}/customer/home">Home</a>
+      <a href="${ctx}/shop">Product</a>
+      <a href="${ctx}/about">About Us</a>
+      <a href="${ctx}/contact">Contact</a>
+    </nav>
+  </div>
+</header>
