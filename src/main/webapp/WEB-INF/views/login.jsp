@@ -16,7 +16,7 @@
             <nav class="main-nav" aria-label="Primary">
                 <a href="${pageContext.request.contextPath}/shop">Home</a>
                 <a href="${pageContext.request.contextPath}/shop">Product</a>
-                <a href="${pageContext.request.contextPath}/about">About Us</a>
+                <a href="${pageContext.request.contextPath}/index.html#about">About Us</a>
                 <a href="${pageContext.request.contextPath}/about#contact">Contact</a>
             </nav>
         </div>
