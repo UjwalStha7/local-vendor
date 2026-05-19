@@ -5,6 +5,7 @@ package com.learninglog.model;
  */
 public class VendorAccountCard {
 
+    private final int id;
     private final String name;
     private final String company;
     private final String email;
@@ -13,8 +14,9 @@ public class VendorAccountCard {
     private final int orders;
     private final boolean verified;
 
-    public VendorAccountCard(String name, String company, String email, String phone,
+    public VendorAccountCard(int id, String name, String company, String email, String phone,
                              int products, int orders, boolean verified) {
+        this.id = id;
         this.name = name;
         this.company = company;
         this.email = email;
@@ -22,6 +24,10 @@ public class VendorAccountCard {
         this.products = products;
         this.orders = orders;
         this.verified = verified;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

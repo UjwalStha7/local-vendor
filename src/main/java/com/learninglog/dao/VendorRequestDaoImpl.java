@@ -79,15 +79,16 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
             return false;
         }
         String normalized = email.trim().toLowerCase(Locale.ROOT);
-        if (userDao.findByEmail(normalized) != null) {
+        User existing = userDao.findByEmail(normalized);
+        if (existing != null && "vendor".equalsIgnoreCase(existing.getRole())) {
             return true;
         }
         ensureVendorRequestsTable();
         if (tableExists()) {
-            return hasBlockingVendorRequest(normalized);
+            return hasApprovedVendorRequestForContactEmail(normalized);
         }
         for (VendorRequestRow row : MEMORY_FALLBACK) {
-            if (row.getEmail().equalsIgnoreCase(normalized) && (row.isPending() || row.isApproved())) {
+            if (row.getEmail().equalsIgnoreCase(normalized) && row.isApproved() && row.hasActiveVendorLink()) {
                 return true;
             }
         }
@@ -95,14 +96,56 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
     }
 
     @Override
+    public boolean hasOpenVendorApplication(String email) {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        String normalized = email.trim().toLowerCase(Locale.ROOT);
+        ensureVendorRequestsTable();
+        if (tableExists()) {
+            return hasOpenVendorRequestForContactEmail(normalized);
+        }
+        for (VendorRequestRow row : MEMORY_FALLBACK) {
+            if (row.getEmail().equalsIgnoreCase(normalized) && row.isAwaitingAdminResponse()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isLatestVendorApplicationRejected(String email) {
+        if (email == null || email.isBlank() || hasOpenVendorApplication(email)) {
+            return false;
+        }
+        String normalized = email.trim().toLowerCase(Locale.ROOT);
+        ensureVendorRequestsTable();
+        if (tableExists()) {
+            return "rejected".equalsIgnoreCase(findLatestStatusForContactEmail(normalized));
+        }
+        return MEMORY_FALLBACK.stream()
+                .filter(row -> row.getEmail().equalsIgnoreCase(normalized))
+                .max((a, b) -> Integer.compare(a.getId(), b.getId()))
+                .map(VendorRequestRow::isRejected)
+                .orElse(false);
+    }
+
+    @Override
     public void submitFarmerApplication(String applicantName, String farmName, String email, String phone,
                                         String category, String about) {
-        if (isContactEmailAlreadyUsed(email)) {
+        if (hasOpenVendorApplication(email) || isContactEmailAlreadyUsed(email)) {
             return;
         }
         ensureVendorRequestsTable();
         if (insertApplication(applicantName, farmName, email, phone, category, about)) {
             return;
+        }
+        String normalized = email.trim().toLowerCase(Locale.ROOT);
+        for (VendorRequestRow row : MEMORY_FALLBACK) {
+            if (row.getEmail().equalsIgnoreCase(normalized)
+                    && (row.isAwaitingAdminResponse() || (row.isApproved() && row.hasActiveVendorLink()))) {
+                return;
+            }
         }
         int nextId = MEMORY_FALLBACK.stream().mapToInt(VendorRequestRow::getId).max().orElse(0) + 1;
         String submitted = LocalDate.now().format(SUBMITTED_FMT);
@@ -117,7 +160,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
         if (row == null) {
             return VendorApprovalResult.failure("Application not found.");
         }
-        if (row.isApproved()) {
+        if (row.isApproved() && row.hasActiveVendorLink()) {
             return VendorApprovalResult.failure("This application is already approved.");
         }
         if (!row.canApprove()) {
@@ -129,7 +172,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
             return VendorApprovalResult.failure("A vendor account already exists for " + vendorEmail);
         }
 
-        String tempPassword = TempPasswordUtil.generate(10);
+        String tempPassword = TempPasswordUtil.fromContactEmail(row.getEmail());
         String hashed = PasswordUtil.getHashpassword(tempPassword);
 
         User vendor = new User(row.getApplicantName(), vendorEmail, hashed, row.getPhone());
@@ -175,13 +218,95 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
         return VendorApprovalResult.rejected();
     }
 
-    private boolean hasBlockingVendorRequest(String normalizedEmail) {
+    @Override
+    public void markRequestsRejectedForDeletedVendor(int vendorUserId) {
+        if (vendorUserId <= 0) {
+            return;
+        }
+        ensureVendorRequestsTable();
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = """
+                    UPDATE vendor_requests
+                    SET status = 'rejected', vendor_user_id = NULL, vendor_login_email = NULL
+                    WHERE vendor_user_id = ?
+                    """;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, vendorUserId);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("vendor_requests release on delete: " + e.getMessage());
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+        for (VendorRequestRow row : MEMORY_FALLBACK) {
+            if (row.hasActiveVendorLink() && row.getVendorUserId() != null
+                    && row.getVendorUserId() == vendorUserId) {
+                row.setStatus("rejected");
+                row.setVendorUserId(null);
+            }
+        }
+    }
+
+    private boolean hasOpenVendorRequestForContactEmail(String normalizedEmail) {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
             String sql = """
                     SELECT 1 FROM vendor_requests
-                    WHERE LOWER(contact_email) = ? AND status IN ('pending', 'approved')
+                    WHERE LOWER(contact_email) = ? AND status IN ('pending', 'contacted')
+                    LIMIT 1
+                    """;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, normalizedEmail);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("vendor_requests open application check: " + e.getMessage());
+            return false;
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+    }
+
+    private String findLatestStatusForContactEmail(String normalizedEmail) {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = """
+                    SELECT status FROM vendor_requests
+                    WHERE LOWER(contact_email) = ?
+                    ORDER BY created_at DESC, id DESC
+                    LIMIT 1
+                    """;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, normalizedEmail);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("status");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("vendor_requests latest status: " + e.getMessage());
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+        return null;
+    }
+
+    /** Block re-application only after a prior request for this contact email was approved. */
+    private boolean hasApprovedVendorRequestForContactEmail(String normalizedEmail) {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = """
+                    SELECT 1 FROM vendor_requests
+                    WHERE LOWER(contact_email) = ? AND status = 'approved' AND vendor_user_id IS NOT NULL
                     LIMIT 1
                     """;
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -242,7 +367,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
             conn = DatabaseConnection.getConnection();
             String sql = """
                     SELECT id, applicant_name, farm_name, contact_email, phone, status,
-                           vendor_login_email, created_at
+                           vendor_login_email, vendor_user_id, created_at
                     FROM vendor_requests
                     """;
             if (statusFilter != null) {
@@ -274,7 +399,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
             conn = DatabaseConnection.getConnection();
             String sql = """
                     SELECT id, applicant_name, farm_name, contact_email, phone, status,
-                           vendor_login_email, created_at
+                           vendor_login_email, vendor_user_id, created_at
                     FROM vendor_requests WHERE id = ?
                     """;
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -399,6 +524,8 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
         String submitted = created != null
                 ? created.toLocalDateTime().toLocalDate().format(SUBMITTED_FMT)
                 : LocalDate.now().format(SUBMITTED_FMT);
+        int vendorUserIdRaw = rs.getInt("vendor_user_id");
+        Integer vendorUserId = rs.wasNull() ? null : vendorUserIdRaw;
         return new VendorRequestRow(
                 rs.getInt("id"),
                 rs.getString("contact_email"),
@@ -407,7 +534,8 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
                 rs.getString("status"),
                 rs.getString("applicant_name"),
                 rs.getString("farm_name"),
-                rs.getString("vendor_login_email")
+                rs.getString("vendor_login_email"),
+                vendorUserId
         );
     }
 

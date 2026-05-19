@@ -21,6 +21,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -69,6 +71,10 @@ public class DashboardServlet extends HttpServlet {
         if ("moderateReject".equals(action)) {
             applyModerationAction(req, false);
             redirectModeration(req, resp);
+            return;
+        }
+        if ("deleteVendor".equals(action)) {
+            handleDeleteVendor(req, resp);
             return;
         }
         if ("approve".equals(action) || "reject".equals(action)) {
@@ -133,6 +139,18 @@ public class DashboardServlet extends HttpServlet {
     }
 
     private void forwardVendorAccounts(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            Object flash = session.getAttribute("vendorAccountFlash");
+            if (flash instanceof String message) {
+                req.setAttribute("vendorAccountFlash", message);
+                Object ok = session.getAttribute("vendorAccountFlashOk");
+                req.setAttribute("vendorAccountFlashOk", Boolean.TRUE.equals(ok));
+                session.removeAttribute("vendorAccountFlash");
+                session.removeAttribute("vendorAccountFlashOk");
+            }
+        }
+
         String q = req.getParameter("q");
         if (q == null) {
             q = "";
@@ -143,6 +161,31 @@ public class DashboardServlet extends HttpServlet {
         req.setAttribute("vendorAccountsSearch", q);
         req.setAttribute("vendorAccountCards", cards);
         req.getRequestDispatcher("/WEB-INF/views/admin/vendor-accounts.jsp").forward(req, resp);
+    }
+
+    private void handleDeleteVendor(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String idParam = req.getParameter("vendorId");
+        String q = req.getParameter("q");
+        HttpSession session = req.getSession(true);
+        boolean success = false;
+        if (idParam != null && !idParam.isBlank()) {
+            try {
+                int vendorId = Integer.parseInt(idParam);
+                success = vendorAccountDao.deleteVendor(vendorId);
+            } catch (NumberFormatException ignored) {
+                // success stays false
+            }
+        }
+        session.setAttribute("vendorAccountFlash",
+                success ? "Vendor account deleted successfully."
+                        : "Could not delete vendor account. It may not exist or is not a vendor.");
+        session.setAttribute("vendorAccountFlashOk", success);
+
+        String redirect = req.getContextPath() + "/admin?section=accounts";
+        if (q != null && !q.isBlank()) {
+            redirect += "&q=" + URLEncoder.encode(q.trim(), StandardCharsets.UTF_8);
+        }
+        resp.sendRedirect(redirect);
     }
 
     private void forwardModeration(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

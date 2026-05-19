@@ -34,6 +34,12 @@
                 </form>
             </header>
 
+            <c:if test="${not empty vendorAccountFlash}">
+                <div class="requests-flash ${vendorAccountFlashOk ? 'requests-flash--ok' : 'requests-flash--err'}" role="status">
+                    <p><c:out value="${vendorAccountFlash}" /></p>
+                </div>
+            </c:if>
+
             <c:choose>
                 <c:when test="${empty vendorAccountCards}">
                     <p class="vendor-accounts-empty">No approved vendors yet. Approve applications from Vendor Requests first.</p>
@@ -69,6 +75,14 @@
 
                                 <div class="vendor-acct-card__footer">
                                     <span class="vendor-acct-card__badge">${v.verified ? 'active' : 'inactive'}</span>
+                                    <form class="vendor-acct-card__delete-form" method="post"
+                                          action="${pageContext.request.contextPath}/admin"
+                                          onsubmit="return confirm('Delete this vendor account permanently? Their products will also be removed.');">
+                                        <input type="hidden" name="action" value="deleteVendor" />
+                                        <input type="hidden" name="vendorId" value="${v.id}" />
+                                        <input type="hidden" name="q" value="<c:out value='${vendorAccountsSearch}' />" />
+                                        <button type="submit" class="vendor-acct-card__delete">Delete</button>
+                                    </form>
                                 </div>
                             </article>
                         </c:forEach>

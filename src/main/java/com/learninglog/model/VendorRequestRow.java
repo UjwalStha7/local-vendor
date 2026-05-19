@@ -13,18 +13,25 @@ public class VendorRequestRow {
     private final String applicantName;
     private final String farmName;
     private final String vendorLoginEmail;
+    private Integer vendorUserId;
 
     public VendorRequestRow(int id, String email, String phone, String submittedAt, String status) {
-        this(id, email, phone, submittedAt, status, "", "", null);
+        this(id, email, phone, submittedAt, status, "", "", null, null);
     }
 
     public VendorRequestRow(int id, String email, String phone, String submittedAt, String status,
                             String applicantName, String farmName) {
-        this(id, email, phone, submittedAt, status, applicantName, farmName, null);
+        this(id, email, phone, submittedAt, status, applicantName, farmName, null, null);
     }
 
     public VendorRequestRow(int id, String email, String phone, String submittedAt, String status,
                             String applicantName, String farmName, String vendorLoginEmail) {
+        this(id, email, phone, submittedAt, status, applicantName, farmName, vendorLoginEmail, null);
+    }
+
+    public VendorRequestRow(int id, String email, String phone, String submittedAt, String status,
+                            String applicantName, String farmName, String vendorLoginEmail,
+                            Integer vendorUserId) {
         this.id = id;
         this.email = email;
         this.phone = phone;
@@ -33,6 +40,7 @@ public class VendorRequestRow {
         this.applicantName = applicantName != null ? applicantName : "";
         this.farmName = farmName != null ? farmName : "";
         this.vendorLoginEmail = vendorLoginEmail;
+        this.vendorUserId = vendorUserId;
     }
 
     public int getId() {
@@ -63,16 +71,38 @@ public class VendorRequestRow {
         return "pending".equalsIgnoreCase(status);
     }
 
+    /** Waiting for admin (not yet approved or rejected). */
+    public boolean isAwaitingAdminResponse() {
+        return isPending() || "contacted".equalsIgnoreCase(status);
+    }
+
     public boolean isApproved() {
         return "approved".equalsIgnoreCase(status);
     }
 
+    /** Approved and still linked to an existing vendor user account. */
+    public boolean hasActiveVendorLink() {
+        return vendorUserId != null && vendorUserId > 0;
+    }
+
+    public boolean isRejected() {
+        return "rejected".equalsIgnoreCase(status);
+    }
+
     public boolean canApprove() {
-        return isPending();
+        return isPending() || (isApproved() && !hasActiveVendorLink());
+    }
+
+    public void setVendorUserId(Integer vendorUserId) {
+        this.vendorUserId = vendorUserId;
     }
 
     public String getVendorLoginEmail() {
         return vendorLoginEmail;
+    }
+
+    public Integer getVendorUserId() {
+        return vendorUserId;
     }
 
     public String getApplicantName() {
