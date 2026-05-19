@@ -46,7 +46,11 @@ public class DashboardServlet extends HttpServlet {
             case "accounts" -> forwardVendorAccounts(req, resp);
             case "moderation" -> forwardModeration(req, resp);
             case "signout" -> {
-                resp.sendRedirect(req.getContextPath() + "/");
+                HttpSession session = req.getSession(false);
+                if (session != null) {
+                    session.invalidate();
+                }
+                resp.sendRedirect(req.getContextPath() + "/login");
                 return;
             }
             default -> forwardDashboard(req, resp);
