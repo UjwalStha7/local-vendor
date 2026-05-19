@@ -14,6 +14,10 @@
 <c:if test="${param.saved == '1'}">
     <p class="vp-preview-banner vp-preview-banner--ok" role="status">Profile saved successfully.</p>
 </c:if>
+<c:if test="${not empty profileError}">
+    <p class="vp-preview-banner" role="alert"><c:out value="${profileError}" /></p>
+</c:if>
+<c:set var="logoSrc" value="${profile.resolveLogoSrc(ctx)}" />
 
 <header class="vp-page-head vp-page-head--profile">
     <div>
@@ -42,8 +46,10 @@
 
 <form id="vendorProfileForm" class="vp-profile-layout"
       method="post"
+      enctype="multipart/form-data"
       action="${previewMode ? '#' : ctx.concat('/farmer/profile')}"
-      data-preview="${previewMode}">
+      data-preview="${previewMode}"
+      data-ctx="${ctx}">
 
     <div class="vp-profile-main">
         <section class="vp-profile-panel" aria-labelledby="shop-info-heading">
@@ -68,9 +74,14 @@
                                   data-preview-field>${profile.shopBio}</textarea>
                     </c:when>
                     <c:otherwise>
-                        <div class="vp-field__display vp-field__display--empty" data-preview-source="shopBio">
-                            <c:out value="${empty profile.shopBio ? '' : profile.shopBio}" />
-                        </div>
+                        <c:choose>
+                            <c:when test="${profile.hasShopBio}">
+                                <div class="vp-field__display" data-preview-source="shopBio"><c:out value="${profile.shopBio}" /></div>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="vp-field__hint">No shop bio added yet.</p>
+                            </c:otherwise>
+                        </c:choose>
                     </c:otherwise>
                 </c:choose>
             </div>
@@ -82,8 +93,9 @@
                 <label class="vp-field__label" for="email">Email <span class="vp-req">*</span></label>
                 <c:choose>
                     <c:when test="${editMode}">
-                        <input type="email" id="email" name="email" class="vp-field__input"
-                               value="${profile.email}" required data-preview-field />
+                        <input type="email" id="email" class="vp-field__input vp-field__input--readonly"
+                               value="${profile.email}" readonly aria-readonly="true" />
+                        <span class="vp-field__hint">Email cannot be changed here. Contact support if you need to update it.</span>
                     </c:when>
                     <c:otherwise>
                         <div class="vp-field__display" data-preview-source="email">${profile.email}</div>
@@ -120,22 +132,21 @@
 
         <section class="vp-profile-panel" aria-labelledby="logo-heading">
             <h2 id="logo-heading" class="vp-profile-panel__title">Shop Logo</h2>
-            <div class="vp-field">
-                <label class="vp-field__label" for="logoUrl">Logo URL</label>
-                <c:choose>
-                    <c:when test="${editMode}">
-                        <input type="url" id="logoUrl" name="logoUrl" class="vp-field__input"
-                               value="${profile.logoUrl}" data-preview-field="logo" />
-                    </c:when>
-                    <c:otherwise>
-                        <div class="vp-field__display vp-field__display--url" data-preview-source="logoUrl">${profile.logoUrl}</div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+            <c:if test="${editMode}">
+                <div class="vp-field">
+                    <label class="vp-field__label" for="logo">Upload logo</label>
+                    <div class="vp-field__file-wrap">
+                        <input type="file" id="logo" name="logo" class="vp-field__file"
+                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                               data-logo-file-input />
+                    </div>
+                    <span class="vp-field__hint">JPG, PNG, or WEBP — max 5 MB. Leave empty to keep your current logo.</span>
+                </div>
+            </c:if>
             <div class="vp-logo-preview-row">
                 <span class="vp-logo-preview-row__label">Logo Preview</span>
                 <img id="logoPreviewImg" class="vp-logo-preview-row__img"
-                     src="${profile.logoUrl}"
+                     src="${logoSrc}"
                      alt="Shop logo preview"
                      width="56" height="56"
                      data-fallback="${ctx}/image/fresh_apple.png" />
@@ -157,7 +168,7 @@
             <div class="vp-customer-card">
                 <div class="vp-customer-card__head">
                     <img id="previewLogo" class="vp-customer-card__logo"
-                         src="${profile.logoUrl}"
+                         src="${logoSrc}"
                          alt=""
                          width="56" height="56"
                          data-fallback="${ctx}/image/fresh_apple.png" />
@@ -171,7 +182,9 @@
                         </c:if>
                     </div>
                 </div>
-                <p id="previewBio" class="vp-customer-card__bio">${profile.previewBio}</p>
+                <c:if test="${profile.hasShopBio or editMode}">
+                    <p id="previewBio" class="vp-customer-card__bio" data-preview-bio ${empty profile.shopBio ? 'hidden' : ''}><c:out value="${profile.shopBio}" /></p>
+                </c:if>
                 <ul class="vp-customer-card__contacts">
                     <li>
                         <img src="${ctx}/image/green_email.png" alt="" width="16" height="16" />
@@ -183,7 +196,7 @@
                     </li>
                     <li>
                         <img src="${ctx}/image/location.png" alt="" width="16" height="16" />
-                        <span id="previewAddress">${profile.previewAddress}</span>
+                        <span id="previewAddress"><c:out value="${profile.address}" /></span>
                     </li>
                 </ul>
             </div>

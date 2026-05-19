@@ -16,7 +16,7 @@
     <div class="vp-topbar__actions${topbarShowSearch ? '' : ' vp-topbar__actions--end'}">
         <div class="vp-profile">
             <img class="vp-profile__avatar"
-                 src="${ctx}/image/fresh_apple.png"
+                 src="${empty storeLogo ? ctx.concat('/image/fresh_apple.png') : storeLogo}"
                  alt=""
                  width="42"
                  height="42" />

@@ -456,9 +456,37 @@ a {
 }
 
 .product-card__media {
+  position: relative;
   aspect-ratio: 1;
   background: #f1f5f9;
   overflow: hidden;
+}
+
+.product-card__badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  background: #64748b;
+  z-index: 1;
+}
+
+.product-card__badge--in {
+  background: #00a63e;
+}
+
+.product-card__badge--limited {
+  background: #d97706;
+}
+
+.product-card__vendor {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  color: #64748b;
 }
 
 .product-card__media img {

@@ -67,7 +67,7 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${not empty p.photoPath}">
-                                            <img class="vp-product-thumb" src="${ctx}${p.photoPath}" alt="" width="48" height="48" />
+                                            <img class="vp-product-thumb" src="${p.resolvePhotoSrc(ctx)}" alt="" width="48" height="48" />
                                         </c:when>
                                         <c:otherwise>
                                             <span class="vp-product-thumb vp-product-thumb--empty" aria-hidden="true"></span>

@@ -56,20 +56,9 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" id="vendorFilters">
             <h3 class="field-title">Vendor</h3>
-            <label class="check">
-              <input type="checkbox" name="vendor" value="green-valley-farm" />
-              <span>Green Valley Farm</span>
-            </label>
-            <label class="check">
-              <input type="checkbox" name="vendor" value="organic-harvest" />
-              <span>Organic Harvest</span>
-            </label>
-            <label class="check">
-              <input type="checkbox" name="vendor" value="fresh-fields" />
-              <span>Fresh Fields</span>
-            </label>
+            <p class="field-hint" id="vendorFiltersHint">Loading vendors…</p>
           </div>
 
           <div class="field">

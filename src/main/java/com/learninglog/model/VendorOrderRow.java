@@ -5,6 +5,7 @@ package com.learninglog.model;
  */
 public class VendorOrderRow {
 
+    private final int dbOrderId;
     private final String orderId;
     private final String customerName;
     private final String phone;
@@ -12,14 +13,19 @@ public class VendorOrderRow {
     private final double total;
     private String status;
 
-    public VendorOrderRow(String orderId, String customerName, String phone,
+    public VendorOrderRow(int dbOrderId, String orderId, String customerName, String phone,
                           String orderDate, double total, String status) {
+        this.dbOrderId = dbOrderId;
         this.orderId = orderId;
         this.customerName = customerName;
         this.phone = phone;
         this.orderDate = orderDate;
         this.total = total;
         this.status = status;
+    }
+
+    public int getDbOrderId() {
+        return dbOrderId;
     }
 
     public String getOrderId() {
@@ -51,6 +57,9 @@ public class VendorOrderRow {
     }
 
     public String getStatusKey() {
-        return status == null ? "" : status.trim().toLowerCase();
+        if (status == null) {
+            return "";
+        }
+        return status.trim().toLowerCase(java.util.Locale.ROOT);
     }
 }

@@ -21,6 +21,6 @@ public class CartServlet extends HttpServlet {
         if (CustomerAuthUtil.requireCustomer(req, resp) == null) {
             return;
         }
-        req.getRequestDispatcher("/cart.html").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/customer/cart.jsp").forward(req, resp);
     }
 }

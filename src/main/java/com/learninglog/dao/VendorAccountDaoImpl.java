@@ -14,10 +14,18 @@ import java.util.Locale;
 public class VendorAccountDaoImpl implements VendorAccountDao {
 
     private final VendorRequestDao vendorRequestDao = new VendorRequestDaoImpl();
+    private final VendorProfileDao profileDao = new VendorProfileDaoImpl();
+
+    public VendorAccountDaoImpl() {
+        profileDao.ensureSchema();
+    }
 
     private static final String LIST_SQL = """
             SELECT u.id, u.username, u.email, u.phone, u.is_active,
                    COALESCE(vp.business_name, u.username) AS business_name,
+                   COALESCE(vp.shop_bio, '') AS shop_bio,
+                   COALESCE(vp.address, '') AS address,
+                   COALESCE(vp.logo_path, '') AS logo_path,
                    (SELECT COUNT(*) FROM products p WHERE p.vendor_user_id = u.id) AS product_count,
                    (SELECT COUNT(DISTINCT oi.order_id)
                     FROM order_items oi
@@ -32,6 +40,9 @@ public class VendorAccountDaoImpl implements VendorAccountDao {
     private static final String SEARCH_SQL = """
             SELECT u.id, u.username, u.email, u.phone, u.is_active,
                    COALESCE(vp.business_name, u.username) AS business_name,
+                   COALESCE(vp.shop_bio, '') AS shop_bio,
+                   COALESCE(vp.address, '') AS address,
+                   COALESCE(vp.logo_path, '') AS logo_path,
                    (SELECT COUNT(*) FROM products p WHERE p.vendor_user_id = u.id) AS product_count,
                    (SELECT COUNT(DISTINCT oi.order_id)
                     FROM order_items oi
@@ -126,6 +137,9 @@ public class VendorAccountDaoImpl implements VendorAccountDao {
                 rs.getString("business_name"),
                 rs.getString("email"),
                 rs.getString("phone") != null ? rs.getString("phone") : "",
+                rs.getString("shop_bio"),
+                rs.getString("address"),
+                rs.getString("logo_path"),
                 rs.getInt("product_count"),
                 rs.getInt("order_count"),
                 rs.getBoolean("is_active")

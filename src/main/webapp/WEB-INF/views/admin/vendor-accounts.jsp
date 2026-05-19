@@ -49,11 +49,21 @@
                         <c:forEach var="v" items="${vendorAccountCards}">
                             <article class="vendor-acct-card">
                                 <div class="vendor-acct-card__top">
+                                    <img class="vendor-acct-card__logo"
+                                         src="${v.resolveLogoSrc(pageContext.request.contextPath)}"
+                                         alt=""
+                                         width="48" height="48" />
                                     <div class="vendor-acct-card__identity">
                                         <h2 class="vendor-acct-card__name"><c:out value="${v.name}" /></h2>
                                         <p class="vendor-acct-card__company"><c:out value="${v.company}" /></p>
+                                        <c:if test="${v.hasShopBio}">
+                                            <p class="vendor-acct-card__bio"><c:out value="${v.shopBio}" /></p>
+                                        </c:if>
                                         <p class="vendor-acct-card__contact"><c:out value="${v.email}" /></p>
                                         <p class="vendor-acct-card__contact"><c:out value="${v.phone}" /></p>
+                                        <c:if test="${v.hasAddress}">
+                                            <p class="vendor-acct-card__contact"><c:out value="${v.address}" /></p>
+                                        </c:if>
                                     </div>
                                     <c:if test="${v.verified}">
                                         <span class="vendor-acct-card__verified" title="Verified">
