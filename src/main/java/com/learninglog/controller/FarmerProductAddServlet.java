@@ -4,7 +4,10 @@ import com.learninglog.dao.ModerationProductDao;
 import com.learninglog.dao.ModerationProductDaoImpl;
 import com.learninglog.entity.User;
 import com.learninglog.util.FarmerAuthUtil;
+import com.learninglog.util.ProductCategoryUtil;
+import com.learninglog.util.ProductImageUtil;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(urlPatterns = {"/farmer/product-add"})
+@MultipartConfig(
+        fileSizeThreshold = 1024,
+        maxFileSize = 5 * 1024 * 1024,
+        maxRequestSize = 6 * 1024 * 1024
+)
 public class FarmerProductAddServlet extends HttpServlet {
 
     private final ModerationProductDao moderationDao = new ModerationProductDaoImpl();
@@ -29,6 +37,7 @@ public class FarmerProductAddServlet extends HttpServlet {
         FarmerAuthUtil.setStoreAttributes(req, vendor);
         req.setAttribute("activeNav", "product-management");
         req.setAttribute("topbarShowSearch", Boolean.FALSE);
+        req.setAttribute("productCategories", ProductCategoryUtil.CATEGORIES);
         req.setAttribute("pendingNewProduct", moderationDao.hasPendingNewProductRequest(vendor.getId()));
         if ("pending".equals(req.getParameter("error"))) {
             req.setAttribute("formError", "You already have a new product waiting for admin approval.");
@@ -45,10 +54,10 @@ public class FarmerProductAddServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
 
         String name = trim(req.getParameter("name"));
-        String category = trim(req.getParameter("category"));
+        String categoryRaw = trim(req.getParameter("category"));
+        String category = ProductCategoryUtil.normalize(categoryRaw);
         String description = trim(req.getParameter("description"));
         String unit = trim(req.getParameter("unit"));
-        String photoPath = trim(req.getParameter("photoPath"));
 
         List<String> errors = new ArrayList<>();
         double price = 0;
@@ -57,8 +66,8 @@ public class FarmerProductAddServlet extends HttpServlet {
         if (name == null || name.length() < 2) {
             errors.add("Product name is required (at least 2 characters).");
         }
-        if (category == null || category.isBlank()) {
-            errors.add("Category is required.");
+        if (category == null) {
+            errors.add("Please select a category.");
         }
         try {
             price = Double.parseDouble(req.getParameter("price"));
@@ -80,8 +89,17 @@ public class FarmerProductAddServlet extends HttpServlet {
             errors.add("Enter a valid stock quantity.");
         }
 
+        String photoPath = null;
+        try {
+            photoPath = ProductImageUtil.saveUploadedPhoto(req, "photo");
+        } catch (IllegalArgumentException ex) {
+            errors.add(ex.getMessage());
+        } catch (ServletException ex) {
+            errors.add("Could not read uploaded image.");
+        }
+
         if (!errors.isEmpty()) {
-            forwardWithForm(req, resp, vendor, errors, name, category, description, unit, photoPath,
+            forwardWithForm(req, resp, vendor, errors, name, categoryRaw, description, unit, null,
                     req.getParameter("price"), req.getParameter("stock"));
             return;
         }
@@ -111,6 +129,7 @@ public class FarmerProductAddServlet extends HttpServlet {
             FarmerAuthUtil.setStoreAttributes(req, vendor);
             req.setAttribute("activeNav", "product-management");
             req.setAttribute("topbarShowSearch", Boolean.FALSE);
+            req.setAttribute("productCategories", ProductCategoryUtil.CATEGORIES);
             req.setAttribute("pendingNewProduct", moderationDao.hasPendingNewProductRequest(vendor.getId()));
             req.getRequestDispatcher("/WEB-INF/views/farmer/product-add.jsp").forward(req, resp);
         } catch (ServletException e) {

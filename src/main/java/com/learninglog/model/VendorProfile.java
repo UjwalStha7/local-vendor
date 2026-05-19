@@ -1,5 +1,7 @@
 package com.learninglog.model;
 
+import com.learninglog.util.ImageUtil;
+
 /**
  * Vendor shop profile for the farmer portal profile page.
  */
@@ -34,13 +36,41 @@ public class VendorProfile {
         this.shopBio = shopBio;
     }
 
-    /** Text shown in customer preview when shop bio is empty. */
-    public String getPreviewBio() {
-        if (shopBio != null && !shopBio.isBlank()) {
-            return shopBio.trim();
+    public boolean hasShopBio() {
+        return shopBio != null && !shopBio.isBlank();
+    }
+
+    /** EL: ${profile.hasShopBio} */
+    public boolean getHasShopBio() {
+        return hasShopBio();
+    }
+
+    public boolean hasAddress() {
+        return address != null && !address.isBlank();
+    }
+
+    /** EL: ${profile.hasAddress} */
+    public boolean getHasAddress() {
+        return hasAddress();
+    }
+
+    public boolean hasLogo() {
+        return logoUrl != null && !logoUrl.isBlank();
+    }
+
+    /** EL: ${profile.hasLogo} */
+    public boolean getHasLogo() {
+        return hasLogo();
+    }
+
+    /** Resolved logo URL for img src (upload servlet or legacy path). */
+    public String resolveLogoSrc(String contextPath) {
+        String ctx = contextPath == null ? "" : contextPath;
+        if (!hasLogo()) {
+            return ctx + "/image/fresh_apple.png";
         }
-        return "Your trusted source for fresh, organic produce. We work directly with local farmers "
-                + "to bring you the highest quality fruits and vegetables.";
+        String built = ImageUtil.buildImageUrl(ctx, logoUrl);
+        return built != null ? built : ctx + "/image/fresh_apple.png";
     }
 
     public String getEmail() {
@@ -65,14 +95,6 @@ public class VendorProfile {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    /** Address line in customer preview. */
-    public String getPreviewAddress() {
-        if (address != null && !address.isBlank()) {
-            return address.trim();
-        }
-        return "1234 Farm Road, Green Valley, CA 94000";
     }
 
     public String getLogoUrl() {

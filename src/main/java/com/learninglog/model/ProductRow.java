@@ -1,5 +1,7 @@
 package com.learninglog.model;
 
+import com.learninglog.util.ImageUtil;
+
 /**
  * Product row for vendor product management list.
  */
@@ -58,6 +60,15 @@ public class ProductRow {
 
     public String getPhotoPath() {
         return photoPath;
+    }
+
+    public String resolvePhotoSrc(String contextPath) {
+        String url = ImageUtil.buildImageUrl(contextPath, photoPath);
+        if (url != null) {
+            return url;
+        }
+        String ctx = contextPath == null ? "" : contextPath;
+        return ctx + "/image/fresh_apple.png";
     }
 
     public boolean isPendingModeration() {

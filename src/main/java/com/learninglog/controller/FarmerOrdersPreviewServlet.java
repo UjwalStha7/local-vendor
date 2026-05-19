@@ -16,6 +16,6 @@ public class FarmerOrdersPreviewServlet extends HttpServlet {
             throws ServletException, IOException {
         req.setAttribute("vendorName", "FreshHarvest Farms");
         req.setAttribute("storeName", "FreshHarvest Farms");
-        FarmerOrdersServlet.forwardOrders(req, resp, true);
+        FarmerOrdersServlet.forwardOrders(req, resp, 0, true);
     }
 }

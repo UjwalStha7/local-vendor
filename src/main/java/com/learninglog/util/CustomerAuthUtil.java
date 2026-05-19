@@ -3,8 +3,6 @@ package com.learninglog.util;
 import com.learninglog.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -15,14 +13,10 @@ public final class CustomerAuthUtil {
     }
 
     public static User requireCustomer(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        HttpSession session = req.getSession(false);
-        if (session == null) {
-            redirectToLogin(req, resp);
-            return null;
-        }
-        Object userObj = session.getAttribute("user");
-        String role = (String) session.getAttribute("role");
-        if (!(userObj instanceof User user) || role == null || !role.equalsIgnoreCase("customer")) {
+        Object userObj = SessionUtil.getAttribute(req, "user");
+        Object roleObj = SessionUtil.getAttribute(req, "role");
+        if (!(userObj instanceof User user) || !(roleObj instanceof String role)
+                || !role.equalsIgnoreCase("customer")) {
             redirectToLogin(req, resp);
             return null;
         }

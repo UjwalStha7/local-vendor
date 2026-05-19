@@ -3,15 +3,16 @@ package com.learninglog.controller;
 import com.learninglog.dao.UserDao;
 import com.learninglog.dao.UserDaoImp;
 import com.learninglog.entity.User;
+import com.learninglog.util.CookieUtil;
 import com.learninglog.util.LoginAuthUtil;
 import com.learninglog.util.LoginAuthUtil.AccountType;
 import com.learninglog.util.PasswordUtil;
+import com.learninglog.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -82,9 +83,14 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        HttpSession session = request.getSession();
-        session.setAttribute("user", user);
-        session.setAttribute("role", LoginAuthUtil.sessionRoleFor(accountType));
+        SessionUtil.setAttribute(request, "user", user);
+        SessionUtil.setAttribute(request, "role", LoginAuthUtil.sessionRoleFor(accountType));
+
+        String rememberName = user.getUsername();
+        if (rememberName == null || rememberName.isBlank()) {
+            rememberName = user.getEmail();
+        }
+        CookieUtil.addCookie(response, "username", rememberName, 24 * 60 * 60);
 
         String redirect = sanitizeRedirect(request.getParameter("redirect"));
         if (redirect != null && accountType == AccountType.CUSTOMER) {

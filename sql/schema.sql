@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS vendor_requests (
 CREATE TABLE IF NOT EXISTS vendor_profiles (
     vendor_user_id INT PRIMARY KEY,
     business_name VARCHAR(100) NOT NULL,
+    shop_bio TEXT,
+    address VARCHAR(255),
+    logo_path VARCHAR(255),
     FOREIGN KEY (vendor_user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 

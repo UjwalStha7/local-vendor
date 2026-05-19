@@ -19,9 +19,6 @@
         <p>View and manage all incoming orders</p>
     </div>
     <form class="vp-orders-filter" method="get" action="${previewMode ? ctx.concat('/farmerorderspreview') : ctx.concat('/farmer/orders')}">
-        <c:if test="${not empty searchQuery}">
-            <input type="hidden" name="q" value="${searchQuery}" />
-        </c:if>
         <label class="vp-sr-only" for="orderStatusFilter">Filter orders by status</label>
         <select id="orderStatusFilter" name="filter" class="vp-filter-select" onchange="this.form.submit()">
             <option value="all" ${orderFilter eq 'all' ? 'selected' : ''}>All Orders</option>
@@ -68,13 +65,12 @@
                 <c:choose>
                     <c:when test="${empty orders}">
                         <tr>
-                            <td colspan="6" class="vp-table-empty">No orders match your filters.</td>
+                            <td colspan="6" class="vp-table-empty">No orders yet. Orders appear here when customers check out from the shop.</td>
                         </tr>
                     </c:when>
                     <c:otherwise>
                         <c:forEach var="o" items="${orders}">
-                            <tr data-order-row data-status="${o.statusKey}"
-                                data-search="${o.orderId} ${o.customerName} ${o.phone}">
+                            <tr data-order-row data-status="${o.statusKey}">
                                 <td class="vp-order-id">${o.orderId}</td>
                                 <td>
                                     <span class="vp-customer-name">${o.customerName}</span>
@@ -95,9 +91,9 @@
                                                 <select id="status-${o.orderId}" name="status"
                                                         class="vp-status-select vp-status-select--${o.statusKey}"
                                                         onchange="this.form.submit()">
-                                                    <option value="Pending" ${o.status eq 'Pending' ? 'selected' : ''}>Pending</option>
-                                                    <option value="Dispatched" ${o.status eq 'Dispatched' ? 'selected' : ''}>Dispatched</option>
-                                                    <option value="Delivered" ${o.status eq 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                                    <option value="pending" ${o.statusKey eq 'pending' ? 'selected' : ''}>Pending</option>
+                                                    <option value="dispatched" ${o.statusKey eq 'dispatched' ? 'selected' : ''}>Dispatched</option>
+                                                    <option value="delivered" ${o.statusKey eq 'delivered' ? 'selected' : ''}>Delivered</option>
                                                 </select>
                                             </form>
                                         </c:otherwise>
@@ -122,5 +118,19 @@
     </div>
 </section>
 
+<div id="orderDetailModal" class="vp-modal" hidden aria-hidden="true">
+    <div class="vp-modal__backdrop" data-modal-close></div>
+    <div class="vp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="orderDetailTitle">
+        <header class="vp-modal__header">
+            <h2 id="orderDetailTitle">Order details</h2>
+            <button type="button" class="vp-modal__close" data-modal-close aria-label="Close">&times;</button>
+        </header>
+        <div class="vp-modal__body" id="orderDetailBody">
+            <p class="vp-modal__loading">Loading…</p>
+        </div>
+    </div>
+</div>
+
+<script>window.VP_ORDER_DETAIL_URL = "${ctx}/farmer/order-detail";</script>
 <script src="${ctx}/js/farmer-orders.js"></script>
 <jsp:include page="vendor-foot.jsp" />

@@ -26,7 +26,7 @@
 </c:if>
 
 <section class="vp-products-card vp-product-edit-card">
-    <form method="post" action="${ctx}/farmer/product-edit">
+    <form method="post" action="${ctx}/farmer/product-edit" enctype="multipart/form-data">
         <input type="hidden" name="id" value="${product.id}" />
 
         <div class="vp-product-edit-grid">
@@ -53,8 +53,13 @@
                 </div>
                 <div class="vp-field">
                     <label for="category">Category</label>
-                    <input id="category" name="category" type="text" required maxlength="50"
-                           value="<c:out value='${empty formCategory ? product.category : formCategory}' />" />
+                    <c:set var="selectedCategory" value="${not empty formCategory ? formCategory : product.category}" />
+                    <select id="category" name="category" class="vp-field__select" required>
+                        <option value="" disabled>Select category</option>
+                        <c:forEach var="cat" items="${productCategories}">
+                            <option value="${cat}" ${cat eq selectedCategory ? 'selected' : ''}><c:out value="${cat}" /></option>
+                        </c:forEach>
+                    </select>
                 </div>
                 <div class="vp-field">
                     <label for="description">Description</label>
@@ -78,10 +83,16 @@
                     </div>
                 </div>
                 <div class="vp-field">
-                    <label for="photoPath">Image path (optional)</label>
-                    <input id="photoPath" name="photoPath" type="text" maxlength="255" placeholder="/image/your_product.png"
-                           value="<c:out value='${empty formPhotoPath ? product.photoPath : formPhotoPath}' />" />
-                    <span class="vp-field-hint">Example: /image/organic_tomatoes.jpeg</span>
+                    <label for="photo">Product image</label>
+                    <c:set var="currentPhoto" value="${not empty formPhotoPath ? formPhotoPath : product.photoPath}" />
+                    <c:if test="${not empty currentPhoto}">
+                        <p class="vp-photo-preview-label">Current image</p>
+                        <img class="vp-photo-preview" src="${product.resolvePhotoSrc(ctx)}" alt="" width="120" height="120" />
+                    </c:if>
+                    <div class="vp-field__file-wrap">
+                        <input id="photo" name="photo" type="file" class="vp-field__file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                    </div>
+                    <span class="vp-field-hint">Upload a new image to replace the current one (JPG, PNG, WEBP — max 5 MB).</span>
                 </div>
             </div>
         </div>

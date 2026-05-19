@@ -7,7 +7,10 @@ import com.learninglog.dao.ProductDaoImpl;
 import com.learninglog.entity.User;
 import com.learninglog.model.ProductRow;
 import com.learninglog.util.FarmerAuthUtil;
+import com.learninglog.util.ProductCategoryUtil;
+import com.learninglog.util.ProductImageUtil;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +22,11 @@ import java.util.List;
 import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/farmer/product-edit"})
+@MultipartConfig(
+        fileSizeThreshold = 1024,
+        maxFileSize = 5 * 1024 * 1024,
+        maxRequestSize = 6 * 1024 * 1024
+)
 public class FarmerProductEditServlet extends HttpServlet {
 
     private final ProductDao productDao = new ProductDaoImpl();
@@ -44,6 +52,7 @@ public class FarmerProductEditServlet extends HttpServlet {
         FarmerAuthUtil.setStoreAttributes(req, vendor);
         req.setAttribute("activeNav", "product-management");
         req.setAttribute("topbarShowSearch", Boolean.FALSE);
+        req.setAttribute("productCategories", ProductCategoryUtil.CATEGORIES);
         req.setAttribute("product", product.get());
         req.setAttribute("pendingModeration", productDao.hasPendingModeration(productId));
         req.getRequestDispatcher("/WEB-INF/views/farmer/product-edit.jsp").forward(req, resp);
@@ -68,13 +77,10 @@ public class FarmerProductEditServlet extends HttpServlet {
         }
 
         String name = trim(req.getParameter("name"));
-        String category = trim(req.getParameter("category"));
+        String categoryRaw = trim(req.getParameter("category"));
+        String category = ProductCategoryUtil.normalize(categoryRaw);
         String description = trim(req.getParameter("description"));
         String unit = trim(req.getParameter("unit"));
-        String photoPath = trim(req.getParameter("photoPath"));
-        if (photoPath == null || photoPath.isBlank()) {
-            photoPath = product.get().getPhotoPath();
-        }
 
         List<String> errors = new ArrayList<>();
         double price = 0;
@@ -83,8 +89,8 @@ public class FarmerProductEditServlet extends HttpServlet {
         if (name == null || name.length() < 2) {
             errors.add("Product name is required (at least 2 characters).");
         }
-        if (category == null || category.isBlank()) {
-            errors.add("Category is required.");
+        if (category == null) {
+            errors.add("Please select a category.");
         }
         try {
             price = Double.parseDouble(req.getParameter("price"));
@@ -106,25 +112,21 @@ public class FarmerProductEditServlet extends HttpServlet {
             errors.add("Enter a valid stock quantity.");
         }
 
-        if (!errors.isEmpty()) {
-            try {
-                req.setAttribute("errors", errors);
-                req.setAttribute("product", product.get());
-                req.setAttribute("pendingModeration", productDao.hasPendingModeration(productId));
-                req.setAttribute("formName", name != null ? name : "");
-                req.setAttribute("formCategory", category != null ? category : "");
-                req.setAttribute("formDescription", description != null ? description : "");
-                req.setAttribute("formPrice", req.getParameter("price"));
-                req.setAttribute("formUnit", unit != null ? unit : "");
-                req.setAttribute("formStock", req.getParameter("stock"));
-                req.setAttribute("formPhotoPath", photoPath);
-                FarmerAuthUtil.setStoreAttributes(req, vendor);
-                req.setAttribute("activeNav", "product-management");
-                req.setAttribute("topbarShowSearch", Boolean.FALSE);
-                req.getRequestDispatcher("/WEB-INF/views/farmer/product-edit.jsp").forward(req, resp);
-            } catch (ServletException e) {
-                throw new IOException(e);
+        String photoPath = product.get().getPhotoPath();
+        try {
+            String uploaded = ProductImageUtil.saveUploadedPhoto(req, "photo");
+            if (uploaded != null) {
+                photoPath = uploaded;
             }
+        } catch (IllegalArgumentException ex) {
+            errors.add(ex.getMessage());
+        } catch (ServletException ex) {
+            errors.add("Could not read uploaded image.");
+        }
+
+        if (!errors.isEmpty()) {
+            forwardWithForm(req, resp, vendor, product.get(), errors, name, categoryRaw, description,
+                    unit, photoPath, req.getParameter("price"), req.getParameter("stock"));
             return;
         }
 
@@ -143,6 +145,31 @@ public class FarmerProductEditServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/farmer/product-management?moderationSubmitted=1");
         } catch (IllegalStateException ex) {
             resp.sendRedirect(req.getContextPath() + "/farmer/product-edit?id=" + productId + "&error=pending");
+        }
+    }
+
+    private void forwardWithForm(HttpServletRequest req, HttpServletResponse resp, User vendor,
+                                 ProductRow product, List<String> errors, String name, String category,
+                                 String description, String unit, String photoPath, String price, String stock)
+            throws IOException {
+        try {
+            req.setAttribute("errors", errors);
+            req.setAttribute("product", product);
+            req.setAttribute("pendingModeration", productDao.hasPendingModeration(product.getId()));
+            req.setAttribute("formName", name != null ? name : "");
+            req.setAttribute("formCategory", category != null ? category : "");
+            req.setAttribute("formDescription", description != null ? description : "");
+            req.setAttribute("formPrice", price != null ? price : "");
+            req.setAttribute("formUnit", unit != null ? unit : "");
+            req.setAttribute("formStock", stock != null ? stock : "");
+            req.setAttribute("formPhotoPath", photoPath != null ? photoPath : "");
+            FarmerAuthUtil.setStoreAttributes(req, vendor);
+            req.setAttribute("activeNav", "product-management");
+            req.setAttribute("topbarShowSearch", Boolean.FALSE);
+            req.setAttribute("productCategories", ProductCategoryUtil.CATEGORIES);
+            req.getRequestDispatcher("/WEB-INF/views/farmer/product-edit.jsp").forward(req, resp);
+        } catch (ServletException e) {
+            throw new IOException(e);
         }
     }
 

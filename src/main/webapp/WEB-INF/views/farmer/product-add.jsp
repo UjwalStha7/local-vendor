@@ -26,7 +26,7 @@
 </c:if>
 
 <section class="vp-products-card vp-product-edit-card">
-    <form method="post" action="${ctx}/farmer/product-add">
+    <form method="post" action="${ctx}/farmer/product-add" enctype="multipart/form-data">
         <div class="vp-product-edit-col vp-product-edit-col--full">
             <div class="vp-field">
                 <label for="name">Name</label>
@@ -35,8 +35,12 @@
             </div>
             <div class="vp-field">
                 <label for="category">Category</label>
-                <input id="category" name="category" type="text" required maxlength="50"
-                       value="<c:out value='${formCategory}' />" />
+                <select id="category" name="category" class="vp-field__select" required>
+                    <option value="" disabled ${empty formCategory ? 'selected' : ''}>Select category</option>
+                    <c:forEach var="cat" items="${productCategories}">
+                        <option value="${cat}" ${cat eq formCategory ? 'selected' : ''}><c:out value="${cat}" /></option>
+                    </c:forEach>
+                </select>
             </div>
             <div class="vp-field">
                 <label for="description">Description</label>
@@ -60,10 +64,11 @@
                 </div>
             </div>
             <div class="vp-field">
-                <label for="photoPath">Image path (optional)</label>
-                <input id="photoPath" name="photoPath" type="text" maxlength="255" placeholder="/image/your_product.png"
-                       value="<c:out value='${formPhotoPath}' />" />
-                <span class="vp-field-hint">Example: /image/organic_tomatoes.jpeg</span>
+                <label for="photo">Product image (optional)</label>
+                <div class="vp-field__file-wrap">
+                    <input id="photo" name="photo" type="file" class="vp-field__file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                </div>
+                <span class="vp-field-hint">JPG, PNG, or WEBP — max 5 MB. Upload from your device; no file path needed.</span>
             </div>
         </div>
 
