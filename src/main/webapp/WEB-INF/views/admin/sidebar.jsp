@@ -28,13 +28,6 @@
             </span>
             <span class="admin-nav-item__label">Vendor Requests</span>
         </a>
-        <a class="admin-nav-item<%= "add-vendor".equals(nav) ? " is-active" : "" %>"
-           href="<%= ctx %>/admin?section=add-vendor">
-            <span class="admin-nav-item__icon" aria-hidden="true">
-                <img src="<%= ctx %>/image/vendor.png" alt="" width="20" height="20" />
-            </span>
-            <span class="admin-nav-item__label">Add new Vendor</span>
-        </a>
         <a class="admin-nav-item<%= "accounts".equals(nav) ? " is-active" : "" %>"
            href="<%= ctx %>/admin?section=accounts">
             <span class="admin-nav-item__icon" aria-hidden="true">
@@ -43,7 +36,7 @@
             <span class="admin-nav-item__label">Vendor Accounts</span>
         </a>
         <a class="admin-nav-item<%= "moderation".equals(nav) ? " is-active" : "" %>"
-           href="<%= ctx %>/admin?section=moderation">
+           href="<%= ctx %>/admin?section=moderation&amp;filter=pending">
             <span class="admin-nav-item__icon" aria-hidden="true">
                 <img src="<%= ctx %>/image/box.png" alt="" width="20" height="20" />
             </span>

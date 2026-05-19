@@ -26,10 +26,27 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
     private static final DateTimeFormatter SUBMITTED_FMT =
             DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US);
 
-    private static final CopyOnWriteArrayList<VendorRequestRow> MEMORY_FALLBACK = new CopyOnWriteArrayList<>(Arrays.asList(
-            new VendorRequestRow(1, "olivia.martin@email.com", "+1 (555) 218-3940", "May 1, 2026", "pending", "Olivia Martin", "Martin Family Farm"),
-            new VendorRequestRow(2, "james.wilson@farm.co", "+1 (555) 201-8842", "May 2, 2026", "contacted", "James Wilson", "Wilson Growers")
-    ));
+    private static final String CREATE_VENDOR_REQUESTS_TABLE = """
+            CREATE TABLE IF NOT EXISTS vendor_requests (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                applicant_name VARCHAR(120) NOT NULL,
+                farm_name VARCHAR(160) NOT NULL,
+                contact_email VARCHAR(100) NOT NULL,
+                phone VARCHAR(30) NOT NULL,
+                category VARCHAR(50),
+                about_text TEXT,
+                status ENUM('pending', 'contacted', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+                vendor_user_id INT NULL,
+                vendor_login_email VARCHAR(100) NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (vendor_user_id) REFERENCES users(id) ON DELETE SET NULL
+            )
+            """;
+
+    private static volatile boolean tableEnsured;
+
+    private static final CopyOnWriteArrayList<VendorRequestRow> MEMORY_FALLBACK = new CopyOnWriteArrayList<>();
 
     private final UserDao userDao = new UserDaoImp();
 
@@ -45,39 +62,68 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
 
     @Override
     public List<VendorRequestRow> listVendorRequests() {
-        List<VendorRequestRow> fromDb = listFromDatabase();
-        if (!fromDb.isEmpty() || tableExists()) {
-            return fromDb;
+        ensureVendorRequestsTable();
+        if (tableExists()) {
+            return listFromDatabase(null);
         }
         return new ArrayList<>(MEMORY_FALLBACK);
     }
 
     @Override
-    public void markVendorRequestContacted(int id) {
-        if (updateStatus(id, "contacted")) {
-            return;
+    public List<VendorRequestRow> listPendingVendorRequests() {
+        ensureVendorRequestsTable();
+        if (tableExists()) {
+            return listFromDatabase("pending");
         }
+        List<VendorRequestRow> pending = new ArrayList<>();
         for (VendorRequestRow row : MEMORY_FALLBACK) {
-            if (row.getId() == id) {
-                row.setStatus("contacted");
-                return;
+            if (row.isPending()) {
+                pending.add(row);
             }
         }
+        return pending;
+    }
+
+    @Override
+    public boolean isContactEmailAlreadyUsed(String email) {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        String normalized = email.trim().toLowerCase(Locale.ROOT);
+        if (userDao.findByEmail(normalized) != null) {
+            return true;
+        }
+        ensureVendorRequestsTable();
+        if (tableExists()) {
+            return hasBlockingVendorRequest(normalized);
+        }
+        for (VendorRequestRow row : MEMORY_FALLBACK) {
+            if (row.getEmail().equalsIgnoreCase(normalized) && (row.isPending() || row.isApproved())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void submitFarmerApplication(String applicantName, String farmName, String email, String phone,
                                         String category, String about) {
+        if (isContactEmailAlreadyUsed(email)) {
+            return;
+        }
+        ensureVendorRequestsTable();
         if (insertApplication(applicantName, farmName, email, phone, category, about)) {
             return;
         }
         int nextId = MEMORY_FALLBACK.stream().mapToInt(VendorRequestRow::getId).max().orElse(0) + 1;
         String submitted = LocalDate.now().format(SUBMITTED_FMT);
         MEMORY_FALLBACK.add(0, new VendorRequestRow(nextId, email, phone, submitted, "pending", applicantName, farmName));
+        System.err.println("vendor_requests: saved application in memory only (database unavailable).");
     }
 
     @Override
     public VendorApprovalResult approveFarmerApplication(int requestId) {
+        ensureVendorRequestsTable();
         VendorRequestRow row = findById(requestId);
         if (row == null) {
             return VendorApprovalResult.failure("Application not found.");
@@ -121,11 +167,76 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
         return VendorApprovalResult.ok(vendorEmail, tempPassword);
     }
 
+    @Override
+    public VendorApprovalResult rejectFarmerApplication(int requestId) {
+        ensureVendorRequestsTable();
+        VendorRequestRow row = findById(requestId);
+        if (row == null) {
+            return VendorApprovalResult.failure("Application not found.");
+        }
+        if (row.isApproved()) {
+            return VendorApprovalResult.failure("Approved applications cannot be rejected.");
+        }
+        if (!row.isPending()) {
+            return VendorApprovalResult.failure("This application is not pending.");
+        }
+        if (!updateStatus(requestId, "rejected")) {
+            updateMemoryStatus(requestId, "rejected");
+        }
+        return VendorApprovalResult.rejected();
+    }
+
+    private boolean hasBlockingVendorRequest(String normalizedEmail) {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = """
+                    SELECT 1 FROM vendor_requests
+                    WHERE LOWER(contact_email) = ? AND status IN ('pending', 'approved')
+                    LIMIT 1
+                    """;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, normalizedEmail);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("vendor_requests email check: " + e.getMessage());
+            return false;
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+    }
+
+    private void ensureVendorRequestsTable() {
+        if (tableEnsured) {
+            return;
+        }
+        synchronized (VendorRequestDaoImpl.class) {
+            if (tableEnsured) {
+                return;
+            }
+            Connection conn = null;
+            try {
+                conn = DatabaseConnection.getConnection();
+                try (PreparedStatement ps = conn.prepareStatement(CREATE_VENDOR_REQUESTS_TABLE)) {
+                    ps.execute();
+                }
+                tableEnsured = tableExists();
+            } catch (SQLException e) {
+                System.err.println("vendor_requests ensure table: " + e.getMessage());
+            } finally {
+                DatabaseConnection.closeConnection(conn);
+            }
+        }
+    }
+
     private boolean tableExists() {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            try (ResultSet rs = conn.getMetaData().getTables(null, null, "vendor_requests", null)) {
+            try (ResultSet rs = conn.getMetaData().getTables(conn.getCatalog(), null, "vendor_requests", new String[]{"TABLE"})) {
                 return rs.next();
             }
         } catch (SQLException e) {
@@ -135,7 +246,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
         }
     }
 
-    private List<VendorRequestRow> listFromDatabase() {
+    private List<VendorRequestRow> listFromDatabase(String statusFilter) {
         List<VendorRequestRow> rows = new ArrayList<>();
         Connection conn = null;
         try {
@@ -144,12 +255,19 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
                     SELECT id, applicant_name, farm_name, contact_email, phone, status,
                            vendor_login_email, created_at
                     FROM vendor_requests
-                    ORDER BY created_at DESC
                     """;
-            try (PreparedStatement ps = conn.prepareStatement(sql);
-                 ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    rows.add(mapRow(rs));
+            if (statusFilter != null) {
+                sql += " WHERE status = ?";
+            }
+            sql += " ORDER BY created_at DESC";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                if (statusFilter != null) {
+                    ps.setString(1, statusFilter);
+                }
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        rows.add(mapRow(rs));
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -161,6 +279,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
     }
 
     private VendorRequestRow findById(int id) {
+        ensureVendorRequestsTable();
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
@@ -187,6 +306,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
 
     private boolean insertApplication(String applicantName, String farmName, String email, String phone,
                                       String category, String about) {
+        ensureVendorRequestsTable();
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
@@ -213,6 +333,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
     }
 
     private boolean updateStatus(int id, String status) {
+        ensureVendorRequestsTable();
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
@@ -230,6 +351,7 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
     }
 
     private boolean markApproved(int requestId, int vendorUserId, String vendorLoginEmail) {
+        ensureVendorRequestsTable();
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
@@ -271,9 +393,13 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
     }
 
     private void updateMemoryApproved(int requestId, String vendorLoginEmail) {
+        updateMemoryStatus(requestId, "approved");
+    }
+
+    private void updateMemoryStatus(int requestId, String status) {
         for (VendorRequestRow row : MEMORY_FALLBACK) {
             if (row.getId() == requestId) {
-                row.setStatus("approved");
+                row.setStatus(status);
                 return;
             }
         }

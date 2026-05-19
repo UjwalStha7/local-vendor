@@ -36,7 +36,7 @@
 
             <c:choose>
                 <c:when test="${empty vendorAccountCards}">
-                    <p class="vendor-accounts-empty">No vendors match your search.</p>
+                    <p class="vendor-accounts-empty">No approved vendors yet. Approve applications from Vendor Requests first.</p>
                 </c:when>
                 <c:otherwise>
                     <div class="vendor-accounts-grid">
@@ -68,8 +68,7 @@
                                 </div>
 
                                 <div class="vendor-acct-card__footer">
-                                    <span class="vendor-acct-card__badge">active</span>
-                                    <button type="button" class="vendor-acct-card__suspend">Suspend</button>
+                                    <span class="vendor-acct-card__badge">${v.verified ? 'active' : 'inactive'}</span>
                                 </div>
                             </article>
                         </c:forEach>

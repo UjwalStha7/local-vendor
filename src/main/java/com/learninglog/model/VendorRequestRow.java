@@ -68,7 +68,7 @@ public class VendorRequestRow {
     }
 
     public boolean canApprove() {
-        return isPending() || "contacted".equalsIgnoreCase(status);
+        return isPending();
     }
 
     public String getVendorLoginEmail() {

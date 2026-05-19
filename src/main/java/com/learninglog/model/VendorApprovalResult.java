@@ -30,6 +30,10 @@ public class VendorApprovalResult {
         );
     }
 
+    public static VendorApprovalResult rejected() {
+        return new VendorApprovalResult(true, "Application rejected.", null, null);
+    }
+
     public boolean isSuccess() {
         return success;
     }
