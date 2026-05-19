@@ -6,19 +6,12 @@
 <c:set var="activeNav" value="orders" scope="request" />
 <jsp:include page="vendor-head.jsp" />
 
-<c:if test="${previewMode}">
-    <p class="vp-preview-banner" role="status">
-        Preview mode — not logged in. Sign in as a vendor to manage orders at
-        <a href="${ctx}/farmer/orders">/farmer/orders</a>.
-    </p>
-</c:if>
-
 <header class="vp-page-head vp-page-head--orders">
     <div>
         <h1>Order Management</h1>
         <p>View and manage all incoming orders</p>
     </div>
-    <form class="vp-orders-filter" method="get" action="${previewMode ? ctx.concat('/farmerorderspreview') : ctx.concat('/farmer/orders')}">
+    <form class="vp-orders-filter" method="get" action="${ctx}/farmer/orders">
         <label class="vp-sr-only" for="orderStatusFilter">Filter orders by status</label>
         <select id="orderStatusFilter" name="filter" class="vp-filter-select" onchange="this.form.submit()">
             <option value="all" ${orderFilter eq 'all' ? 'selected' : ''}>All Orders</option>
@@ -79,25 +72,18 @@
                                 <td>${o.orderDate}</td>
                                 <td class="vp-order-total">Rs. <fmt:formatNumber value="${o.total}" minFractionDigits="2" maxFractionDigits="2" groupingUsed="false"/></td>
                                 <td>
-                                    <c:choose>
-                                        <c:when test="${previewMode}">
-                                            <span class="vp-status-pill vp-status-pill--${o.statusKey}">${o.status}</span>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <form method="post" action="${ctx}/farmer/orders" class="vp-status-form">
-                                                <input type="hidden" name="orderId" value="${o.orderId}" />
-                                                <input type="hidden" name="filter" value="${orderFilter}" />
-                                                <label class="vp-sr-only" for="status-${o.orderId}">Status for ${o.orderId}</label>
-                                                <select id="status-${o.orderId}" name="status"
-                                                        class="vp-status-select vp-status-select--${o.statusKey}"
-                                                        onchange="this.form.submit()">
-                                                    <option value="pending" ${o.statusKey eq 'pending' ? 'selected' : ''}>Pending</option>
-                                                    <option value="dispatched" ${o.statusKey eq 'dispatched' ? 'selected' : ''}>Dispatched</option>
+                                    <form method="post" action="${ctx}/farmer/orders" class="vp-status-form">
+                                        <input type="hidden" name="orderId" value="${o.orderId}" />
+                                        <input type="hidden" name="filter" value="${orderFilter}" />
+                                        <label class="vp-sr-only" for="status-${o.orderId}">Status for ${o.orderId}</label>
+                                        <select id="status-${o.orderId}" name="status"
+                                                class="vp-status-select vp-status-select--${o.statusKey}"
+                                                onchange="this.form.submit()">
+                                            <option value="pending" ${o.statusKey eq 'pending' ? 'selected' : ''}>Pending</option>
+                                            <option value="dispatched" ${o.statusKey eq 'dispatched' ? 'selected' : ''}>Dispatched</option>
                                                     <option value="delivered" ${o.statusKey eq 'delivered' ? 'selected' : ''}>Delivered</option>
                                                 </select>
-                                            </form>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    </form>
                                 </td>
                                 <td>
                                     <button type="button" class="vp-icon-btn vp-view-btn"

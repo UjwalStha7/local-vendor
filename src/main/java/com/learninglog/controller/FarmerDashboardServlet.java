@@ -24,7 +24,6 @@ public class FarmerDashboardServlet extends HttpServlet {
         FarmerAuthUtil.setStoreAttributes(req, vendor);
         VendorDashboardAttributes.apply(req, vendor.getId());
         req.setAttribute("activeNav", "dashboard");
-        req.setAttribute("previewMode", Boolean.FALSE);
         req.setAttribute("topbarShowSearch", Boolean.FALSE);
         req.getRequestDispatcher("/WEB-INF/views/farmer/dashboard.jsp").forward(req, resp);
     }

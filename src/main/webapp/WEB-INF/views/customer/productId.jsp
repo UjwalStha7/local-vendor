@@ -6,84 +6,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product Details — Krishak</title>
   <base href="${pageContext.request.contextPath}/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/landing.css" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/product.css" />
 </head>
-<body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="back" href="${pageContext.request.contextPath}/product" aria-label="Back to products">
-        <span aria-hidden="true">←</span>
-        <span class="back-text">Back</span>
-      </a>
+<body class="product-detail-page">
+  <jsp:include page="/WEB-INF/views/customer/navbar.jsp">
+    <jsp:param name="current" value="product" />
+  </jsp:include>
 
-      <div class="top-actions">
-        <a class="top-text-link" href="${pageContext.request.contextPath}/customer/home">Home</a>
-        <a class="top-text-link" href="${pageContext.request.contextPath}/about">About Us</a>
-        <a class="top-text-link" href="${pageContext.request.contextPath}/contact">Contact</a>
-        <a class="icon-btn" href="${pageContext.request.contextPath}/cart" aria-label="Open cart">
-          <img src="image/cart.png" alt="" aria-hidden="true" />
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <main class="page">
+  <main class="page" id="product-main" hidden>
     <div class="wrap">
-      <section class="card media" aria-label="Product images">
-        <div class="hero">
-          <img id="hero-img" class="hero-main-img" src="image/organic_cherry_tomatoes.png" alt="" />
-          <div class="badges" aria-hidden="true">
-            <span class="badge badge-green">
-              <img class="badge-icon" src="image/white_leaf.png" alt="" aria-hidden="true" />
-              Organic
-            </span>
-            <span id="discount-badge" class="badge badge-red">29% OFF</span>
-          </div>
+      <section class="card media" aria-label="Product image">
+        <div class="product-hero">
+          <img id="hero-img" class="product-hero-img" src="" alt="" />
         </div>
-
-        <div id="thumbs" class="thumbs" aria-label="Image thumbnails"></div>
       </section>
 
       <section class="details" aria-label="Product details">
-        <p id="category" class="category">Fresh Vegetables</p>
-        <h1 id="title" class="title">Organic Cherry Tomatoes</h1>
+        <p id="category" class="category"></p>
+        <h1 id="title" class="title"></h1>
 
         <div class="rating-row">
-          <div class="stars" aria-label="Rating"></div>
+          <div class="stars" aria-label="Rating 5.0"></div>
           <p class="rating-text">
-            <span id="rating-value">4.8</span>
-            <span class="muted">(<span id="review-count">127</span> reviews)</span>
+            <span id="rating-value">5.0</span>
+            <span class="muted">(reviews coming soon)</span>
           </p>
         </div>
 
         <div class="price-row">
-          <span id="price" class="price">$4.99</span>
-          <span id="old-price" class="old-price">$6.99</span>
-          <span id="unit" class="unit muted">/ 500g</span>
+          <span id="price" class="price"></span>
+          <span id="unit" class="unit muted"></span>
         </div>
 
         <div class="stock-row">
           <span id="stock-pill" class="pill">In Stock</span>
         </div>
 
-        <p id="desc" class="desc">
-          Premium organic cherry tomatoes, vine-ripened to perfection. These sweet and juicy tomatoes are packed with flavor and nutrients.
-          Grown without synthetic pesticides or fertilizers, our tomatoes are carefully harvested at peak ripeness to ensure maximum taste and nutritional value.
-        </p>
+        <p id="desc" class="desc"></p>
 
         <div class="specs">
           <div class="specs-grid">
             <div class="spec">
-              <span class="spec-k">Origin:</span>
-              <span id="origin" class="spec-v">Local Farm, California</span>
+              <span class="spec-k">Vendor:</span>
+              <span id="vendor" class="spec-v"></span>
             </div>
             <div class="spec">
-              <span class="spec-k">Weight:</span>
-              <span id="weight" class="spec-v">500g</span>
+              <span class="spec-k">Unit:</span>
+              <span id="unit-spec" class="spec-v"></span>
             </div>
             <div class="spec">
-              <span class="spec-k">Type:</span>
-              <span id="type" class="spec-v">Organic</span>
+              <span class="spec-k">Category:</span>
+              <span id="type" class="spec-v"></span>
+            </div>
+            <div class="spec">
+              <span class="spec-k">Available:</span>
+              <span id="stock-spec" class="spec-v"></span>
             </div>
           </div>
         </div>
@@ -101,10 +82,6 @@
           <button id="add-btn" class="add-btn" type="button">
             <img src="image/white_cart.png" alt="" aria-hidden="true" />
             Add to Cart
-          </button>
-
-          <button id="wish-btn" class="wish-btn" type="button" aria-label="Add to wishlist">
-            <img src="image/heart.png" alt="" aria-hidden="true" />
           </button>
         </div>
 
@@ -128,7 +105,14 @@
     </div>
   </main>
 
+  <main class="page" id="product-error" hidden>
+    <div class="wrap" style="display:block;max-width:720px;padding:40px 18px;text-align:center;">
+      <h1 class="title" style="font-size:24px;">Product not found</h1>
+      <p class="desc" style="max-width:none;">This product may have been removed or is no longer available.</p>
+      <a class="add-btn" style="display:inline-flex;width:auto;padding:0 24px;text-decoration:none;margin-top:12px;" href="${pageContext.request.contextPath}/product">Back to products</a>
+    </div>
+  </main>
+
   <script src="product.js"></script>
 </body>
 </html>
-

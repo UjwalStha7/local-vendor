@@ -29,7 +29,6 @@ public class FarmerProductManagementServlet extends HttpServlet {
         }
         FarmerAuthUtil.setStoreAttributes(req, vendor);
         req.setAttribute("activeNav", "product-management");
-        req.setAttribute("previewMode", Boolean.FALSE);
         req.setAttribute("topbarShowSearch", Boolean.FALSE);
 
         String q = req.getParameter("q");

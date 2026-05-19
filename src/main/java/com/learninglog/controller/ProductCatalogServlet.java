@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @WebServlet("/api/products")
 public class ProductCatalogServlet extends HttpServlet {
@@ -25,6 +25,12 @@ public class ProductCatalogServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        String idParam = req.getParameter("id");
+        if (idParam != null && !idParam.isBlank()) {
+            serveOne(req, resp, idParam);
+            return;
+        }
+
         String q = req.getParameter("q");
         List<String> categories = splitParam(req.getParameter("cat"));
         List<String> vendors = splitParam(req.getParameter("vendor"));
@@ -43,6 +49,30 @@ public class ProductCatalogServlet extends HttpServlet {
         resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
         resp.setContentType("application/json;charset=UTF-8");
         writeJson(resp.getWriter(), products, ctx);
+    }
+
+    private void serveOne(HttpServletRequest req, HttpServletResponse resp, String idParam)
+            throws IOException {
+        int id;
+        try {
+            id = Integer.parseInt(idParam.trim());
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.setContentType("application/json;charset=UTF-8");
+            resp.getWriter().write("{\"product\":null}");
+            return;
+        }
+
+        Optional<CatalogProduct> product = catalogDao.findById(id);
+        String ctx = req.getContextPath();
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        resp.setContentType("application/json;charset=UTF-8");
+        if (product.isEmpty()) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            resp.getWriter().write("{\"product\":null}");
+            return;
+        }
+        writeOneJson(resp.getWriter(), product.get(), ctx);
     }
 
     private static List<String> splitParam(String raw) {
@@ -105,6 +135,26 @@ public class ProductCatalogServlet extends HttpServlet {
             sb.append('}');
         }
         sb.append("]}");
+        out.write(sb.toString());
+    }
+
+    private static void writeOneJson(PrintWriter out, CatalogProduct p, String ctx) {
+        StringBuilder sb = new StringBuilder(400);
+        sb.append("{\"product\":{");
+        sb.append("\"id\":").append(p.getId()).append(',');
+        append(sb, "name", p.getName());
+        append(sb, "category", p.getCategory());
+        append(sb, "description", p.getDescription());
+        append(sb, "vendor", p.getVendorName());
+        append(sb, "vendorSlug", p.getVendorSlug());
+        sb.append("\"price\":").append(String.format(Locale.US, "%.2f", p.getPrice())).append(',');
+        append(sb, "unit", p.getUnit());
+        sb.append("\"stock\":").append(p.getStock()).append(',');
+        append(sb, "image", p.resolveImageUrl(ctx));
+        sb.append("\"inStock\":").append(p.isInStock()).append(',');
+        sb.append("\"limited\":").append(p.isLimited()).append(',');
+        sb.append("\"outOfStock\":").append(p.isOutOfStock());
+        sb.append("}}");
         out.write(sb.toString());
     }
 

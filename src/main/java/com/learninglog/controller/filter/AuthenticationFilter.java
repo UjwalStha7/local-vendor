@@ -35,12 +35,7 @@ public class AuthenticationFilter implements Filter {
             "/api/catalog/meta",
             "/cart",
             "/cart.html",
-            "/farmer/apply",
-            "/farmerorderspreview",
-            "/farmerprofilepreview",
-            "/farmerdshboard",
-            "/farmerproductmanagement",
-            "/farmerproducts"
+            "/farmer/apply"
     );
 
     @Override

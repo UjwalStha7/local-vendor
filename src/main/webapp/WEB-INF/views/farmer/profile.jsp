@@ -5,12 +5,6 @@
 <c:set var="activeNav" value="profile" scope="request" />
 <jsp:include page="vendor-head.jsp" />
 
-<c:if test="${previewMode}">
-    <p class="vp-preview-banner" role="status">
-        Preview mode — not logged in. Sign in as a vendor to edit your profile at
-        <a href="${ctx}/farmer/profile">/farmer/profile</a>.
-    </p>
-</c:if>
 <c:if test="${param.saved == '1'}">
     <p class="vp-preview-banner vp-preview-banner--ok" role="status">Profile saved successfully.</p>
 </c:if>
@@ -26,20 +20,10 @@
     </div>
     <c:choose>
         <c:when test="${editMode}">
-            <c:if test="${not previewMode}">
-                <a class="vp-btn-ghost" href="${ctx}/farmer/profile">Cancel</a>
-            </c:if>
-            <c:if test="${previewMode}">
-                <a class="vp-btn-ghost" href="${ctx}/farmerprofilepreview">Cancel</a>
-            </c:if>
+            <a class="vp-btn-ghost" href="${ctx}/farmer/profile">Cancel</a>
         </c:when>
         <c:otherwise>
-            <c:if test="${previewMode}">
-                <a class="vp-btn-edit" href="${ctx}/farmerprofilepreview?edit=1">Edit Profile</a>
-            </c:if>
-            <c:if test="${not previewMode}">
-                <a class="vp-btn-edit" href="${ctx}/farmer/profile?edit=1">Edit Profile</a>
-            </c:if>
+            <a class="vp-btn-edit" href="${ctx}/farmer/profile?edit=1">Edit Profile</a>
         </c:otherwise>
     </c:choose>
 </header>
@@ -47,8 +31,8 @@
 <form id="vendorProfileForm" class="vp-profile-layout"
       method="post"
       enctype="multipart/form-data"
-      action="${previewMode ? '#' : ctx.concat('/farmer/profile')}"
-      data-preview="${previewMode}"
+      action="${ctx}/farmer/profile"
+      data-preview="false"
       data-ctx="${ctx}">
 
     <div class="vp-profile-main">
@@ -153,7 +137,7 @@
             </div>
         </section>
 
-        <c:if test="${editMode and not previewMode}">
+        <c:if test="${editMode}">
             <div class="vp-profile-form-actions">
                 <button type="submit" class="vp-btn-edit">Save Profile</button>
             </div>
