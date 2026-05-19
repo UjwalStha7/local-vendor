@@ -2,6 +2,7 @@ package com.learninglog.controller;
 
 import com.learninglog.entity.User;
 import com.learninglog.util.FarmerAuthUtil;
+import com.learninglog.util.VendorDashboardAttributes;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,6 +22,7 @@ public class FarmerDashboardServlet extends HttpServlet {
             return;
         }
         FarmerAuthUtil.setStoreAttributes(req, vendor);
+        VendorDashboardAttributes.apply(req, vendor.getId());
         req.setAttribute("activeNav", "dashboard");
         req.setAttribute("previewMode", Boolean.FALSE);
         req.getRequestDispatcher("/WEB-INF/views/farmer/dashboard.jsp").forward(req, resp);

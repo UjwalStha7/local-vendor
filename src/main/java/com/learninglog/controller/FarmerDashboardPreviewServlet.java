@@ -1,5 +1,6 @@
 package com.learninglog.controller;
 
+import com.learninglog.util.VendorDashboardAttributes;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,6 +21,7 @@ public class FarmerDashboardPreviewServlet extends HttpServlet {
             throws ServletException, IOException {
         req.setAttribute("vendorName", "FreshHarvest Farms");
         req.setAttribute("storeName", "FreshHarvest Farms");
+        VendorDashboardAttributes.applyEmpty(req);
         req.setAttribute("activeNav", "dashboard");
         req.setAttribute("previewMode", Boolean.TRUE);
         req.getRequestDispatcher("/WEB-INF/views/farmer/dashboard.jsp").forward(req, resp);
