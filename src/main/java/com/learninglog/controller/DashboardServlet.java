@@ -14,27 +14,17 @@ import com.learninglog.model.VendorApprovalResult;
 import com.learninglog.model.VendorRequestRow;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.Part;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 @WebServlet(name = "DashboardServlet", urlPatterns = {"/admin", "/admin/", "/dashboard"})
-@MultipartConfig(
-        fileSizeThreshold = 1024,
-        maxFileSize = 10 * 1024 * 1024,
-        maxRequestSize = 12 * 1024 * 1024
-)
 public class DashboardServlet extends HttpServlet {
 
     private final DashboardStatsDao dashboardStatsDao = new DashboardStatsDaoImpl();
@@ -51,7 +41,6 @@ public class DashboardServlet extends HttpServlet {
 
         switch (section) {
             case "requests" -> forwardVendorRequests(req, resp);
-            case "add-vendor" -> forwardAddVendor(req, resp);
             case "accounts" -> forwardVendorAccounts(req, resp);
             case "moderation" -> forwardModeration(req, resp);
             case "signout" -> {
@@ -65,12 +54,7 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        String action = resolvePostAction(req);
-        if ("saveVendor".equals(action)) {
-            discardUploadedFile(req);
-            resp.sendRedirect(req.getContextPath() + "/admin?section=add-vendor&ok=1");
-            return;
-        }
+        String action = req.getParameter("action");
         if ("moderateApprove".equals(action)) {
             applyModerationAction(req, true);
             redirectModeration(req, resp);
@@ -81,52 +65,24 @@ public class DashboardServlet extends HttpServlet {
             redirectModeration(req, resp);
             return;
         }
-        if ("contact".equals(action)) {
-            String idParam = req.getParameter("id");
-            if (idParam != null && !idParam.isBlank()) {
-                try {
-                    vendorRequestDao.markVendorRequestContacted(Integer.parseInt(idParam));
-                } catch (NumberFormatException ignored) {
-                    // ignore bad id
-                }
-            }
-            resp.sendRedirect(req.getContextPath() + "/admin?section=requests&filter=" + sanitizeRequestFilter(req));
-            return;
-        }
-        if ("approve".equals(action)) {
+        if ("approve".equals(action) || "reject".equals(action)) {
             String idParam = req.getParameter("id");
             HttpSession session = req.getSession(true);
             if (idParam != null && !idParam.isBlank()) {
                 try {
-                    VendorApprovalResult result = vendorRequestDao.approveFarmerApplication(Integer.parseInt(idParam));
+                    int requestId = Integer.parseInt(idParam);
+                    VendorApprovalResult result = "reject".equals(action)
+                            ? vendorRequestDao.rejectFarmerApplication(requestId)
+                            : vendorRequestDao.approveFarmerApplication(requestId);
                     session.setAttribute("approvalFlash", result);
                 } catch (NumberFormatException ignored) {
                     session.setAttribute("approvalFlash", VendorApprovalResult.failure("Invalid application id."));
                 }
             }
-            resp.sendRedirect(req.getContextPath() + "/admin?section=requests&filter=" + sanitizeRequestFilter(req));
+            resp.sendRedirect(req.getContextPath() + "/admin?section=requests");
             return;
         }
         resp.sendRedirect(req.getContextPath() + "/admin");
-    }
-
-    private String resolvePostAction(HttpServletRequest req) throws IOException, ServletException {
-        String direct = req.getParameter("action");
-        if (direct != null && !direct.isBlank()) {
-            return direct;
-        }
-        String ct = req.getContentType();
-        if (ct == null || !ct.toLowerCase(Locale.ROOT).contains("multipart/form-data")) {
-            return null;
-        }
-        for (Part part : req.getParts()) {
-            if ("action".equals(part.getName())) {
-                try (InputStream in = part.getInputStream()) {
-                    return new String(in.readAllBytes(), StandardCharsets.UTF_8).trim();
-                }
-            }
-        }
-        return null;
     }
 
     private void forwardDashboard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -150,22 +106,6 @@ public class DashboardServlet extends HttpServlet {
     }
 
     private void forwardVendorRequests(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String filter = sanitizeRequestFilter(req);
-
-        List<VendorRequestRow> all = vendorRequestDao.listVendorRequests();
-        List<VendorRequestRow> rows = new ArrayList<>();
-        for (VendorRequestRow row : all) {
-            if ("all".equals(filter)) {
-                rows.add(row);
-            } else if ("pending".equals(filter) && row.isPending()) {
-                rows.add(row);
-            } else if ("contacted".equals(filter) && "contacted".equalsIgnoreCase(row.getStatus())) {
-                rows.add(row);
-            } else if ("approved".equals(filter) && row.isApproved()) {
-                rows.add(row);
-            }
-        }
-
         HttpSession session = req.getSession(false);
         if (session != null) {
             Object flash = session.getAttribute("approvalFlash");
@@ -176,25 +116,8 @@ public class DashboardServlet extends HttpServlet {
         }
 
         req.setAttribute("activeNav", "requests");
-        req.setAttribute("requestFilter", filter);
-        req.setAttribute("vendorRequestRows", rows);
+        req.setAttribute("vendorRequestRows", vendorRequestDao.listPendingVendorRequests());
         req.getRequestDispatcher("/WEB-INF/views/admin/vendor-requests.jsp").forward(req, resp);
-    }
-
-    private static String sanitizeRequestFilter(HttpServletRequest req) {
-        String filter = req.getParameter("filter");
-        if (filter == null || filter.isBlank()) {
-            return "all";
-        }
-        if ("all".equals(filter) || "pending".equals(filter) || "contacted".equals(filter) || "approved".equals(filter)) {
-            return filter;
-        }
-        return "all";
-    }
-
-    private void forwardAddVendor(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("activeNav", "add-vendor");
-        req.getRequestDispatcher("/WEB-INF/views/admin/add-vendor.jsp").forward(req, resp);
     }
 
     private void forwardVendorAccounts(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -242,25 +165,13 @@ public class DashboardServlet extends HttpServlet {
 
     private static String moderationFilterOrDefault(String raw) {
         if (raw == null || raw.isBlank()) {
-            return "all";
+            return "pending";
         }
         String f = raw.trim().toLowerCase(Locale.ROOT);
         if ("all".equals(f) || "pending".equals(f) || "approved".equals(f) || "rejected".equals(f)) {
             return f;
         }
         return "all";
-    }
-
-    private void discardUploadedFile(HttpServletRequest req) {
-        try {
-            for (Part part : req.getParts()) {
-                if ("documents".equals(part.getName()) && part.getSize() > 0) {
-                    part.delete();
-                }
-            }
-        } catch (Exception ignored) {
-            // demo: no file storage
-        }
     }
 
     private void forwardPlaceholder(HttpServletRequest req, HttpServletResponse resp, String nav, String title)

@@ -219,11 +219,6 @@ a {
 }
 
 .requests-page__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px 24px;
   margin-bottom: 22px;
 }
 
@@ -233,6 +228,13 @@ a {
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #101828;
+}
+
+.requests-page__subtitle {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #6a7282;
 }
 
 .requests-page__filters {
@@ -424,6 +426,24 @@ a {
   background: #0f2e18;
 }
 
+.requests-btn-reject {
+  padding: 9px 18px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #b91c1c;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.requests-btn-reject:hover {
+  background: #fef2f2;
+  border-color: #f87171;
+}
+
 .requests-contact__vendor-login {
   display: block;
   font-size: 0.82rem;
@@ -450,7 +470,7 @@ a {
   font-size: 0.95rem;
 }
 
-/* ——— Add vendor form ——— */
+/* ——— Vendor application form (public apply page) ——— */
 .vendor-form-page {
   flex: 1 1 auto;
   padding: 28px 36px 40px;
@@ -1063,6 +1083,113 @@ a {
   background: #ff3b30;
 }
 
+.moderation-page__subtitle {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  color: #6a7282;
+  max-width: 42rem;
+}
+
+.moderation-grid--compare {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mod-card--compare {
+  display: flex;
+  flex-direction: column;
+}
+
+.mod-card--compare .mod-card__head {
+  padding: 16px 18px 0;
+}
+
+.mod-card--compare .mod-card__meta--inline {
+  margin-bottom: 4px;
+}
+
+.mod-compare {
+  padding: 12px 18px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 auto;
+}
+
+.mod-compare__labels {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 1fr;
+  gap: 8px 12px;
+  margin-bottom: 4px;
+}
+
+.mod-compare__col-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mod-compare__col-label--before {
+  grid-column: 2;
+  color: #6a7282;
+}
+
+.mod-compare__col-label--after {
+  grid-column: 3;
+  color: #166534;
+}
+
+.mod-compare__row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 1fr;
+  gap: 8px 12px;
+  align-items: start;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  background: #f9fafb;
+}
+
+.mod-compare__row--changed {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.mod-compare__row--block .mod-compare__before,
+.mod-compare__row--block .mod-compare__after {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.mod-compare__field {
+  font-weight: 700;
+  color: #374151;
+}
+
+.mod-compare__before {
+  color: #6a7282;
+}
+
+.mod-compare__after {
+  color: #101828;
+  font-weight: 600;
+}
+
+.mod-compare__thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  display: block;
+}
+
+.mod-card--compare .mod-card__footer {
+  margin: 0;
+  padding: 16px 18px 18px;
+}
+
 @media (max-width: 1024px) {
   .moderation-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1074,8 +1201,19 @@ a {
 }
 
 @media (max-width: 640px) {
-  .moderation-grid {
+  .moderation-grid,
+  .moderation-grid--compare {
     grid-template-columns: 1fr;
+  }
+
+  .mod-compare__labels,
+  .mod-compare__row {
+    grid-template-columns: 1fr;
+  }
+
+  .mod-compare__col-label--before,
+  .mod-compare__col-label--after {
+    grid-column: 1;
   }
 
   .vendor-accounts-grid {

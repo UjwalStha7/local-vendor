@@ -12,10 +12,16 @@ public interface VendorRequestDao {
 
     List<VendorRequestRow> listVendorRequests();
 
-    void markVendorRequestContacted(int id);
+    /** Applications awaiting admin approval (status = pending). */
+    List<VendorRequestRow> listPendingVendorRequests();
+
+    /** True if this contact email already has a user account or a pending/approved application. */
+    boolean isContactEmailAlreadyUsed(String email);
 
     void submitFarmerApplication(String applicantName, String farmName, String email, String phone,
                                  String category, String about);
 
     VendorApprovalResult approveFarmerApplication(int requestId);
+
+    VendorApprovalResult rejectFarmerApplication(int requestId);
 }

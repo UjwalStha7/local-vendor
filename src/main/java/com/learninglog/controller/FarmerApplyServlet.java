@@ -61,14 +61,13 @@ public class FarmerApplyServlet extends HttpServlet {
         }
 
         if (!errors.isEmpty()) {
-            req.setAttribute("errors", errors);
-            req.setAttribute("applicantName", nullToEmpty(req.getParameter("applicantName")));
-            req.setAttribute("farmName", nullToEmpty(req.getParameter("farmName")));
-            req.setAttribute("email", nullToEmpty(req.getParameter("email")));
-            req.setAttribute("phone", nullToEmpty(req.getParameter("phone")));
-            req.setAttribute("category", nullToEmpty(req.getParameter("category")));
-            req.setAttribute("about", nullToEmpty(req.getParameter("about")));
-            req.getRequestDispatcher("/WEB-INF/views/farmer/apply.jsp").forward(req, resp);
+            forwardWithErrors(req, resp, errors);
+            return;
+        }
+
+        if (vendorRequestDao.isContactEmailAlreadyUsed(email)) {
+            errors.add("An account or vendor application already exists for this email. Sign in or use a different email.");
+            forwardWithErrors(req, resp, errors);
             return;
         }
 
@@ -96,5 +95,17 @@ public class FarmerApplyServlet extends HttpServlet {
 
     private static String nullToEmpty(String s) {
         return s == null ? "" : s;
+    }
+
+    private void forwardWithErrors(HttpServletRequest req, HttpServletResponse resp, List<String> errors)
+            throws ServletException, IOException {
+        req.setAttribute("errors", errors);
+        req.setAttribute("applicantName", nullToEmpty(req.getParameter("applicantName")));
+        req.setAttribute("farmName", nullToEmpty(req.getParameter("farmName")));
+        req.setAttribute("email", nullToEmpty(req.getParameter("email")));
+        req.setAttribute("phone", nullToEmpty(req.getParameter("phone")));
+        req.setAttribute("category", nullToEmpty(req.getParameter("category")));
+        req.setAttribute("about", nullToEmpty(req.getParameter("about")));
+        req.getRequestDispatcher("/WEB-INF/views/farmer/apply.jsp").forward(req, resp);
     }
 }
