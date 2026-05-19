@@ -17,4 +17,24 @@ public final class TempPasswordUtil {
         }
         return sb.toString();
     }
+
+    /**
+     * Temporary vendor password from the applicant contact email: the part before {@code @}.
+     * Example: {@code shirshgrg@gmail.com} → {@code shirshgrg}.
+     */
+    public static String fromContactEmail(String contactEmail) {
+        if (contactEmail == null) {
+            return generate(10);
+        }
+        String trimmed = contactEmail.trim();
+        int at = trimmed.indexOf('@');
+        if (at <= 0) {
+            return generate(10);
+        }
+        String localPart = trimmed.substring(0, at);
+        if (localPart.isBlank()) {
+            return generate(10);
+        }
+        return localPart;
+    }
 }

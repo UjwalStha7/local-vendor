@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <c:set var="activeNav" value="dashboard" scope="request" />
 <c:if test="${empty storeName}"><c:set var="storeName" value="${vendorName}" /></c:if>
-<c:if test="${empty storeName}"><c:set var="storeName" value="FreshHarvest Farms" /></c:if>
+<c:if test="${empty storeName}"><c:set var="storeName" value="Your store" /></c:if>
 
 <div class="vp-shell">
     <jsp:include page="vendor-sidebar.jsp" />
@@ -40,7 +41,7 @@
                 <article class="vp-stat-card">
                     <div>
                         <p class="vp-stat-card__label">Total Products Listed</p>
-                        <p class="vp-stat-card__value">10</p>
+                        <p class="vp-stat-card__value">${statProductsListed}</p>
                     </div>
                     <span class="vp-stat-card__icon vp-stat-card__icon--blue" aria-hidden="true">
                         <img src="${ctx}/image/box.png" alt="" width="24" height="24" />
@@ -49,7 +50,7 @@
                 <article class="vp-stat-card">
                     <div>
                         <p class="vp-stat-card__label">Active Orders</p>
-                        <p class="vp-stat-card__value">6</p>
+                        <p class="vp-stat-card__value">${statActiveOrders}</p>
                     </div>
                     <span class="vp-stat-card__icon vp-stat-card__icon--purple" aria-hidden="true">
                         <img src="${ctx}/image/white_cart.png" alt="" width="24" height="24" />
@@ -58,7 +59,7 @@
                 <article class="vp-stat-card">
                     <div>
                         <p class="vp-stat-card__label">Pending Deliveries</p>
-                        <p class="vp-stat-card__value">3</p>
+                        <p class="vp-stat-card__value">${statPendingDeliveries}</p>
                     </div>
                     <span class="vp-stat-card__icon vp-stat-card__icon--orange" aria-hidden="true">
                         <img src="${ctx}/image/truck.png" alt="" width="24" height="24" />
@@ -67,7 +68,7 @@
                 <article class="vp-stat-card">
                     <div>
                         <p class="vp-stat-card__label">Total Earnings</p>
-                        <p class="vp-stat-card__value">Rs. 58.88</p>
+                        <p class="vp-stat-card__value">Rs. <fmt:formatNumber value="${statTotalEarnings}" minFractionDigits="2" maxFractionDigits="2" /></p>
                     </div>
                     <span class="vp-stat-card__icon vp-stat-card__icon--green" aria-hidden="true">
                         <img src="${ctx}/image/rupee.png" alt="" width="24" height="24" />
@@ -75,19 +76,12 @@
                 </article>
             </section>
 
-            <section class="vp-charts" aria-label="Analytics">
-                <article class="vp-chart-card">
-                    <h2>Revenue Trends</h2>
-                    <div class="vp-chart-wrap">
-                        <canvas id="revenueChart" aria-label="Revenue trends line chart"></canvas>
-                    </div>
-                </article>
-                <article class="vp-chart-card">
-                    <h2>Weekly Requests</h2>
-                    <div class="vp-chart-wrap">
-                        <canvas id="weeklyChart" aria-label="Weekly requests bar chart"></canvas>
-                    </div>
-                </article>
+            <section class="vp-chart-container" aria-label="Weekly orders chart">
+                <h2 class="vp-chart-container__title">Weekly Orders</h2>
+                <p class="vp-chart-container__subtitle">Orders containing your products in the last 7 days</p>
+                <div class="vp-chart-wrapper">
+                    <canvas id="weeklyOrdersChart" aria-label="Weekly orders line chart"></canvas>
+                </div>
             </section>
 
             <section class="vp-orders-card" aria-labelledby="recent-orders-heading">
@@ -104,41 +98,35 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>ORD-001</td>
-                                <td>John Doe</td>
-                                <td>2026-05-15</td>
-                                <td>Rs. 24.95</td>
-                                <td><span class="vp-badge vp-badge--pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>ORD-002</td>
-                                <td>Jane Smith</td>
-                                <td>2026-05-16</td>
-                                <td>Rs. 18.97</td>
-                                <td><span class="vp-badge vp-badge--dispatched">Dispatched</span></td>
-                            </tr>
-                            <tr>
-                                <td>ORD-003</td>
-                                <td>Mike Johnson</td>
-                                <td>2026-05-17</td>
-                                <td>Rs. 31.95</td>
-                                <td><span class="vp-badge vp-badge--dispatched">Dispatched</span></td>
-                            </tr>
-                            <tr>
-                                <td>ORD-004</td>
-                                <td>Sarah Williams</td>
-                                <td>2026-05-17</td>
-                                <td>Rs. 15.97</td>
-                                <td><span class="vp-badge vp-badge--pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>ORD-005</td>
-                                <td>David Brown</td>
-                                <td>2026-05-18</td>
-                                <td>Rs. 22.96</td>
-                                <td><span class="vp-badge vp-badge--delivered">Delivered</span></td>
-                            </tr>
+                            <c:forEach var="row" items="${recentOrders}">
+                                <tr>
+                                    <td><c:out value="${row.orderId}" /></td>
+                                    <td><c:out value="${row.customerName}" /></td>
+                                    <td><c:out value="${row.orderDate}" /></td>
+                                    <td>Rs. <fmt:formatNumber value="${row.total}" minFractionDigits="2" maxFractionDigits="2" /></td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${row.statusKey eq 'delivered'}">
+                                                <span class="vp-badge vp-badge--delivered">Delivered</span>
+                                            </c:when>
+                                            <c:when test="${row.statusKey eq 'dispatched'}">
+                                                <span class="vp-badge vp-badge--dispatched">Dispatched</span>
+                                            </c:when>
+                                            <c:when test="${row.statusKey eq 'cancelled'}">
+                                                <span class="vp-badge vp-badge--cancelled">Cancelled</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="vp-badge vp-badge--pending">Pending</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            <c:if test="${empty recentOrders}">
+                                <tr>
+                                    <td colspan="5" class="vp-table-empty">No orders yet.</td>
+                                </tr>
+                            </c:if>
                         </tbody>
                     </table>
                 </div>
@@ -148,6 +136,55 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
-<script src="${ctx}/js/farmer-dashboard.js"></script>
+<script>
+    const labels = [
+        <c:forEach var="d" items="${chartDates}" varStatus="status">
+            "<c:out value='${d}' />"<c:if test="${!status.last}">, </c:if>
+        </c:forEach>
+    ];
+    const data = [
+        <c:forEach var="c" items="${chartCounts}" varStatus="status">
+            ${c}<c:if test="${!status.last}">, </c:if>
+        </c:forEach>
+    ];
+    const chartEl = document.getElementById("weeklyOrdersChart");
+    if (chartEl && typeof Chart !== "undefined") {
+        new Chart(chartEl, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Orders",
+                    data: data,
+                    borderColor: "#1b4332",
+                    backgroundColor: "rgba(45, 106, 79, 0.15)",
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: "#2d6a4f",
+                    pointBorderColor: "#ffffff",
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: "top" }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 },
+                        grid: { color: "rgba(0, 0, 0, 0.06)" }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>

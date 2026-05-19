@@ -51,16 +51,22 @@
                                             <dd><c:out value="${p.submittedAt}" /></dd>
                                         </div>
                                         <div class="mod-card__meta-row">
-                                            <dt>Product ID</dt>
-                                            <dd>#<c:out value="${p.productId}" /></dd>
+                                            <dt>Type</dt>
+                                            <dd><c:out value="${p.newProductRequest ? 'New product' : 'Update'}" /></dd>
                                         </div>
+                                        <c:if test="${not p.newProductRequest}">
+                                            <div class="mod-card__meta-row">
+                                                <dt>Product ID</dt>
+                                                <dd>#<c:out value="${p.productId}" /></dd>
+                                            </div>
+                                        </c:if>
                                     </dl>
                                 </div>
 
                                 <div class="mod-compare">
                                     <div class="mod-compare__labels" aria-hidden="true">
-                                        <span class="mod-compare__col-label mod-compare__col-label--before">Before (live)</span>
-                                        <span class="mod-compare__col-label mod-compare__col-label--after">Requested change</span>
+                                        <span class="mod-compare__col-label mod-compare__col-label--before"><c:out value="${p.newProductRequest ? '—' : 'Before (live)'}" /></span>
+                                        <span class="mod-compare__col-label mod-compare__col-label--after"><c:out value="${p.newProductRequest ? 'New listing' : 'Requested change'}" /></span>
                                     </div>
 
                                     <div class="mod-compare__row${p.nameChanged ? ' mod-compare__row--changed' : ''}">

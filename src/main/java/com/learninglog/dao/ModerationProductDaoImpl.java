@@ -23,7 +23,7 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
     private static final String CREATE_TABLE = """
             CREATE TABLE IF NOT EXISTS product_moderation_requests (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                product_id INT NOT NULL,
+                product_id INT NULL,
                 vendor_user_id INT NOT NULL,
                 status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
                 prev_name VARCHAR(100) NOT NULL,
@@ -100,7 +100,7 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
                                    String proposedDescription, double proposedPrice, String proposedUnit,
                                    int proposedStock, String proposedPhotoPath) {
         ensureTable();
-        if (new ProductDaoImpl().hasPendingModeration(current.getId())) {
+        if (current.getId() > 0 && new ProductDaoImpl().hasPendingModeration(current.getId())) {
             throw new IllegalStateException("A pending change request already exists for this product.");
         }
         String photo = proposedPhotoPath != null && !proposedPhotoPath.isBlank()
@@ -139,14 +139,79 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
                 ps.setString(16, photo);
                 ps.executeUpdate();
             }
-            String flagSql = "UPDATE products SET is_flagged = 1 WHERE id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(flagSql)) {
-                ps.setInt(1, current.getId());
-                ps.executeUpdate();
+            if (current.getId() > 0) {
+                String flagSql = "UPDATE products SET is_flagged = 1 WHERE id = ?";
+                try (PreparedStatement ps = conn.prepareStatement(flagSql)) {
+                    ps.setInt(1, current.getId());
+                    ps.executeUpdate();
+                }
             }
         } catch (SQLException e) {
             System.err.println("product_moderation submit: " + e.getMessage());
             throw new IllegalStateException("Could not submit product change for moderation.");
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+    }
+
+    @Override
+    public void submitNewProductRequest(int vendorUserId, String name, String category, String description,
+                                        double price, String unit, int stock, String photoPath) {
+        ensureTable();
+        if (hasPendingNewProductRequest(vendorUserId)) {
+            throw new IllegalStateException("You already have a new product waiting for admin approval.");
+        }
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = """
+                    INSERT INTO product_moderation_requests
+                    (product_id, vendor_user_id, status,
+                     prev_name, prev_category, prev_description, prev_price, prev_unit, prev_stock_quantity, prev_photo_path,
+                     proposed_name, proposed_category, proposed_description, proposed_price, proposed_unit,
+                     proposed_stock_quantity, proposed_photo_path)
+                    VALUES (NULL, ?, 'pending',
+                            '(new)', '—', NULL, 0, '—', 0, NULL,
+                            ?, ?, ?, ?, ?, ?, ?)
+                    """;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, vendorUserId);
+                ps.setString(2, name);
+                ps.setString(3, category);
+                ps.setString(4, blankToNull(description));
+                ps.setDouble(5, price);
+                ps.setString(6, unit);
+                ps.setInt(7, stock);
+                ps.setString(8, blankToNull(photoPath));
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("product_moderation submit new: " + e.getMessage());
+            throw new IllegalStateException("Could not submit new product for moderation.");
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+    }
+
+    @Override
+    public boolean hasPendingNewProductRequest(int vendorUserId) {
+        ensureTable();
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = """
+                    SELECT 1 FROM product_moderation_requests
+                    WHERE vendor_user_id = ? AND product_id IS NULL AND status = 'pending'
+                    LIMIT 1
+                    """;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, vendorUserId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (SQLException e) {
+            return false;
         } finally {
             DatabaseConnection.closeConnection(conn);
         }
@@ -161,11 +226,12 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
             conn.setAutoCommit(false);
 
             String select = """
-                    SELECT product_id, proposed_name, proposed_category, proposed_description,
+                    SELECT product_id, vendor_user_id, proposed_name, proposed_category, proposed_description,
                            proposed_price, proposed_unit, proposed_stock_quantity, proposed_photo_path
                     FROM product_moderation_requests WHERE id = ? AND status = 'pending'
                     """;
-            int productId;
+            Integer productId;
+            int vendorUserId;
             String name;
             String category;
             String description;
@@ -181,7 +247,9 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
                         conn.rollback();
                         return;
                     }
-                    productId = rs.getInt("product_id");
+                    int rawProductId = rs.getInt("product_id");
+                    productId = rs.wasNull() ? null : rawProductId;
+                    vendorUserId = rs.getInt("vendor_user_id");
                     name = rs.getString("proposed_name");
                     category = rs.getString("proposed_category");
                     description = rs.getString("proposed_description");
@@ -192,21 +260,55 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
                 }
             }
 
-            String updateProduct = """
-                    UPDATE products SET name = ?, category = ?, description = ?, price = ?, unit = ?,
-                           stock_quantity = ?, photo_path = ?, is_flagged = 0
-                    WHERE id = ?
-                    """;
-            try (PreparedStatement ps = conn.prepareStatement(updateProduct)) {
-                ps.setString(1, name);
-                ps.setString(2, category);
-                ps.setString(3, description);
-                ps.setDouble(4, price);
-                ps.setString(5, unit);
-                ps.setInt(6, stock);
-                ps.setString(7, photo);
-                ps.setInt(8, productId);
-                ps.executeUpdate();
+            if (productId == null) {
+                String insertProduct = """
+                        INSERT INTO products
+                        (vendor_user_id, name, category, description, price, unit, stock_quantity, photo_path, is_active, is_flagged)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0)
+                        """;
+                try (PreparedStatement ps = conn.prepareStatement(insertProduct, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                    ps.setInt(1, vendorUserId);
+                    ps.setString(2, name);
+                    ps.setString(3, category);
+                    ps.setString(4, description);
+                    ps.setDouble(5, price);
+                    ps.setString(6, unit);
+                    ps.setInt(7, stock);
+                    ps.setString(8, photo);
+                    ps.executeUpdate();
+                    try (ResultSet keys = ps.getGeneratedKeys()) {
+                        if (keys.next()) {
+                            productId = keys.getInt(1);
+                        }
+                    }
+                }
+                if (productId == null) {
+                    conn.rollback();
+                    return;
+                }
+                String linkProduct = "UPDATE product_moderation_requests SET product_id = ? WHERE id = ?";
+                try (PreparedStatement ps = conn.prepareStatement(linkProduct)) {
+                    ps.setInt(1, productId);
+                    ps.setInt(2, requestId);
+                    ps.executeUpdate();
+                }
+            } else {
+                String updateProduct = """
+                        UPDATE products SET name = ?, category = ?, description = ?, price = ?, unit = ?,
+                               stock_quantity = ?, photo_path = ?, is_flagged = 0
+                        WHERE id = ?
+                        """;
+                try (PreparedStatement ps = conn.prepareStatement(updateProduct)) {
+                    ps.setString(1, name);
+                    ps.setString(2, category);
+                    ps.setString(3, description);
+                    ps.setDouble(4, price);
+                    ps.setString(5, unit);
+                    ps.setInt(6, stock);
+                    ps.setString(7, photo);
+                    ps.setInt(8, productId);
+                    ps.executeUpdate();
+                }
             }
 
             String updateRequest = """
@@ -248,7 +350,7 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
             conn.setAutoCommit(false);
 
             String select = "SELECT product_id FROM product_moderation_requests WHERE id = ? AND status = 'pending'";
-            int productId;
+            Integer productId = null;
             try (PreparedStatement ps = conn.prepareStatement(select)) {
                 ps.setInt(1, requestId);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -256,7 +358,10 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
                         conn.rollback();
                         return;
                     }
-                    productId = rs.getInt("product_id");
+                    int raw = rs.getInt("product_id");
+                    if (!rs.wasNull()) {
+                        productId = raw;
+                    }
                 }
             }
 
@@ -270,10 +375,12 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
                 ps.executeUpdate();
             }
 
-            String unflag = "UPDATE products SET is_flagged = 0 WHERE id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(unflag)) {
-                ps.setInt(1, productId);
-                ps.executeUpdate();
+            if (productId != null) {
+                String unflag = "UPDATE products SET is_flagged = 0 WHERE id = ?";
+                try (PreparedStatement ps = conn.prepareStatement(unflag)) {
+                    ps.setInt(1, productId);
+                    ps.executeUpdate();
+                }
             }
 
             conn.commit();
@@ -314,6 +421,7 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
                 try (PreparedStatement ps = conn.prepareStatement(CREATE_TABLE)) {
                     ps.execute();
                 }
+                migrateNullableProductId(conn);
                 tableEnsured = true;
             } catch (SQLException e) {
                 System.err.println("product_moderation ensure table: " + e.getMessage());
@@ -323,14 +431,25 @@ public class ModerationProductDaoImpl implements ModerationProductDao {
         }
     }
 
+    private static void migrateNullableProductId(Connection conn) {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "ALTER TABLE product_moderation_requests MODIFY COLUMN product_id INT NULL")) {
+            ps.execute();
+        } catch (SQLException e) {
+            // Column may already allow NULL
+        }
+    }
+
     private static ModerationProduct mapRow(ResultSet rs) throws SQLException {
         Timestamp created = rs.getTimestamp("created_at");
         String submitted = created != null
                 ? created.toLocalDateTime().toLocalDate().format(SUBMITTED_FMT)
                 : LocalDate.now().format(SUBMITTED_FMT);
+        int rawProductId = rs.getInt("product_id");
+        int productId = rs.wasNull() ? 0 : rawProductId;
         return new ModerationProduct(
                 rs.getInt("id"),
-                rs.getInt("product_id"),
+                productId,
                 rs.getString("vendor_name"),
                 submitted,
                 rs.getString("status"),

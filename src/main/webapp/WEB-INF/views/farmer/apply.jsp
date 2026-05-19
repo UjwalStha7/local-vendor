@@ -38,6 +38,12 @@
             </p>
         </c:if>
 
+        <c:if test="${applicationRejected}">
+            <p class="vendor-form-page__notice vendor-form-page__notice--rejected" role="status">
+                Your previous vendor application was <strong>not approved</strong>. You may update the form below and submit a new application.
+            </p>
+        </c:if>
+
         <c:if test="${not empty errors}">
             <div class="farmer-apply-errors" role="alert">
                 <p class="farmer-apply-errors__title">Please fix the following:</p>
@@ -109,12 +115,27 @@
                 </p>
 
                 <div class="vendor-form__actions">
-                    <a class="vendor-form__btn vendor-form__btn--cancel" href="${ctx}/product">Cancel</a>
+                    <a class="vendor-form__btn vendor-form__btn--cancel" href="${ctx}/">Cancel</a>
                     <button class="vendor-form__btn vendor-form__btn--submit" type="submit">Submit application</button>
                 </div>
             </form>
         </div>
     </div>
 </main>
+<script>
+(function () {
+    var input = document.getElementById('email');
+    if (!input) return;
+    input.addEventListener('blur', function () {
+        var value = this.value.trim();
+        if (!value || !value.includes('@')) return;
+        var url = new URL(window.location.href);
+        if (url.searchParams.get('email') === value) return;
+        url.searchParams.set('email', value);
+        url.searchParams.delete('ok');
+        window.location.search = url.search;
+    });
+})();
+</script>
 </body>
 </html>

@@ -506,6 +506,12 @@ a {
   font-weight: 600;
 }
 
+.vendor-form-page__notice--rejected {
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+}
+
 .vendor-form-card {
   background: #ffffff;
   border: 1px solid #d1d9d6;
@@ -848,6 +854,26 @@ a {
   text-transform: lowercase;
   background: #dcfce7;
   color: #00a63e;
+}
+
+.vendor-acct-card__delete-form {
+  margin: 0;
+}
+
+.vendor-acct-card__delete {
+  padding: 6px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: #b91c1c;
+  cursor: pointer;
+}
+
+.vendor-acct-card__delete:hover {
+  background: #fee2e2;
 }
 
 .vendor-acct-card__suspend {

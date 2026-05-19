@@ -36,15 +36,44 @@ public class ProductDaoImpl implements ProductDao {
             WHERE p.id = ? AND p.vendor_user_id = ?
             """;
 
+    private static final String SEARCH_SQL = """
+            SELECT p.id, p.name, p.category, p.description, p.price, p.unit,
+                   p.stock_quantity, p.photo_path,
+                   EXISTS (
+                       SELECT 1 FROM product_moderation_requests r
+                       WHERE r.product_id = p.id AND r.status = 'pending'
+                   ) AS pending_mod
+            FROM products p
+            WHERE p.vendor_user_id = ?
+              AND LOWER(p.name) LIKE ?
+            ORDER BY p.name ASC
+            """;
+
     @Override
     public List<ProductRow> listByVendor(int vendorUserId) {
+        return queryVendorProducts(vendorUserId, null);
+    }
+
+    @Override
+    public List<ProductRow> searchByVendor(int vendorUserId, String query) {
+        if (query == null || query.isBlank()) {
+            return listByVendor(vendorUserId);
+        }
+        return queryVendorProducts(vendorUserId, "%" + query.trim().toLowerCase() + "%");
+    }
+
+    private List<ProductRow> queryVendorProducts(int vendorUserId, String namePattern) {
         ModerationProductDaoImpl.ensureSchema();
         List<ProductRow> rows = new ArrayList<>();
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = conn.prepareStatement(LIST_SQL)) {
+            String sql = namePattern == null ? LIST_SQL : SEARCH_SQL;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setInt(1, vendorUserId);
+                if (namePattern != null) {
+                    ps.setString(2, namePattern);
+                }
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
                         rows.add(mapRow(rs));
@@ -79,6 +108,25 @@ public class ProductDaoImpl implements ProductDao {
             DatabaseConnection.closeConnection(conn);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public boolean deleteByIdForVendor(int productId, int vendorUserId) {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "DELETE FROM products WHERE id = ? AND vendor_user_id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, productId);
+                ps.setInt(2, vendorUserId);
+                return ps.executeUpdate() == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println("products delete: " + e.getMessage());
+            return false;
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
     }
 
     @Override

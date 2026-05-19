@@ -48,6 +48,7 @@ public class FarmerProfileServlet extends HttpServlet {
             throws ServletException, IOException {
         req.setAttribute("activeNav", "profile");
         req.setAttribute("previewMode", preview);
+        req.setAttribute("topbarShowSearch", Boolean.FALSE);
 
         VendorProfile profile = preview
                 ? FarmerProfileData.defaultProfile()

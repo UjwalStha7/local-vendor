@@ -25,7 +25,7 @@
                     <c:if test="${approvalFlash.success and not empty approvalFlash.vendorLoginEmail}">
                         <p><strong>Login email:</strong> <c:out value="${approvalFlash.vendorLoginEmail}" /></p>
                         <p><strong>Temporary password:</strong> <c:out value="${approvalFlash.temporaryPassword}" /></p>
-                        <p class="requests-flash__hint">Share these credentials with the farmer. They can sign in at Login using the @krishak.np email. The vendor will appear under Vendor Accounts.</p>
+                        <p class="requests-flash__hint">Share these credentials with the farmer. They can sign in at Login using the @krishak.np email. The temporary password is the part of their contact email before @ (e.g. shirshgrg@gmail.com → shirshgrg). The vendor will appear under Vendor Accounts.</p>
                     </c:if>
                 </div>
             </c:if>

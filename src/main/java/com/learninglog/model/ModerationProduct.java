@@ -69,6 +69,11 @@ public class ModerationProduct {
         return productId;
     }
 
+    /** New listing request (not yet in products table). */
+    public boolean isNewProductRequest() {
+        return productId <= 0;
+    }
+
     public String getVendor() {
         return vendor;
     }

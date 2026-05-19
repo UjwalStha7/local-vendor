@@ -13,6 +13,11 @@ public interface ModerationProductDao {
                                String proposedDescription, double proposedPrice, String proposedUnit,
                                int proposedStock, String proposedPhotoPath);
 
+    void submitNewProductRequest(int vendorUserId, String name, String category, String description,
+                                 double price, String unit, int stock, String photoPath);
+
+    boolean hasPendingNewProductRequest(int vendorUserId);
+
     void approve(int requestId);
 
     void reject(int requestId);

@@ -13,8 +13,10 @@ import java.util.Locale;
 
 public class VendorAccountDaoImpl implements VendorAccountDao {
 
+    private final VendorRequestDao vendorRequestDao = new VendorRequestDaoImpl();
+
     private static final String LIST_SQL = """
-            SELECT u.username, u.email, u.phone, u.is_active,
+            SELECT u.id, u.username, u.email, u.phone, u.is_active,
                    COALESCE(vp.business_name, u.username) AS business_name,
                    (SELECT COUNT(*) FROM products p WHERE p.vendor_user_id = u.id) AS product_count,
                    (SELECT COUNT(DISTINCT oi.order_id)
@@ -28,7 +30,7 @@ public class VendorAccountDaoImpl implements VendorAccountDao {
             """;
 
     private static final String SEARCH_SQL = """
-            SELECT u.username, u.email, u.phone, u.is_active,
+            SELECT u.id, u.username, u.email, u.phone, u.is_active,
                    COALESCE(vp.business_name, u.username) AS business_name,
                    (SELECT COUNT(*) FROM products p WHERE p.vendor_user_id = u.id) AS product_count,
                    (SELECT COUNT(DISTINCT oi.order_id)
@@ -76,6 +78,28 @@ public class VendorAccountDaoImpl implements VendorAccountDao {
         return cards;
     }
 
+    @Override
+    public boolean deleteVendor(int vendorUserId) {
+        if (vendorUserId <= 0) {
+            return false;
+        }
+        vendorRequestDao.markRequestsRejectedForDeletedVendor(vendorUserId);
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "DELETE FROM users WHERE id = ? AND LOWER(role) = 'vendor'";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, vendorUserId);
+                return ps.executeUpdate() == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println("vendor account delete: " + e.getMessage());
+            return false;
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+    }
+
     private List<VendorAccountCard> listAll() {
         List<VendorAccountCard> cards = new ArrayList<>();
         Connection conn = null;
@@ -97,6 +121,7 @@ public class VendorAccountDaoImpl implements VendorAccountDao {
 
     private static VendorAccountCard mapRow(ResultSet rs) throws SQLException {
         return new VendorAccountCard(
+                rs.getInt("id"),
                 rs.getString("username"),
                 rs.getString("business_name"),
                 rs.getString("email"),
