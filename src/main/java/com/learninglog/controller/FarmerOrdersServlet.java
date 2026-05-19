@@ -64,6 +64,10 @@ public class FarmerOrdersServlet extends HttpServlet {
             throws ServletException, IOException {
         req.setAttribute("activeNav", "orders");
         req.setAttribute("previewMode", preview);
+        req.setAttribute("topbarShowSearch", Boolean.TRUE);
+        req.setAttribute("topbarSearchAction",
+                preview ? req.getContextPath() + "/farmerorderspreview" : req.getContextPath() + "/farmer/orders");
+        req.setAttribute("topbarSearchPlaceholder", "Search orders...");
 
         List<VendorOrderRow> all = preview
                 ? FarmerOrderData.allOrders()
@@ -79,7 +83,9 @@ public class FarmerOrdersServlet extends HttpServlet {
 
         req.setAttribute("orders", visible);
         req.setAttribute("orderFilter", filter);
-        req.setAttribute("searchQuery", search == null ? "" : search);
+        String searchValue = search == null ? "" : search;
+        req.setAttribute("searchQuery", searchValue);
+        req.setAttribute("topbarSearchValue", searchValue);
         req.setAttribute("statTotal", counts.get("total"));
         req.setAttribute("statPending", counts.get("pending"));
         req.setAttribute("statDispatched", counts.get("dispatched"));

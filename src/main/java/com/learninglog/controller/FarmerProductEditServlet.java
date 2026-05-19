@@ -43,6 +43,7 @@ public class FarmerProductEditServlet extends HttpServlet {
         }
         FarmerAuthUtil.setStoreAttributes(req, vendor);
         req.setAttribute("activeNav", "product-management");
+        req.setAttribute("topbarShowSearch", Boolean.FALSE);
         req.setAttribute("product", product.get());
         req.setAttribute("pendingModeration", productDao.hasPendingModeration(productId));
         req.getRequestDispatcher("/WEB-INF/views/farmer/product-edit.jsp").forward(req, resp);
@@ -119,6 +120,7 @@ public class FarmerProductEditServlet extends HttpServlet {
                 req.setAttribute("formPhotoPath", photoPath);
                 FarmerAuthUtil.setStoreAttributes(req, vendor);
                 req.setAttribute("activeNav", "product-management");
+                req.setAttribute("topbarShowSearch", Boolean.FALSE);
                 req.getRequestDispatcher("/WEB-INF/views/farmer/product-edit.jsp").forward(req, resp);
             } catch (ServletException e) {
                 throw new IOException(e);
