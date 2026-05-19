@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 public class CatalogDaoImpl implements CatalogDao {
 
@@ -26,6 +27,34 @@ public class CatalogDaoImpl implements CatalogDao {
                   WHERE r.product_id = p.id AND r.status = 'pending'
               )
             """;
+
+    @Override
+    public Optional<CatalogProduct> findById(int productId) {
+        if (productId <= 0) {
+            return Optional.empty();
+        }
+        String sql = """
+                SELECT p.id, p.name, p.category, p.description, p.price, p.unit, p.stock_quantity, p.photo_path,
+                       COALESCE(NULLIF(TRIM(vp.business_name), ''), u.username) AS vendor_name
+                """ + BASE_FROM + " AND p.id = ? ";
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, productId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return Optional.of(mapRow(rs));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("catalog findById: " + e.getMessage());
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+        return Optional.empty();
+    }
 
     @Override
     public List<CatalogProduct> search(String query, List<String> categories, List<String> vendorSlugs,
@@ -106,19 +135,7 @@ public class CatalogDaoImpl implements CatalogDao {
                 }
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        String vendorName = rs.getString("vendor_name");
-                        products.add(new CatalogProduct(
-                                rs.getInt("id"),
-                                rs.getString("name"),
-                                rs.getString("category"),
-                                rs.getString("description"),
-                                vendorName,
-                                CatalogProduct.toVendorSlug(vendorName),
-                                rs.getDouble("price"),
-                                rs.getString("unit"),
-                                rs.getInt("stock_quantity"),
-                                rs.getString("photo_path")
-                        ));
+                        products.add(mapRow(rs));
                     }
                 }
             }
@@ -205,6 +222,22 @@ public class CatalogDaoImpl implements CatalogDao {
             DatabaseConnection.closeConnection(conn);
         }
         return new ArrayList<>(bySlug.values());
+    }
+
+    private static CatalogProduct mapRow(ResultSet rs) throws SQLException {
+        String vendorName = rs.getString("vendor_name");
+        return new CatalogProduct(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("category"),
+                rs.getString("description"),
+                vendorName,
+                CatalogProduct.toVendorSlug(vendorName),
+                rs.getDouble("price"),
+                rs.getString("unit"),
+                rs.getInt("stock_quantity"),
+                rs.getString("photo_path")
+        );
     }
 
     private static String orderClause(String sortBy) {

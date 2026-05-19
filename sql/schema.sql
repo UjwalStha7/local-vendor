@@ -1,9 +1,16 @@
--- Create database
+-- Krishak / local-vendor — database structure only (no data).
+-- Import this first: creates database and tables.
+--
+-- Example (XAMPP):
+--   mysql -u root < sql/schema.sql
+-- Then import data:
+--   mysql -u root < sql/seed.sql
+
 CREATE DATABASE IF NOT EXISTS local_vendor;
 USE local_vendor;
 
--- 1. Users table  (Modified BY Darshan)
-CREATE TABLE users (
+-- 1. Users
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -12,12 +19,8 @@ CREATE TABLE users (
     role ENUM('admin', 'vendor', 'customer') NOT NULL DEFAULT 'customer',
     is_active BOOLEAN DEFAULT TRUE,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP
-
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
-
 
 -- Farmer / vendor applications (from /farmer/apply)
 CREATE TABLE IF NOT EXISTS vendor_requests (
@@ -36,7 +39,7 @@ CREATE TABLE IF NOT EXISTS vendor_requests (
     FOREIGN KEY (vendor_user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- 2. Vendor Profiles table
+-- 2. Vendor profiles
 CREATE TABLE IF NOT EXISTS vendor_profiles (
     vendor_user_id INT PRIMARY KEY,
     business_name VARCHAR(100) NOT NULL,
@@ -44,9 +47,9 @@ CREATE TABLE IF NOT EXISTS vendor_profiles (
     address VARCHAR(255),
     logo_path VARCHAR(255),
     FOREIGN KEY (vendor_user_id) REFERENCES users(id) ON DELETE CASCADE
-    );
+);
 
--- 3. Products table
+-- 3. Products
 CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     vendor_user_id INT NOT NULL,
@@ -61,7 +64,7 @@ CREATE TABLE IF NOT EXISTS products (
     is_flagged TINYINT(1) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (vendor_user_id) REFERENCES users(id) ON DELETE CASCADE
-    );
+);
 
 -- Product change requests (vendor edits awaiting admin approval)
 CREATE TABLE IF NOT EXISTS product_moderation_requests (
@@ -89,15 +92,15 @@ CREATE TABLE IF NOT EXISTS product_moderation_requests (
     FOREIGN KEY (vendor_user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 4. Carts table
+-- 4. Carts
 CREATE TABLE IF NOT EXISTS carts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    );
+);
 
--- 5. Cart Items table
+-- 5. Cart items
 CREATE TABLE IF NOT EXISTS cart_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cart_id INT NOT NULL,
@@ -105,9 +108,9 @@ CREATE TABLE IF NOT EXISTS cart_items (
     quantity INT NOT NULL DEFAULT 1,
     FOREIGN KEY (cart_id) REFERENCES carts(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
-    );
+);
 
--- 6. Orders table
+-- 6. Orders
 CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -115,9 +118,9 @@ CREATE TABLE IF NOT EXISTS orders (
     status ENUM('pending', 'confirmed', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    );
+);
 
--- 7. Order Items table
+-- 7. Order items
 CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
@@ -126,4 +129,4 @@ CREATE TABLE IF NOT EXISTS order_items (
     price_at_purchase DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
-    );
+);

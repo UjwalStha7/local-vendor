@@ -5,7 +5,6 @@ import com.learninglog.dao.VendorProfileDaoImpl;
 import com.learninglog.entity.User;
 import com.learninglog.model.VendorProfile;
 import com.learninglog.util.FarmerAuthUtil;
-import com.learninglog.util.FarmerProfileData;
 import com.learninglog.util.ProductImageUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -34,7 +33,7 @@ public class FarmerProfileServlet extends HttpServlet {
             return;
         }
         FarmerAuthUtil.setStoreAttributes(req, vendor);
-        forwardProfile(req, resp, vendor, false);
+        forwardProfile(req, resp, vendor);
     }
 
     @Override
@@ -84,15 +83,12 @@ public class FarmerProfileServlet extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + redirect);
     }
 
-    static void forwardProfile(HttpServletRequest req, HttpServletResponse resp, User vendor, boolean preview)
+    private void forwardProfile(HttpServletRequest req, HttpServletResponse resp, User vendor)
             throws ServletException, IOException {
         req.setAttribute("activeNav", "profile");
-        req.setAttribute("previewMode", preview);
         req.setAttribute("topbarShowSearch", Boolean.FALSE);
 
-        VendorProfile profile = preview
-                ? FarmerProfileData.defaultProfile()
-                : new VendorProfileDaoImpl().loadForVendor(vendor);
+        VendorProfile profile = profileDao.loadForVendor(vendor);
 
         boolean editMode = "1".equals(req.getParameter("edit"));
         req.setAttribute("profile", profile);

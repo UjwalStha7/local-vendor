@@ -25,13 +25,6 @@
         <jsp:include page="vendor-topbar.jsp" />
 
         <main class="vp-content">
-            <c:if test="${previewMode}">
-                <p class="vp-preview-banner" role="status">
-                    Preview mode — not logged in. Sign in as a vendor to use the live dashboard at
-                    <a href="${ctx}/farmer/dashboard">/farmer/dashboard</a>.
-                </p>
-            </c:if>
-
             <header class="vp-page-head">
                 <h1>Dashboard Overview</h1>
                 <p>Welcome back! Here's what's happening with your store today.</p>

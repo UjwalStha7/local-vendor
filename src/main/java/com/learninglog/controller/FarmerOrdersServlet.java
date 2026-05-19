@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +30,7 @@ public class FarmerOrdersServlet extends HttpServlet {
             return;
         }
         FarmerAuthUtil.setStoreAttributes(req, vendor);
-        forwardOrders(req, resp, vendor.getId(), false);
+        forwardOrders(req, resp, vendor.getId());
     }
 
     @Override
@@ -59,16 +58,12 @@ public class FarmerOrdersServlet extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/farmer/orders?filter=" + filter);
     }
 
-    static void forwardOrders(HttpServletRequest req, HttpServletResponse resp,
-                              int vendorUserId, boolean preview)
+    private void forwardOrders(HttpServletRequest req, HttpServletResponse resp, int vendorUserId)
             throws ServletException, IOException {
         req.setAttribute("activeNav", "orders");
-        req.setAttribute("previewMode", preview);
         req.setAttribute("topbarShowSearch", Boolean.FALSE);
 
-        List<VendorOrderRow> all = preview || vendorUserId <= 0
-                ? Collections.emptyList()
-                : new VendorOrderDaoImpl().listOrdersForVendor(vendorUserId);
+        List<VendorOrderRow> all = orderDao.listOrdersForVendor(vendorUserId);
 
         String filter = req.getParameter("filter");
         if (filter == null || filter.isBlank()) {
