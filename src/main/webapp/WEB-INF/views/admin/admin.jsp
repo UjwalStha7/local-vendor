@@ -55,88 +55,74 @@
                 </article>
             </section>
 
-            <section class="admin-charts" aria-label="Charts">
-                <article class="chart-card">
-                    <h2 class="chart-card__title">Revenue Trends</h2>
-                    <div class="chart-card__plot chart-card__plot--revenue" role="img" aria-label="Revenue area chart Jan to May">
-                        <div class="revenue-chart">
-                            <div class="revenue-chart__y">
-                                <span>80k</span>
-                                <span>60k</span>
-                                <span>40k</span>
-                                <span>20k</span>
-                                <span>0</span>
-                            </div>
-                            <div class="revenue-chart__area">
-                                <svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true">
-                                    <defs>
-                                        <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stop-color="#2d6a4f" stop-opacity="0.35" />
-                                            <stop offset="100%" stop-color="#2d6a4f" stop-opacity="0.02" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path fill="url(#revFill)" d="M0,120 L40,100 L100,110 L160,70 L220,85 L280,45 L340,55 L400,40 L400,160 L0,160 Z" />
-                                    <path fill="none" stroke="#1b4332" stroke-width="2.5"
-                                          d="M0,120 L40,100 L100,110 L160,70 L220,85 L280,45 L340,55 L400,40" />
-                                </svg>
-                                <div class="revenue-chart__x">
-                                    <span>Jan</span>
-                                    <span>Feb</span>
-                                    <span>Mar</span>
-                                    <span>Apr</span>
-                                    <span>May</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="chart-card">
-                    <h2 class="chart-card__title">Vendor Requests (This Week)</h2>
-                    <div class="chart-card__plot" role="img" aria-label="Weekly vendor requests bar chart">
-                        <div style="height: 300px; position: relative;">
-                            <canvas id="vendorRequestChart"></canvas>
-                        </div>
-                    </div>
-                </article>
+            <section class="chart-container" aria-label="Weekly activity chart">
+                <h3 class="chart-container__title">Weekly Vendor Applications</h3>
+                <p class="chart-container__subtitle">New farmer applications submitted in the last 7 days</p>
+                <div class="chart-wrapper">
+                    <canvas id="weeklyChart" aria-label="Weekly vendor applications line chart"></canvas>
+                </div>
             </section>
         </main>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 <script>
-    const vendorRequestLabels = [
-        <c:forEach var="label" items="${vendorRequestLabels}" varStatus="status">
-            "${label}"<c:if test="${!status.last}">, </c:if>
+    const labels = [
+        <c:forEach var="d" items="${dates}" varStatus="status">
+            "<c:out value='${d}' />"<c:if test="${!status.last}">, </c:if>
         </c:forEach>
     ];
 
-    const vendorRequestData = [
-        <c:forEach var="value" items="${vendorRequestData}" varStatus="status">
-            ${value}<c:if test="${!status.last}">, </c:if>
+    const data = [
+        <c:forEach var="c" items="${counts}" varStatus="status">
+            ${c}<c:if test="${!status.last}">, </c:if>
         </c:forEach>
     ];
 
-    const vendorRequestCtx = document.getElementById("vendorRequestChart");
-    if (vendorRequestCtx) {
-        new Chart(vendorRequestCtx, {
-            type: "bar",
+    const ctx = document.getElementById("weeklyChart");
+    if (ctx && typeof Chart !== "undefined") {
+        new Chart(ctx, {
+            type: "line",
             data: {
-                labels: vendorRequestLabels,
+                labels: labels,
                 datasets: [{
-                    label: "Vendor Requests",
-                    data: vendorRequestData,
-                    backgroundColor: "rgba(45, 106, 79, 0.55)",
-                    borderColor: "rgba(27, 67, 50, 1)",
-                    borderWidth: 1
+                    label: "Vendor applications",
+                    data: data,
+                    borderColor: "#1b4332",
+                    backgroundColor: "rgba(45, 106, 79, 0.15)",
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: "#2d6a4f",
+                    pointBorderColor: "#ffffff",
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "top"
+                    }
+                },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        },
+                        grid: {
+                            color: "rgba(0, 0, 0, 0.06)"
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
                     }
                 }
             }

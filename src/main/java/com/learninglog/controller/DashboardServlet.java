@@ -12,6 +12,7 @@ import com.learninglog.model.ModerationProduct;
 import com.learninglog.model.VendorAccountCard;
 import com.learninglog.model.VendorApprovalResult;
 import com.learninglog.model.VendorRequestRow;
+import com.learninglog.model.WeeklyData;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -87,8 +89,14 @@ public class DashboardServlet extends HttpServlet {
 
     private void forwardDashboard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Map<String, Integer> kpiStats = dashboardStatsDao.fetchKpiStats();
-        List<String> labels = vendorRequestDao.fetchWeeklyLabels();
-        List<Integer> data = vendorRequestDao.fetchWeeklyRequestCounts();
+        List<WeeklyData> weeklyData = dashboardStatsDao.fetchWeeklyVendorApplications();
+
+        List<String> dates = new ArrayList<>();
+        List<Integer> counts = new ArrayList<>();
+        for (WeeklyData wd : weeklyData) {
+            dates.add(wd.getDate());
+            counts.add(wd.getCount());
+        }
 
         req.setAttribute("activeNav", "dashboard");
         req.setAttribute("pageTitle", "Dashboard Overview");
@@ -99,8 +107,8 @@ public class DashboardServlet extends HttpServlet {
         req.setAttribute("statProductsListed", kpiStats.getOrDefault("productsListed", 0));
         req.setAttribute("statTotalOrders", kpiStats.getOrDefault("totalOrders", 0));
 
-        req.setAttribute("vendorRequestLabels", labels);
-        req.setAttribute("vendorRequestData", data);
+        req.setAttribute("dates", dates);
+        req.setAttribute("counts", counts);
 
         req.getRequestDispatcher("/WEB-INF/views/admin/admin.jsp").forward(req, resp);
     }
