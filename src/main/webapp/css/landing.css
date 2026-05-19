@@ -104,6 +104,33 @@ a {
   font-weight: 700;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.nav-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--logo-green);
+  background: #fff;
+  color: var(--logo-green);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-login-btn:hover {
+  background: var(--logo-green);
+  color: #fff;
+}
+
 .cart-link {
   position: relative;
   display: flex;

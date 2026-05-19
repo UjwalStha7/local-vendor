@@ -23,7 +23,10 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        String redirect = sanitizeRedirect(request.getParameter("redirect"));
+        if (redirect != null) {
+            request.setAttribute("redirect", redirect);
+        }
         request.getRequestDispatcher("/WEB-INF/views/login.jsp")
                 .forward(request, response);
     }
@@ -83,7 +86,23 @@ public class LoginServlet extends HttpServlet {
         session.setAttribute("user", user);
         session.setAttribute("role", LoginAuthUtil.sessionRoleFor(accountType));
 
+        String redirect = sanitizeRedirect(request.getParameter("redirect"));
+        if (redirect != null && accountType == AccountType.CUSTOMER) {
+            response.sendRedirect(request.getContextPath() + redirect);
+            return;
+        }
         response.sendRedirect(request.getContextPath() + LoginAuthUtil.redirectPath(accountType));
+    }
+
+    private static String sanitizeRedirect(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return null;
+        }
+        String path = raw.trim();
+        if (!path.startsWith("/") || path.startsWith("//")) {
+            return null;
+        }
+        return path;
     }
 
     private User bootstrapAdminAccount() {

@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -49,16 +48,6 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
     private static final CopyOnWriteArrayList<VendorRequestRow> MEMORY_FALLBACK = new CopyOnWriteArrayList<>();
 
     private final UserDao userDao = new UserDaoImp();
-
-    @Override
-    public List<String> fetchWeeklyLabels() {
-        return Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
-    }
-
-    @Override
-    public List<Integer> fetchWeeklyRequestCounts() {
-        return Arrays.asList(3, 5, 4, 6, 7, 5, 4);
-    }
 
     @Override
     public List<VendorRequestRow> listVendorRequests() {

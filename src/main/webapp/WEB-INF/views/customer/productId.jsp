@@ -20,7 +20,7 @@
         <a class="top-text-link" href="${pageContext.request.contextPath}/customer/home">Home</a>
         <a class="top-text-link" href="${pageContext.request.contextPath}/about">About Us</a>
         <a class="top-text-link" href="${pageContext.request.contextPath}/contact">Contact</a>
-        <a class="icon-btn" href="${pageContext.request.contextPath}/cart.html" aria-label="Open cart">
+        <a class="icon-btn" href="${pageContext.request.contextPath}/cart" aria-label="Open cart">
           <img src="image/cart.png" alt="" aria-hidden="true" />
         </a>
       </div>

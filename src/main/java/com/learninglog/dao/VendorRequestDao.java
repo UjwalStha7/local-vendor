@@ -6,10 +6,6 @@ import com.learninglog.model.VendorRequestRow;
 import java.util.List;
 
 public interface VendorRequestDao {
-    List<String> fetchWeeklyLabels();
-
-    List<Integer> fetchWeeklyRequestCounts();
-
     List<VendorRequestRow> listVendorRequests();
 
     /** Applications awaiting admin approval (status = pending). */

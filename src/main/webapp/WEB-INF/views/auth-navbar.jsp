@@ -3,12 +3,13 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <header class="site-header">
   <div class="header-inner">
-    <a class="logo" href="${ctx}/customer/home">Krishak</a>
+    <a class="logo" href="${ctx}/">Krishak</a>
     <nav class="main-nav" aria-label="Primary">
-      <a href="${ctx}/customer/home">Home</a>
+      <a href="${ctx}/">Home</a>
       <a href="${ctx}/product">Product</a>
       <a href="${ctx}/about">About Us</a>
       <a href="${ctx}/contact">Contact</a>
     </nav>
+    <a class="nav-login-btn" href="${ctx}/login">Login</a>
   </div>
 </header>
