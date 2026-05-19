@@ -28,13 +28,13 @@
         <header class="vendor-form-page__intro">
             <h1 class="vendor-form-page__title">Apply to sell on Krishak</h1>
             <p class="vendor-form-page__subtitle">
-                Tell us about your farm. Our team will review your application and reach out by email or phone.
+                Tell us about your farm. After approval, you will receive a <strong>@krishak.np</strong> login to access the farmer dashboard.
             </p>
         </header>
 
         <c:if test="${param.ok eq '1'}">
             <p class="vendor-form-page__notice" role="status">
-                Thank you! Your application was received. We will contact you soon.
+                Thank you! Your application was received. When an admin approves it, you will get a <strong>@krishak.np</strong> email and password to sign in.
             </p>
         </c:if>
 
@@ -73,7 +73,7 @@
                     <div class="vendor-field">
                         <label class="vendor-field__label" for="email">Email <span class="vendor-field__req" aria-hidden="true">*</span></label>
                         <input class="vendor-field__input" id="email" name="email" type="email" required
-                               autocomplete="email" placeholder="you@example.com"
+                               autocomplete="email" placeholder="you@gmail.com (contact email)"
                                value="<c:out value='${empty email ? param.email : email}' />" />
                     </div>
                     <div class="vendor-field">

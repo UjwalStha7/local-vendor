@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css" />
 </head>
 <body class="login-body">
-    <jsp:include page="/WEB-INF/views/auth-navbar.jsp" />
 
     <main class="auth-page">
         <section class="auth-card" aria-labelledby="login-heading">
@@ -22,7 +21,7 @@
 
             <div class="welcome">
                 <h1 id="login-heading">Welcome back</h1>
-                <p>Sign in to shop farm-fresh produce from local farmers.</p>
+                <p>Customers: use your registered email (e.g. name@gmail.com). Farmers: use your @krishak.np address.</p>
             </div>
 
             <nav class="switcher" aria-label="Authentication pages">
@@ -41,8 +40,8 @@
                         <span class="input-icon" aria-hidden="true">
                             <img class="icon-img" src="${pageContext.request.contextPath}/image/email.png" alt="" />
                         </span>
-                        <input id="login-email" type="email" name="email" placeholder="name@example.com"
-                               value="<c:out value='${param.email}' default=''/>" required />
+                        <input id="login-email" type="email" name="email" placeholder="name@gmail.com or you@krishak.np"
+                               value="<c:out value='${email}' default='${param.email}'/>" required />
                     </div>
                 </div>
 
@@ -65,13 +64,6 @@
                 <a href="${pageContext.request.contextPath}/register">Register</a>
             </p>
 
-            <p class="auth-footer">
-                <a href="${pageContext.request.contextPath}/customer/home">Home</a>
-                <span class="auth-footer-sep" aria-hidden="true">·</span>
-                <a href="${pageContext.request.contextPath}/about">About Us</a>
-                <span class="auth-footer-sep" aria-hidden="true">·</span>
-                <a href="${pageContext.request.contextPath}/contact">Contact</a>
-            </p>
         </section>
     </main>
 </body>
