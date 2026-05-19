@@ -3,6 +3,7 @@ package com.learninglog.controller;
 import com.learninglog.dao.UserDao;
 import com.learninglog.dao.UserDaoImp;
 import com.learninglog.entity.User;
+import com.learninglog.util.LoginAuthUtil;
 import com.learninglog.util.PasswordUtil;
 import com.learninglog.util.ValidationUtil;
 import jakarta.servlet.ServletException;
@@ -47,6 +48,10 @@ public class RegisterServlet extends HttpServlet {
 //        email
         if(!ValidationUtil.isValidEmail(email)){
             error.add("Invalid Email Format");
+        }
+        String normalizedEmail = LoginAuthUtil.normalizeEmail(email);
+        if (normalizedEmail.endsWith(LoginAuthUtil.VENDOR_EMAIL_SUFFIX)) {
+            error.add("Farmer (@krishak.np) accounts are created by Krishak. Register with a personal email (e.g. Gmail) to shop as a customer.");
         }
 
 //       password

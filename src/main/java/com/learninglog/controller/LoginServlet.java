@@ -1,15 +1,17 @@
 package com.learninglog.controller;
-import jakarta.servlet.http.HttpSession;
+
 import com.learninglog.dao.UserDao;
 import com.learninglog.dao.UserDaoImp;
 import com.learninglog.entity.User;
+import com.learninglog.util.LoginAuthUtil;
+import com.learninglog.util.LoginAuthUtil.AccountType;
 import com.learninglog.util.PasswordUtil;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -30,56 +32,80 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String email = request.getParameter("email");
+        String email = LoginAuthUtil.normalizeEmail(request.getParameter("email"));
         String password = request.getParameter("password");
+        AccountType accountType = LoginAuthUtil.resolveAccountType(email);
 
-//   using email to find user
+        if (email.isEmpty() || password == null || password.isBlank()) {
+            forwardWithError(request, response, "Please enter your email and password.", email);
+            return;
+        }
+
         User user = userDao.findByEmail(email);
+
+        if (accountType == AccountType.ADMIN && user == null) {
+            if (!LoginAuthUtil.isAdminBootstrapPassword(password)) {
+                forwardWithError(request, response, "Invalid Email or Password", email);
+                return;
+            }
+            user = bootstrapAdminAccount();
+            if (user == null) {
+                forwardWithError(request, response, "Unable to create admin account. Check database connection.", email);
+                return;
+            }
+        }
+
         if (user == null) {
-            request.setAttribute("error", "Invalid Email or Password");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp")
-                    .forward(request, response);
+            String message = accountType == AccountType.VENDOR
+                    ? "No farmer account found for this @krishak.np email. Contact support or complete vendor registration."
+                    : "Invalid Email or Password";
+            forwardWithError(request, response, message, email);
             return;
         }
 
-        // Verify password by comparing with db pass
-        boolean isPasswordCorrect = PasswordUtil.checkpassword(password, user.getPassword());
-
-        if (!isPasswordCorrect) {
-            request.setAttribute("error", "Invalid Email or Password");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp")
-                    .forward(request, response);
+        if (!PasswordUtil.checkpassword(password, user.getPassword())) {
+            forwardWithError(request, response, "Invalid Email or Password", email);
             return;
         }
-
 
         if (!user.Isactive()) {
-
-            request.setAttribute("error", "Account is inactive");
-
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp")
-                    .forward(request, response);
-
+            forwardWithError(request, response, "Account is inactive", email);
             return;
         }
+
+        if (!LoginAuthUtil.roleMatchesAccountType(user.getRole(), accountType)) {
+            forwardWithError(request, response,
+                    LoginAuthUtil.wrongAccountTypeMessage(accountType), email);
+            return;
+        }
+
         HttpSession session = request.getSession();
-
         session.setAttribute("user", user);
-        session.setAttribute("role", user.getRole());
+        session.setAttribute("role", LoginAuthUtil.sessionRoleFor(accountType));
 
-        if ("admin".equalsIgnoreCase(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+        response.sendRedirect(request.getContextPath() + LoginAuthUtil.redirectPath(accountType));
+    }
 
+    private User bootstrapAdminAccount() {
+        User admin = new User(
+                "Krishak Admin",
+                LoginAuthUtil.ADMIN_EMAIL,
+                PasswordUtil.getHashpassword(LoginAuthUtil.ADMIN_DEFAULT_PASSWORD),
+                ""
+        );
+        admin.setRole("admin");
+        admin.setactive(true);
+        if (!userDao.insertUser(admin)) {
+            return userDao.findByEmail(LoginAuthUtil.ADMIN_EMAIL);
         }
-        else if ("vendor".equalsIgnoreCase(user.getRole())) {
+        return userDao.findByEmail(LoginAuthUtil.ADMIN_EMAIL);
+    }
 
-            response.sendRedirect(request.getContextPath() + "/farmer/dashboard");
-
-        }
-        else {
-            response.sendRedirect(request.getContextPath() + "/customer/home");
-        }
-
-
+    private void forwardWithError(HttpServletRequest request, HttpServletResponse response,
+                                  String error, String email) throws ServletException, IOException {
+        request.setAttribute("error", error);
+        request.setAttribute("email", email);
+        request.getRequestDispatcher("/WEB-INF/views/login.jsp")
+                .forward(request, response);
     }
 }

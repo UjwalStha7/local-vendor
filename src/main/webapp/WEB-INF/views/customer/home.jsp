@@ -8,7 +8,7 @@
   <base href="${pageContext.request.contextPath}/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/landing.css" />
 </head>
 <body>
@@ -112,7 +112,17 @@
       </div>
     </section>
 
-    
+    <section class="section vendor-cta" aria-labelledby="vendor-cta-heading">
+      <div class="container">
+        <div class="vendor-cta__card">
+          <div class="vendor-cta__text">
+            <h2 id="vendor-cta-heading" class="vendor-cta__title">Join the Digital Commons</h2>
+            <p class="vendor-cta__lead">Expand your business, showcase your products and grow with us</p>
+          </div>
+          <a class="vendor-cta__btn" href="${pageContext.request.contextPath}/farmer/apply">Cultivate Connection</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">

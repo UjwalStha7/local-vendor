@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/register.css" />
 </head>
 <body class="register-body">
-    <jsp:include page="/WEB-INF/views/auth-navbar.jsp" />
 
     <main class="auth-page">
         <section class="auth-card auth-card--register" aria-labelledby="register-heading">
@@ -51,7 +50,7 @@
                         <span class="input-icon" aria-hidden="true">
                             <img class="icon-img" src="${pageContext.request.contextPath}/image/email.png" alt="" />
                         </span>
-                        <input id="register-email" type="email" name="email" placeholder="name@example.com"
+                        <input id="register-email" type="email" name="email" placeholder="name@gmail.com"
                                value="<c:out value='${param.email}' default=''/>" required />
                     </div>
                 </div>
@@ -97,13 +96,6 @@
                 <a href="${pageContext.request.contextPath}/login">Log in</a>
             </p>
 
-            <p class="auth-footer">
-                <a href="${pageContext.request.contextPath}/customer/home">Home</a>
-                <span class="auth-footer-sep" aria-hidden="true">·</span>
-                <a href="${pageContext.request.contextPath}/about">About Us</a>
-                <span class="auth-footer-sep" aria-hidden="true">·</span>
-                <a href="${pageContext.request.contextPath}/contact">Contact</a>
-            </p>
         </section>
     </main>
 </body>

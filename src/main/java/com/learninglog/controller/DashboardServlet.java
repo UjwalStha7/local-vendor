@@ -10,7 +10,9 @@ import com.learninglog.dao.VendorRequestDao;
 import com.learninglog.dao.VendorRequestDaoImpl;
 import com.learninglog.model.ModerationProduct;
 import com.learninglog.model.VendorAccountCard;
+import com.learninglog.model.VendorApprovalResult;
 import com.learninglog.model.VendorRequestRow;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -88,14 +90,21 @@ public class DashboardServlet extends HttpServlet {
                     // ignore bad id
                 }
             }
-            String filter = req.getParameter("filter");
-            if (filter == null || filter.isBlank()) {
-                filter = "all";
+            resp.sendRedirect(req.getContextPath() + "/admin?section=requests&filter=" + sanitizeRequestFilter(req));
+            return;
+        }
+        if ("approve".equals(action)) {
+            String idParam = req.getParameter("id");
+            HttpSession session = req.getSession(true);
+            if (idParam != null && !idParam.isBlank()) {
+                try {
+                    VendorApprovalResult result = vendorRequestDao.approveFarmerApplication(Integer.parseInt(idParam));
+                    session.setAttribute("approvalFlash", result);
+                } catch (NumberFormatException ignored) {
+                    session.setAttribute("approvalFlash", VendorApprovalResult.failure("Invalid application id."));
+                }
             }
-            if (!"all".equals(filter) && !"pending".equals(filter) && !"contacted".equals(filter)) {
-                filter = "all";
-            }
-            resp.sendRedirect(req.getContextPath() + "/admin?section=requests&filter=" + filter);
+            resp.sendRedirect(req.getContextPath() + "/admin?section=requests&filter=" + sanitizeRequestFilter(req));
             return;
         }
         resp.sendRedirect(req.getContextPath() + "/admin");
@@ -141,13 +150,7 @@ public class DashboardServlet extends HttpServlet {
     }
 
     private void forwardVendorRequests(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String filter = req.getParameter("filter");
-        if (filter == null || filter.isBlank()) {
-            filter = "all";
-        }
-        if (!"all".equals(filter) && !"pending".equals(filter) && !"contacted".equals(filter)) {
-            filter = "all";
-        }
+        String filter = sanitizeRequestFilter(req);
 
         List<VendorRequestRow> all = vendorRequestDao.listVendorRequests();
         List<VendorRequestRow> rows = new ArrayList<>();
@@ -156,8 +159,19 @@ public class DashboardServlet extends HttpServlet {
                 rows.add(row);
             } else if ("pending".equals(filter) && row.isPending()) {
                 rows.add(row);
-            } else if ("contacted".equals(filter) && !row.isPending()) {
+            } else if ("contacted".equals(filter) && "contacted".equalsIgnoreCase(row.getStatus())) {
                 rows.add(row);
+            } else if ("approved".equals(filter) && row.isApproved()) {
+                rows.add(row);
+            }
+        }
+
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            Object flash = session.getAttribute("approvalFlash");
+            if (flash instanceof VendorApprovalResult result) {
+                req.setAttribute("approvalFlash", result);
+                session.removeAttribute("approvalFlash");
             }
         }
 
@@ -165,6 +179,17 @@ public class DashboardServlet extends HttpServlet {
         req.setAttribute("requestFilter", filter);
         req.setAttribute("vendorRequestRows", rows);
         req.getRequestDispatcher("/WEB-INF/views/admin/vendor-requests.jsp").forward(req, resp);
+    }
+
+    private static String sanitizeRequestFilter(HttpServletRequest req) {
+        String filter = req.getParameter("filter");
+        if (filter == null || filter.isBlank()) {
+            return "all";
+        }
+        if ("all".equals(filter) || "pending".equals(filter) || "contacted".equals(filter) || "approved".equals(filter)) {
+            return filter;
+        }
+        return "all";
     }
 
     private void forwardAddVendor(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

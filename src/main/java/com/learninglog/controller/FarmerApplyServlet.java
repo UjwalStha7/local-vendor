@@ -75,7 +75,14 @@ public class FarmerApplyServlet extends HttpServlet {
         String core10 = phoneDigits.length() > 10 ? phoneDigits.substring(phoneDigits.length() - 10) : phoneDigits;
         String phoneDisplay = core10.substring(0, 5) + " " + core10.substring(5);
 
-        vendorRequestDao.submitFarmerApplication(applicantName, farmName, email, phoneDisplay);
+        vendorRequestDao.submitFarmerApplication(
+                applicantName,
+                farmName,
+                email,
+                phoneDisplay,
+                nullToEmpty(req.getParameter("category")),
+                nullToEmpty(req.getParameter("about"))
+        );
         resp.sendRedirect(req.getContextPath() + "/farmer/apply?ok=1");
     }
 
