@@ -518,6 +518,7 @@ a {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  line-clamp: 2; /* standard property for modern browsers */
 }
 
 .featured .product-card__price {
