@@ -28,6 +28,8 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
-        request.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(request,response);
+        request.getRequestDispatcher(
+                "/WEB-INF/views/admin/dashboard.jsp"
+        ).forward(request,response);
     }
 }

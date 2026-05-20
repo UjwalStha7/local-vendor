@@ -159,6 +159,6 @@ public class AuthenticationFilter implements Filter {
 
     /** Endpoints any logged-in role may call (e.g. shared APIs). */
     private static boolean isSharedLoggedInPath(String path) {
-        return "/account/switch-role".equals(path);
+        return false;
     }
 }

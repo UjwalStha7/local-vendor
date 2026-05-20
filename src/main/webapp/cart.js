@@ -194,7 +194,7 @@ if (els.checkout) {
       if (!res.ok || !data.success) {
         alert(data.message || "Checkout failed. Sign in as a customer and try again.");
         if (res.status === 401 || res.redirected) {
-          window.location.href = `${ctx}/login`;
+          window.location.href = `${ctx}/login?redirect=${encodeURIComponent("/cart")}`;
         }
         return;
       }

@@ -4,6 +4,8 @@ import com.learninglog.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public final class CustomerAuthUtil {
 
@@ -22,6 +24,13 @@ public final class CustomerAuthUtil {
     }
 
     public static void redirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect(req.getContextPath() + "/login");
+        String path = req.getRequestURI();
+        String query = req.getQueryString();
+        String target = path.substring(req.getContextPath().length());
+        if (query != null && !query.isBlank()) {
+            target = target + "?" + query;
+        }
+        String encoded = URLEncoder.encode(target, StandardCharsets.UTF_8);
+        resp.sendRedirect(req.getContextPath() + "/login?redirect=" + encoded);
     }
 }
