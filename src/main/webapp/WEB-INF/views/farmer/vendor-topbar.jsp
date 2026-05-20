@@ -14,7 +14,7 @@
     </c:if>
 
     <div class="vp-topbar__actions${topbarShowSearch ? '' : ' vp-topbar__actions--end'}">
-        <div class="vp-profile">
+        <div class="vp-profile" title="${not empty sessionScope.user ? sessionScope.user.email : ''}">
             <img class="vp-profile__avatar"
                  src="${empty storeLogo ? ctx.concat('/image/fresh_apple.png') : storeLogo}"
                  alt=""
@@ -22,7 +22,14 @@
                  height="42" />
             <div class="vp-profile__text">
                 <p class="vp-profile__name"><c:out value="${storeName}" /></p>
-                <p class="vp-profile__role">Vendor</p>
+                <p class="vp-profile__role">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.user}">
+                            <span class="vp-profile__email"><c:out value="${sessionScope.user.email}" /></span>
+                        </c:when>
+                        <c:otherwise>Vendor</c:otherwise>
+                    </c:choose>
+                </p>
             </div>
         </div>
     </div>

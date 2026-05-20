@@ -16,7 +16,7 @@
          <c:if test="${nav == 'contact'}">class="nav-current" aria-current="page"</c:if>>Contact</a>
     </nav>
     <div class="header-actions">
-      <a class="nav-login-btn" href="${ctx}/login">Login</a>
+      <jsp:include page="/WEB-INF/views/include/nav-auth.jsp" />
       <a class="cart-link" href="${ctx}/cart" aria-label="Shopping cart">
         <img src="${ctx}/image/cart.png" alt="" width="24" height="24" />
         <span id="cart-badge" class="cart-badge" aria-live="polite">0</span>
