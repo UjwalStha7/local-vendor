@@ -2,21 +2,26 @@
 <%-- param.current: home | product | about | contact --%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <c:set var="nav" value="${param.current}" />
-<c:set var="sessionUser" value="${sessionScope.user}" />
-<c:set var="sessionRole" value="${sessionScope.role}" />
-<c:set var="hasVendorProfile" value="${sessionScope.hasVendorProfile}" />
-<c:set var="isCustomerSession" value="${sessionRole == 'customer' && not empty sessionUser}" />
-<c:set var="isVendorSession" value="${sessionRole == 'vendor' && not empty sessionUser}" />
-<c:set var="showUserMenu" value="${isCustomerSession || isVendorSession}" />
-<c:if test="${showUserMenu}">
-  <c:choose>
-    <c:when test="${not empty sessionUser.username}">
-      <c:set var="customerDisplayName" value="${sessionUser.username}" />
-    </c:when>
-    <c:otherwise>
-      <c:set var="customerDisplayName" value="${sessionUser.email}" />
-    </c:otherwise>
-  </c:choose>
-</c:if>
 <header class="site-header" id="top">
-  <motion class="header-inner">
+  <div class="header-inner">
+    <a class="logo" href="${ctx}/">Krishak</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="${ctx}/"
+         <c:if test="${nav == 'home'}">class="nav-current" aria-current="page"</c:if>>Home</a>
+      <a href="${ctx}/product"
+         <c:if test="${nav == 'product'}">class="nav-current" aria-current="page"</c:if>>Product</a>
+      <a href="${ctx}/about"
+         <c:if test="${nav == 'about'}">class="nav-current" aria-current="page"</c:if>>About Us</a>
+      <a href="${ctx}/contact"
+         <c:if test="${nav == 'contact'}">class="nav-current" aria-current="page"</c:if>>Contact</a>
+    </nav>
+    <div class="header-actions">
+      <a class="nav-login-btn" href="${ctx}/login">Login</a>
+      <a class="cart-link" href="${ctx}/cart" aria-label="Shopping cart">
+        <img src="${ctx}/image/cart.png" alt="" width="24" height="24" />
+        <span id="cart-badge" class="cart-badge" aria-live="polite">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+<script src="${ctx}/cart-badge.js"></script>

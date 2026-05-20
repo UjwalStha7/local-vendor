@@ -30,6 +30,12 @@
             </nav>
 
             <form class="auth-form" action="${pageContext.request.contextPath}/login" method="post">
+                <c:if test="${not empty redirect}">
+                    <input type="hidden" name="redirect" value="<c:out value='${redirect}' />" />
+                </c:if>
+                <c:if test="${not empty param.redirect and empty redirect}">
+                    <input type="hidden" name="redirect" value="<c:out value='${param.redirect}' />" />
+                </c:if>
                 <c:if test="${not empty error}">
                     <p class="auth-error"><c:out value="${error}" /></p>
                 </c:if>
