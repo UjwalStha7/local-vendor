@@ -129,7 +129,7 @@
           </li>
           <li>
             <img src="image/green_email.png" alt="" width="18" height="18" />
-            <a href="mailto:support@krishak.com">support@krishak.com</a>
+            <a href="mailto:support@krishak.com">support@krishak.np</a>
           </li>
           <li>
             <img src="image/location.png" alt="" width="18" height="18" />

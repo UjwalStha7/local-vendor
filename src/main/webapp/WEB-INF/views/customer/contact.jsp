@@ -44,7 +44,7 @@
         </div>
         <div class="field">
           <label for="email">Email</label>
-          <input id="email" name="email" type="email" required maxlength="120" placeholder="your.email@example.com"
+          <input id="email" name="email" type="email" required maxlength="120" placeholder="youremail@gmail.com"
                  value="<c:out value='${fieldEmail}' />" />
         </div>
         <div class="field">
@@ -80,7 +80,7 @@
         </div>
         <div>
           <h3>Email</h3>
-          <p><a href="mailto:support@krishak.com">support@krishak.com</a></p>
+          <p><a href="mailto:support@krishak.com">support@krishak.np</a></p>
           <span class="muted">We'll respond within 24 hours</span>
         </div>
       </div>
@@ -95,7 +95,17 @@
         </div>
       </div>
 
-      <div class="contact-map" role="img" aria-label="Map location placeholder">Map Location</div>
+            <div class="contact-map" aria-label="Map showing Informatics College Pokhara">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3515.7505497293814!2d83.99786597548562!3d28.214890475895384!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39959434ad2a5bf9%3A0xf4e7f9c749f63113!2sInformatics%20College%20Pokhara!5e0!3m2!1sen!2snp!4v1779245895836!5m2!1sen!2snp"
+          width="400"
+          height="300"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Krishak office location on Google Maps"></iframe>
+      </div>
     </div>
   </main>
 
@@ -122,7 +132,7 @@
           </li>
           <li>
             <img src="image/green_email.png" alt="" width="18" height="18" />
-            <a href="mailto:support@krishak.com">support@krishak.com</a>
+            <a href="mailto:support@krishak.com">support@krishak.np</a>
           </li>
           <li>
             <img src="image/location.png" alt="" width="18" height="18" />

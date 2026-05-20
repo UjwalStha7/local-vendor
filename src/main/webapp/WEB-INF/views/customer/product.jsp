@@ -8,11 +8,11 @@
   <base href="${pageContext.request.contextPath}/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/landing.css" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/shop.css" />
 </head>
-<body>
+<body class="page-shop">
   <jsp:include page="/WEB-INF/views/customer/navbar.jsp">
     <jsp:param name="current" value="product" />
   </jsp:include>
@@ -132,7 +132,7 @@
           </li>
           <li>
             <img src="image/green_email.png" alt="" width="18" height="18" />
-            <a href="mailto:support@krishak.com">support@krishak.com</a>
+            <a href="mailto:support@krishak.com">support@krishak.np</a>
           </li>
           <li>
             <img src="image/location.png" alt="" width="18" height="18" />

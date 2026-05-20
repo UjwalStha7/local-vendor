@@ -12,11 +12,11 @@
 
 * { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+body.product-detail-page {
+  font-family: "Montserrat", system-ui, -apple-system, sans-serif;
   background: var(--page);
   color: var(--text);
+  padding-top: var(--header-h, 72px);
 }
 
 .product-detail-page .page {

@@ -24,3 +24,4 @@
     </div>
   </div>
 </header>
+<script src="${ctx}/cart-badge.js"></script>
