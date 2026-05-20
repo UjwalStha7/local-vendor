@@ -35,7 +35,9 @@ public class AuthenticationFilter implements Filter {
             "/api/catalog/meta",
             "/cart",
             "/cart.html",
-            "/farmer/apply"
+            "/farmer/apply",
+            "/error404.jsp",
+            "/error500.jsp"
     );
 
     @Override
