@@ -4,9 +4,6 @@ import com.learninglog.entity.User;
 import com.learninglog.model.VendorApprovalResult;
 import com.learninglog.model.VendorRequestRow;
 import com.learninglog.util.DatabaseConnection;
-import com.learninglog.util.PasswordUtil;
-import com.learninglog.util.TempPasswordUtil;
-import com.learninglog.util.VendorEmailUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -167,36 +164,33 @@ public class VendorRequestDaoImpl implements VendorRequestDao {
             return VendorApprovalResult.failure("This application cannot be approved.");
         }
 
-        String vendorEmail = VendorEmailUtil.deriveVendorLoginEmail(row.getEmail(), userDao);
-        if (userDao.findByEmail(vendorEmail) != null) {
-            return VendorApprovalResult.failure("A vendor account already exists for " + vendorEmail);
+        String contactEmail = row.getEmail().trim().toLowerCase(Locale.ROOT);
+        User existing = userDao.findByEmail(contactEmail);
+        if (existing == null) {
+            return VendorApprovalResult.failure(
+                    "No registered account for " + contactEmail
+                            + ". Ask the applicant to register as a customer first.");
+        }
+        if ("vendor".equalsIgnoreCase(existing.getRole())) {
+            return VendorApprovalResult.failure("This account is already a vendor.");
+        }
+        if ("admin".equalsIgnoreCase(existing.getRole())) {
+            return VendorApprovalResult.failure("Admin accounts cannot be approved as vendors.");
         }
 
-        String tempPassword = TempPasswordUtil.fromContactEmail(row.getEmail());
-        String hashed = PasswordUtil.getHashpassword(tempPassword);
-
-        User vendor = new User(row.getApplicantName(), vendorEmail, hashed, row.getPhone());
-        vendor.setRole("vendor");
-        vendor.setactive(true);
-
-        if (!userDao.insertUser(vendor)) {
-            return VendorApprovalResult.failure("Could not create vendor user. Email or username may already exist.");
+        if (!userDao.updateRole(existing.getId(), "vendor")) {
+            return VendorApprovalResult.failure("Could not update account role to vendor.");
         }
 
-        User saved = userDao.findByEmail(vendorEmail);
-        if (saved == null) {
-            return VendorApprovalResult.failure("Vendor user was created but could not be loaded.");
+        if (!userDao.hasVendorProfile(existing.getId()) && !insertVendorProfile(existing.getId(), row.getFarmName())) {
+            return VendorApprovalResult.failure("Role updated but vendor shop profile could not be created.");
         }
 
-        if (!insertVendorProfile(saved.getId(), row.getFarmName())) {
-            return VendorApprovalResult.failure("Vendor user created but farm profile failed. Check vendor_profiles table.");
+        if (!markApproved(requestId, existing.getId(), existing.getEmail())) {
+            updateMemoryApproved(requestId, existing.getEmail());
         }
 
-        if (!markApproved(requestId, saved.getId(), vendorEmail)) {
-            updateMemoryApproved(requestId, vendorEmail);
-        }
-
-        return VendorApprovalResult.ok(vendorEmail, tempPassword);
+        return VendorApprovalResult.ok(existing.getEmail());
     }
 
     @Override
