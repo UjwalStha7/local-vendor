@@ -82,4 +82,23 @@ public final class LoginAuthUtil {
             case CUSTOMER -> "customer";
         };
     }
+
+    /** Redirect after login or role switch based on the user's stored role. */
+    public static String redirectPathForRole(String role) {
+        if (role == null || role.isBlank()) {
+            return "/customer/home";
+        }
+        return switch (role.trim().toLowerCase()) {
+            case "admin" -> "/admin/dashboard";
+            case "vendor" -> "/farmer/dashboard";
+            default -> "/customer/home";
+        };
+    }
+
+    public static String normalizeRole(String role) {
+        if (role == null || role.isBlank()) {
+            return "customer";
+        }
+        return role.trim().toLowerCase();
+    }
 }

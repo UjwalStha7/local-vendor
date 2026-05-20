@@ -120,8 +120,85 @@ public class UserDaoImp implements UserDao {
         finally {
          DatabaseConnection.closeConnection(conn);
         }
-        return null;  //null if data doesnt found
+        return null;
     }
 
+    @Override
+    public User findById(int id) {
+        if (id <= 0) {
+            return null;
+        }
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "SELECT * FROM users WHERE id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet res = statement.executeQuery();
+            if (res.next()) {
+                return mapUser(res);
+            }
+        } catch (SQLException ex) {
+            System.out.printf("Error retrieving user by id: " + ex.getMessage());
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+        return null;
+    }
 
+    @Override
+    public boolean updateRole(int userId, String role) {
+        if (userId <= 0 || role == null || role.isBlank()) {
+            return false;
+        }
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE users SET role = ? WHERE id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, role.trim().toLowerCase());
+            statement.setInt(2, userId);
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            System.out.printf("Error updating user role: " + ex.getMessage());
+            return false;
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+    }
+
+    @Override
+    public boolean hasVendorProfile(int userId) {
+        if (userId <= 0) {
+            return false;
+        }
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "SELECT 1 FROM vendor_profiles WHERE vendor_user_id = ? LIMIT 1";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, userId);
+            ResultSet res = statement.executeQuery();
+            return res.next();
+        } catch (SQLException ex) {
+            System.out.printf("Error checking vendor profile: " + ex.getMessage());
+            return false;
+        } finally {
+            DatabaseConnection.closeConnection(conn);
+        }
+    }
+
+    private static User mapUser(ResultSet res) throws SQLException {
+        return new User(
+                res.getInt("id"),
+                res.getString("username"),
+                res.getString("email"),
+                res.getString("password"),
+                res.getString("phone"),
+                res.getString("role"),
+                res.getBoolean("is_active"),
+                res.getTimestamp("createdAt"),
+                res.getTimestamp("updatedAt")
+        );
+    }
 }

@@ -21,12 +21,12 @@ public class VendorApprovalResult {
         return new VendorApprovalResult(false, message, null, null);
     }
 
-    public static VendorApprovalResult ok(String vendorLoginEmail, String temporaryPassword) {
+    public static VendorApprovalResult ok(String accountEmail) {
         return new VendorApprovalResult(
                 true,
-                "Vendor approved. They can sign in with their @krishak.np email.",
-                vendorLoginEmail,
-                temporaryPassword
+                "Vendor approved. Their existing account role is now vendor. They sign in with the same email and password.",
+                accountEmail,
+                null
         );
     }
 
