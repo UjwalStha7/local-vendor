@@ -3,7 +3,7 @@
  */
 (function () {
   const CART_KEY = "cartItems";
-  const FEATURED_LIMIT = 8;
+  const FEATURED_LIMIT = 6;
 
   function getContextPath() {
     const base = document.querySelector("base");
@@ -100,6 +100,7 @@
     }
 
     grid.innerHTML = products
+      .slice(0, FEATURED_LIMIT)
       .map((p) => {
         const disabled = p.outOfStock ? "disabled" : "";
         const badgeClass = p.limited ? "product-card__badge product-card__badge--limited" : "product-card__badge product-card__badge--in";

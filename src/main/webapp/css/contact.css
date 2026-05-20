@@ -181,16 +181,17 @@
 
 .contact-map {
   margin-top: 8px;
-  min-height: 200px;
   border-radius: 12px;
-  background: #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6b7280;
-  font-weight: 600;
-  font-size: 0.95rem;
+  overflow: hidden;
   border: 1px solid #d1d5db;
+  background: #e5e7eb;
+}
+
+.contact-map iframe {
+  display: block;
+  width: 100%;
+  height: 280px;
+  border: 0;
 }
 
 .main-nav a.is-active {
