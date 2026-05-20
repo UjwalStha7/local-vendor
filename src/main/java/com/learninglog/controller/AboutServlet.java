@@ -14,7 +14,8 @@ public class AboutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/customer/about.jsp")
-                .forward(request, response);
+                //throw new RuntimeException("Test 500 error"); // Test 500 error by uncommenting this line
+        request.getRequestDispatcher("/WEB-INF/views/customer/about.jsp") //comment this check
+                .forward(request, response); //comment this to check
     }
 }

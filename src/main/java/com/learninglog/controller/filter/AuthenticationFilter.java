@@ -54,6 +54,14 @@ public class AuthenticationFilter implements Filter {
         }
 
         if (isPublicAsset(path) || isPublicPath(path)) {
+        // If admin/vendor tries to visit a customer page, send them home
+            if (SessionUtil.isLoggedIn(req) && isCustomerOnlyPath(path)) {
+                String role = sessionRole(req);
+                if ("admin".equals(role) || "vendor".equals(role)) {
+                    res.sendRedirect(contextPath + homeForRole(role));
+                    return;
+                }
+            }
             chain.doFilter(request, response);
             return;
         }
@@ -104,7 +112,57 @@ public class AuthenticationFilter implements Filter {
         if (PUBLIC_EXACT.contains(path)) {
             return true;
         }
-        return path.startsWith("/index.jsp");
+        if (path.startsWith("/index.jsp")) {
+            return true;
+        }
+        if (!isKnownRoute(path)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isCustomerOnlyPath(String path) {
+    return path.equals("/")
+        || path.equals("/about")
+        || path.equals("/contact")
+        || path.equals("/product")
+        || path.equals("/productId")
+        || path.equals("/cart")
+        || path.equals("/cart.html")
+        || path.equals("/farmer/apply");
+    }
+
+    private static boolean isKnownRoute(String path) {
+        return path.equals("/login")
+            || path.equals("/register")
+            || path.equals("/logout")
+            || path.equals("/about")
+            || path.equals("/contact")
+            || path.equals("/product")
+            || path.equals("/productId")
+            || path.equals("/cart")
+            || path.equals("/cart.html")
+            || path.equals("/checkout")
+            || path.equals("/unauthorized")
+            || path.equals("/admin")
+            || path.equals("/dashboard")
+            || path.equals("/farmer/apply")
+            || path.equals("/farmer/dashboard")
+            || path.equals("/farmer/product-management")
+            || path.equals("/farmer/product-add")
+            || path.equals("/farmer/product-edit")
+            || path.equals("/farmer/orders")
+            || path.equals("/farmer/order-detail")
+            || path.equals("/farmer/profile")
+            || path.equals("/farmer/logout")
+            || path.equals("/customer/home")
+            || path.equals("/customer/orders")
+            || path.equals("/api/products")
+            || path.equals("/api/catalog/meta")
+            || path.startsWith("/admin/")
+            || path.startsWith("/farmer/")
+            || path.startsWith("/customer/")
+            || path.startsWith("/uploads/");
     }
 
     private static String sessionRole(HttpServletRequest req) {
