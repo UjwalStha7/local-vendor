@@ -266,6 +266,15 @@ body.vp-body {
   color: var(--vp-muted);
 }
 
+.vp-profile__email {
+  display: inline-block;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
 /* ——— Content ——— */
 .vp-content {
   padding: 28px 28px 40px;

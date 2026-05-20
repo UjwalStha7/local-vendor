@@ -10,6 +10,8 @@
       <a href="${ctx}/about">About Us</a>
       <a href="${ctx}/contact">Contact</a>
     </nav>
-    <a class="nav-login-btn" href="${ctx}/login">Login</a>
+    <div class="header-actions">
+      <jsp:include page="/WEB-INF/views/include/nav-auth.jsp" />
+    </div>
   </div>
 </header>
