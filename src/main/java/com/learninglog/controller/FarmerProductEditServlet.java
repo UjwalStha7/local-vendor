@@ -41,12 +41,12 @@ public class FarmerProductEditServlet extends HttpServlet {
         }
         int productId = parseProductId(req);
         if (productId <= 0) {
-            resp.sendRedirect(req.getContextPath() + "/farmer/product-management");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         Optional<ProductRow> product = productDao.findByIdForVendor(productId, vendor.getId());
         if (product.isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + "/farmer/product-management");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         FarmerAuthUtil.setStoreAttributes(req, vendor);
@@ -67,12 +67,12 @@ public class FarmerProductEditServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         int productId = parseProductId(req);
         if (productId <= 0) {
-            resp.sendRedirect(req.getContextPath() + "/farmer/product-management");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         Optional<ProductRow> product = productDao.findByIdForVendor(productId, vendor.getId());
         if (product.isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + "/farmer/product-management");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 

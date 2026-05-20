@@ -63,12 +63,16 @@ public class FarmerProductManagementServlet extends HttpServlet {
         try {
             productId = Integer.parseInt(req.getParameter("id"));
         } catch (NumberFormatException e) {
-            resp.sendRedirect(req.getContextPath() + "/farmer/product-management?deleted=0");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         boolean deleted = productDao.deleteByIdForVendor(productId, vendor.getId());
+        if (!deleted) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         String q = req.getParameter("q");
-        String redirect = req.getContextPath() + "/farmer/product-management?deleted=" + (deleted ? "1" : "0");
+        String redirect = req.getContextPath() + "/farmer/product-management?deleted=1";
         if (q != null && !q.isBlank()) {
             redirect += "&q=" + java.net.URLEncoder.encode(q.trim(), java.nio.charset.StandardCharsets.UTF_8);
         }
